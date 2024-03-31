@@ -2,6 +2,7 @@ import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Navbar, Input, NavbarBrand, NavbarContent, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
 NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button} from "@nextui-org/react";
+import logo_unibac from '../assets/logo_unibac.png';
 
 export const SearchIcon = (props) => (
   <svg
@@ -40,6 +41,7 @@ const NavBar = () => {
       "Bibliografie",
       'Articole',
       "MinaAi",
+      "Compiler",
     ];
 
     const [isHovered, setIsHovered] = useState([]);
@@ -84,6 +86,7 @@ const handleMouseLeave = (index) => {
           className="sm:hidden"
         />
         <NavbarBrand style={{cursor:'pointer'}} onClick={() => navigate('/home')}>
+          {/* <img src={logo_unibac} alt="logo" className="h-10 w-10" /> */}
           <p className="font-bold text-inherit">UNIBAC</p>
         </NavbarBrand>
       </NavbarContent>
@@ -169,6 +172,11 @@ const handleMouseLeave = (index) => {
           key="MinaAi"
         >
           MinaAi
+        </DropdownItem>
+        <DropdownItem onClick={() => navigate('/minaAi')}
+          key="MinaAi"
+        >
+          Compiler
         </DropdownItem>
       </DropdownMenu>
       </Dropdown>
