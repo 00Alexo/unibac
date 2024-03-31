@@ -75,11 +75,11 @@ const SignIn = () => {
             <form className="contains-SignUp">
                 <p className="signUp-create-account-text" style={{}}>SIGN-IN</p>
                 <div className='contains-inputs'>
-                    <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
+                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input maxLength="20" required isClearable type="email" variant="bordered"
                         label="Username or email" size='lg'/>
                     </div>
-                    <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
+                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input required variant="bordered"label="Password" size='lg'
                         endContent={
                         <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
@@ -127,7 +127,7 @@ const SignIn = () => {
                         variant="bordered" size='lg'>
                             Submit
                         </Button>  
-                        <p>
+                        <p className="signInP">
                             Not registered? <Link to="/sign-up" className="change-sign"> Sign-Up </Link>
                         </p>
                     </div>

@@ -16,7 +16,7 @@
 }
 
 .minhgh-signUp{
-    min-height: 650px !important;
+    min-height: 585px !important;
 }
 
 .contains-SignUp{
@@ -98,5 +98,33 @@
     }
     100%{
         transform: translateX(0);
+    }
+}
+
+@media (max-width: 950px) {
+    .contains-cmpSignInUp{
+        display: none;
+    }    
+    .contains-SignUp{
+        margin: 0 auto;
+        width: 80%;
+    }
+}
+
+@media (max-width: 640px) {  
+    .contains-SignUp{
+        width: 100%;
+    }
+
+    .signInP{
+        font-size: 0.8rem;
+    }
+
+    .btnSgnUp{
+        transform: scale(0.9);
+    }
+
+    .contains-inputs{
+        gap:10px;
     }
 }

@@ -120,15 +120,15 @@ const SignUp = () => {
             </div>
             <form className="contains-SignUp minhgh-signUp">
                 <p className="signUp-create-account-text" style={{}}>CREATE ACCOUNT</p>
-                <div className='contains-inputs'>
-                    <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
+                <div className='contains-inputs contains-inputs-sgup'>
+                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input maxLength="20" required isClearable type="username" variant="bordered"
                         label="Username" size='md'/>
                     </div>
-                    <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
+                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input minLength="7" required isClearable type="email" variant="bordered"label="Email" size='md'/>
                     </div>
-                    <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
+                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input required variant="bordered"label="Password" size='md'
                         endContent={
                         <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
@@ -142,7 +142,7 @@ const SignUp = () => {
                         type={isVisible ? "text" : "password"}
                         />
                     </div>
-                    <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
+                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input required variant="bordered"label="Confirm Password" size='md'
                         endContent={
                         <button className="focus:outline-none" type="button" onClick={toggleVisibilityConf}>
@@ -216,10 +216,10 @@ const SignUp = () => {
                 <div>
                     <div className="submit-div">
                         <Button color="default" type = "submit" onClick={(e) => e.preventDefault()}
-                        variant="bordered" size='lg'>
+                        variant="bordered" size='lg' className="btnSgnUp">
                             Submit
                         </Button>  
-                        <p>
+                        <p className="signInP">
                             Already registered? <Link to="/sign-in" className="change-sign"> Sign-In </Link>
                         </p>
                     </div>
