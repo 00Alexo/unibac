@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body{
+    background-color: #0F0E0E;
+    color:#d8dbe2;
+    min-height: 100vh;
+}
+
+@font-face {
+    font-family: "SuperCorn";
+    src: url(Fonts/Super\ Corn.ttf) format('opentype');
+}
+@font-face {
+    font-family: "Montserrat ExtraBold";
+    src: url(Fonts/Montserrat-ExtraBold.otf) format('opentype');
+}
+@font-face {
+    font-family: "RobotoThin";
+    src: url(Fonts/Roboto-Thin.ttf) format('opentype');
+}
+@font-face {
+    font-family: "Poppins";
+    src: url(Fonts/Poppins-Thin.otf) format('opentype');
+}
+@font-face {
+    font-family: "StormGust";
+    src: url(Fonts/Storm\ Gust.woff) format('opentype');
+}
+
+@font-face {
+    font-family: "Jogan";
+    src: url(Fonts/JoganSoft-Regular.ttf) format('opentype');
+}
+
+@font-face {
+    font-family: "Corrupted";
+    src: url(Fonts/Corrupted\ File.ttf) format('opentype');
+}
