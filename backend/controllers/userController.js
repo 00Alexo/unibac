@@ -4,7 +4,44 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
 const signin = async(req, res) =>{
+    try{
+        let check;
+        if(!req.body.username || !req.body.password){
+            return res.status(400).json({error:"Toate campurile sunt obligatorii!"});
+        }
+        let signinValidator = req.body.username.split("");
+        let isEmail = false;
+        for (let i =0; i < signinValidator.length; i++) {
+        if(signinValidator[i] == '@'){
+            isEmail = true;
+            break;
+        }
+        }
+        if(!isEmail) {
+        check=await userModel.findOne({username: req.body.username});
+        }else{
+        check=await userModel.findOne({email: req.body.username});
+        }
+        if (check) {
+            const passwordMatch = await bcrypt.compare(req.body.password, check.password);
 
+            if (passwordMatch) {
+                console.log("User logged in: \n", check);
+
+                // const token = createToken(check._id)
+
+                res.status(200).json({username:check.username});
+            } else {
+            return res.status(400).json({error:"Parola gresita"});
+            }
+        } else {
+            return res.status(400).json({error:"Acest cont nu exista"});
+        }
+
+    } catch (error) {
+        console.error(error.message);
+        return res.status(400).json(error.message);
+  }
 }
 
 const signup = async(req, res) =>{
