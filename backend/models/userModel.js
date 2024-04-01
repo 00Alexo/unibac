@@ -23,6 +23,14 @@ const LogInSchema = new mongoose.Schema({
       required: true,
       unique: true,
     },
+    statut: {
+      type: String,
+      required: true,
+    },
+    judet: {
+      type: String,
+      required: true
+    }
     /*tags:{
       type: Array,
       required: true

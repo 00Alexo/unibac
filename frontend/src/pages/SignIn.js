@@ -1,5 +1,5 @@
 import CmpSignInUp from "../components/cmpSignInUp";
-import {Input, Button, Select, SelectItem, Autocomplete, AutocompleteItem} from "@nextui-org/react";
+import {Input, Button} from "@nextui-org/react";
 import {useState} from 'react';
 import {Link} from 'react-router-dom'
 
@@ -67,6 +67,15 @@ const SignIn = () => {
     const [isVisibleConf, setIsVisibleConf] = useState(false);;
 
     const toggleVisibilityConf = () => setIsVisibleConf(!isVisibleConf);
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSignInSubmit = async (e) =>{
+      e.preventDefault();
+
+      console.log(username, password);
+    }
     return (
         <div className="flex flex-row">
             <div className="contains-cmpSignInUp">
@@ -77,7 +86,9 @@ const SignIn = () => {
                 <div className='contains-inputs'>
                     <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input maxLength="20" required isClearable type="email" variant="bordered"
-                        label="Username or email" size='lg'/>
+                        label="Username or email" size='lg'
+                        onChange={(e) => {setUsername(e.target.value)}}
+                        value={username}/>
                     </div>
                     <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input required variant="bordered"label="Password" size='lg'
@@ -91,7 +102,8 @@ const SignIn = () => {
                         </button>
                         }
                         type={isVisible ? "text" : "password"}
-                        />
+                        onChange={(e) => {setPassword(e.target.value)}}
+                        value={password}/>
                     </div>
                     <div className="or-sign-with">
                         <div className="or-sign-with-line"> </div>
@@ -123,7 +135,7 @@ const SignIn = () => {
                 </div>
                 <div>
                     <div className="submit-div">
-                        <Button color="default" type = "submit" onClick={(e) => e.preventDefault()}
+                        <Button color="default" type = "submit" onClick={handleSignInSubmit}
                         variant="bordered" size='lg'>
                             Submit
                         </Button>  

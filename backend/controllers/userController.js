@@ -1,7 +1,11 @@
 const userModel = require('../models/userModel')
 const bcrypt = require('bcryptjs');
-//const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid');
+
+const createToken = (_id) =>{
+    return jwt.sign({_id}, process.env.SECRET, {expiresIn: '3d'})
+}
 
 const signin = async(req, res) =>{
     try{
@@ -28,9 +32,9 @@ const signin = async(req, res) =>{
             if (passwordMatch) {
                 console.log("User logged in: \n", check);
 
-                // const token = createToken(check._id)
+                const token = createToken(check._id)
 
-                res.status(200).json({username:check.username});
+                res.status(200).json({username:check.username, token});
             } else {
             return res.status(400).json({error:"Parola gresita"});
             }
@@ -48,14 +52,16 @@ const signup = async(req, res) =>{
     try{
         const saltRounds = 12, userIp = req.clientIp;
         const email = req.body.email, username = req.body.username, password = req.body.password,
-        confirmPassword = req.body.confirmPassword;
+        confirmPassword = req.body.confirmPassword, statut = req.body.statut, judet = req.body.judet;
+        if(!email || !username || !password || !confirmPassword || !statut || !judet) 
+            return res.status(400).json({error: 'Toate campurile sunt obligatorii!'});
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         if(password !== confirmPassword){
-            throw new Error("Passwords do not match");
+            return res.status(400).json({error:"Passwords do not match"});
         }
-        const existingUser = await userModel.find({ username: new RegExp(username, 'i') });
-        if(existingUser.length > 0){
-          return res.status(400).json({ error: 'Usernameul este deja folosit!' });
+        const existingUser = await userModel.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
+        if(existingUser){
+            return res.status(400).json({ error: 'Usernameul este deja folosit!' });
         }
         const verfnvlg = username.toLowerCase();
         const cuvinteVulgare = ['pula', 'coae', 'coaie', 'cuaie', 'cacat', 'fut', 'prost', 'natia', 'matii', 'gay', 'futui', 'dracu'
@@ -89,11 +95,14 @@ const signup = async(req, res) =>{
             password: hashedPassword,
             userIp: userIp,
             email: email,
+            statut: statut,
+            judet: judet,
             admin: 0,
         }
         const user = await userModel.create(data);
+        const token = createToken(user._id)
         console.log("New account created successfully: ", data);
-        res.status(200).json({username:data.username});
+        res.status(200).json({username:data.username, token});
     }catch(error){
         console.error(error.message);
         res.status(500).json(error.message);

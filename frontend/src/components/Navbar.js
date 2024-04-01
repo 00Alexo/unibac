@@ -198,6 +198,9 @@ const handleMouseLeave = (index) => {
           <Button as={Link} color="primary" variant="flat" onClick={() => navigate('/sign-up')}>
             Sign Up
           </Button>
+          <button>
+
+          </Button>
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu>

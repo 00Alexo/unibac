@@ -2,6 +2,7 @@ import CmpSignInUp from "../components/cmpSignInUp";
 import {Input, Button, Select, SelectItem, Autocomplete, AutocompleteItem} from "@nextui-org/react";
 import {useState} from 'react';
 import {Link} from 'react-router-dom'
+import { useSignup } from "../hooks/useSignup";
 
 export const EyeSlashFilledIcon = (props) => (
     <svg
@@ -113,20 +114,39 @@ const SignUp = () => {
     { label: 'Valcea', value: 'valcea' },
     { label: 'Vrancea', value: 'vrancea' },
     ];
+
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [statut, setStatut] = useState('');
+    const [judet, setJudet] = useState('');
+    const {signup, error, isLoading} = useSignup();
+
+    const handleSignUpSubmit = async (e) =>{
+        e.preventDefault()
+        
+        await signup(username, email, password, confirmPassword, statut, judet);
+    }
     return (
         <div className="flex flex-row">
             <div className="contains-cmpSignInUp minhgh-signUp">
                 <CmpSignInUp/>
+                {error && <div>{error}</div>}
             </div>
             <form className="contains-SignUp minhgh-signUp">
                 <p className="signUp-create-account-text" style={{}}>CREATE ACCOUNT</p>
                 <div className='contains-inputs contains-inputs-sgup'>
                     <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input maxLength="20" required isClearable type="username" variant="bordered"
-                        label="Username" size='md'/>
+                        label="Username" size='md' 
+                        onChange={(e) => {setUsername(e.target.value)}}
+                        value={username}/>
                     </div>
                     <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
-                        <Input minLength="7" required isClearable type="email" variant="bordered"label="Email" size='md'/>
+                        <Input minLength="7" required isClearable type="email" variant="bordered"label="Email" size='md'
+                        onChange={(e) => { setEmail(e.target.value); console.log(email)}}
+                        value={email}/>
                     </div>
                     <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input required variant="bordered"label="Password" size='md'
@@ -140,7 +160,8 @@ const SignUp = () => {
                         </button>
                         }
                         type={isVisible ? "text" : "password"}
-                        />
+                        onChange={(e) => { setPassword(e.target.value); console.log(password)}}
+                        value={password}/>
                     </div>
                     <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
                         <Input required variant="bordered"label="Confirm Password" size='md'
@@ -154,7 +175,8 @@ const SignUp = () => {
                         </button>
                         }
                         type={isVisibleConf ? "text" : "password"}
-                        />
+                        onChange={(e) => { setConfirmPassword(e.target.value); console.log(confirmPassword)}}
+                        value={confirmPassword}/>
                     </div>
                     <div style={{width:'100%', display:'flex', justifyContent:'space-between'}}>
                         <div style={{width:'48%'}}>
@@ -163,6 +185,8 @@ const SignUp = () => {
                                 label="Statut" 
                                 variant = "bordered"
                                 className="max-w-xs" 
+                                onChange={(e) => { setStatut(e.target.value); console.log(e.target.value)}}
+                                value={statut}
                             >
                                 <SelectItem value = "elev">
                                     Elev
@@ -179,6 +203,8 @@ const SignUp = () => {
                                 label="Judet" 
                                 variant = "bordered"
                                 className="max-w-xs" 
+                                onSelectionChange={(value) => { setJudet(value); console.log(judet)}}
+                                value={judet}
                             >
                                 {(judete) => <AutocompleteItem key={judete.value}>{judete.label}</AutocompleteItem>}
                             </Autocomplete>
@@ -215,7 +241,7 @@ const SignUp = () => {
                 </div>
                 <div>
                     <div className="submit-div">
-                        <Button color="default" type = "submit" onClick={(e) => e.preventDefault()}
+                        <Button disabled ={isLoading} color="default" type = "submit" onClick={handleSignUpSubmit}
                         variant="bordered" size='lg' className="btnSgnUp">
                             Submit
                         </Button>  
