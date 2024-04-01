@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Navbar, Input, NavbarBrand, NavbarContent, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
-NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button} from "@nextui-org/react";
+NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button, Avatar} from "@nextui-org/react";
 //import logo_unibac from '../assets/logo_unibac.png';
 import { useLogout } from '../hooks/useLogout';
 import { useAuthContext } from '../hooks/useAuthContext';
@@ -206,12 +206,30 @@ const {user} = useAuthContext();
         />
         {user &&
         <NavbarItem>
-          <Button as={Link} color="primary" variant="flat" onClick={handleLogoutClick}>
-            Logout
-          </Button>
-          <Button as={Link} color="primary" variant="flat" >
-            {user.username}
-          </Button>
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <Avatar
+                isBordered
+                color = "primary"
+                showFallback
+                name = {user.username}
+                as="button"
+                className="transition-transform"
+                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem key="settings">
+                Profil
+              </DropdownItem>
+              <DropdownItem key="settings">
+                Setari
+              </DropdownItem>
+              <DropdownItem key="logout" color="danger" onClick={handleLogoutClick}>
+                Log Out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </NavbarItem>
         }
         {!user &&

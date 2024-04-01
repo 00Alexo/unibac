@@ -5,8 +5,36 @@ import PageNotFound from './pages/404.js'
 import SignIn from './pages/SignIn.js';
 import SignUp from './pages/SignUp.js';
 import './css/signInUp.css'
+import {useState, useEffect} from 'react'
+import { useLogout } from './hooks/useLogout'
+import { useAuthContext } from './hooks/useAuthContext'
 
 function App() {
+  const { user } = useAuthContext()
+  const { logout } = useLogout()
+
+  useEffect(() =>{
+    const fetchAuthCheck = async ()=>{
+      const response = await fetch(`${process.env.REACT_APP_API}/api/user/verifyUserAuthData`, {
+        headers: {
+          'Authorization': `Bearer ${user.token}`,
+          'username': `${user.username}`,
+        },
+      });
+      const json = await response.json()
+
+      if(response.ok){
+        console.log("VALID: ", json);
+      }
+      if(!response.ok){
+        console.log("INVALID: ", json);
+        logout();
+      }
+    }
+
+    if(user)
+    fetchAuthCheck();
+  }, [user])
   return (
     <BrowserRouter>
       <div className="App">

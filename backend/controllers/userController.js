@@ -109,7 +109,38 @@ const signup = async(req, res) =>{
     }
 }
 
+const verifyUserAuthData = async (req, res) => {
+    const { authorization, username } = req.headers;
+  
+    if (!authorization) {
+      return res.status(200).json({ mssg: "Not logged in" });
+    }
+  
+    const user = await userModel.findOne({ username }).select('_id');
+    console.log("userFAKE", user);
+  
+    const token = authorization.split(' ')[1];
+  
+    try {
+      const { _id } = jwt.verify(token, process.env.SECRET);
+  
+      req.user = await userModel.findOne({ _id }).select('_id');
+      console.log("userREAL: ", req.user);
+  
+      if (_id == user._id) {
+        return res.status(200).json({ mssg: "Autentificare valida" });
+      } else {
+        return res.status(401).json({ error: 'Request is not authorized' });
+      }
+  
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({ error: 'Request is not authorized' });
+    }
+  };
+
 module.exports={
     signin,
-    signup
+    signup,
+    verifyUserAuthData
 }
