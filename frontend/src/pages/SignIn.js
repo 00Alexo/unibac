@@ -2,6 +2,7 @@ import CmpSignInUp from "../components/cmpSignInUp";
 import {Input, Button} from "@nextui-org/react";
 import {useState} from 'react';
 import {Link} from 'react-router-dom'
+import { useSignin } from "../hooks/useSignin";
 
 export const EyeSlashFilledIcon = (props) => (
     <svg
@@ -70,16 +71,18 @@ const SignIn = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const {signin, error, isLoading} = useSignin();
 
     const handleSignInSubmit = async (e) =>{
       e.preventDefault();
 
-      console.log(username, password);
+      signin(username, password);
     }
     return (
         <div className="flex flex-row">
             <div className="contains-cmpSignInUp">
                 <CmpSignInUp/>
+                {error && <div>{error}</div>}
             </div>
             <form className="contains-SignUp">
                 <p className="signUp-create-account-text" style={{}}>SIGN-IN</p>
@@ -135,7 +138,7 @@ const SignIn = () => {
                 </div>
                 <div>
                     <div className="submit-div">
-                        <Button color="default" type = "submit" onClick={handleSignInSubmit}
+                        <Button color="default" type = "submit" onClick={handleSignInSubmit} disabled = {isLoading}
                         variant="bordered" size='lg'>
                             Submit
                         </Button>  

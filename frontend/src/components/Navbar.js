@@ -2,7 +2,9 @@ import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Navbar, Input, NavbarBrand, NavbarContent, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
 NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button} from "@nextui-org/react";
-import logo_unibac from '../assets/logo_unibac.png';
+//import logo_unibac from '../assets/logo_unibac.png';
+import { useLogout } from '../hooks/useLogout';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 export const SearchIcon = (props) => (
   <svg
@@ -61,6 +63,14 @@ const handleMouseLeave = (index) => {
     return newState;
   });
 };
+
+const {logout} = useLogout();
+
+const handleLogoutClick = () =>{
+  logout();
+}
+
+const {user} = useAuthContext();
 
   return (
     <Navbar maxWidth="full" onMenuOpenChange={setIsMenuOpen} className="dark text-foreground bg-background" isBordered
@@ -194,14 +204,23 @@ const handleMouseLeave = (index) => {
           startContent={<SearchIcon size={18} />}
           type="search"
         />
+        {user &&
+        <NavbarItem>
+          <Button as={Link} color="primary" variant="flat" onClick={handleLogoutClick}>
+            Logout
+          </Button>
+          <Button as={Link} color="primary" variant="flat" >
+            {user.username}
+          </Button>
+        </NavbarItem>
+        }
+        {!user &&
         <NavbarItem>
           <Button as={Link} color="primary" variant="flat" onClick={() => navigate('/sign-up')}>
             Sign Up
           </Button>
-          <button>
-
-          </Button>
         </NavbarItem>
+        }
       </NavbarContent>
       <NavbarMenu>
         <Input

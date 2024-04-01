@@ -57,7 +57,7 @@ const signup = async(req, res) =>{
             return res.status(400).json({error: 'Toate campurile sunt obligatorii!'});
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         if(password !== confirmPassword){
-            return res.status(400).json({error:"Passwords do not match"});
+            return res.status(400).json({error:"Parolele nu sunt identice"});
         }
         const existingUser = await userModel.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
         if(existingUser){
