@@ -7,13 +7,7 @@ const requestIp = require('request-ip');
 const userRoutes = require('./routes/userRoutes')
 const app = express();
 
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://unibac.vercel.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
-app.options('*', cors()); // Enable pre-flight requests for all routes
+
 app.use(requestIp.mw());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
