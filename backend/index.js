@@ -7,7 +7,9 @@ const requestIp = require('request-ip');
 const userRoutes = require('./routes/userRoutes')
 const app = express();
 
-
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://unibac.vercel.app']
+}))
 app.use(requestIp.mw());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
