@@ -44,6 +44,7 @@ const NavBar = () => {
       'Articole',
       "MinaAi",
       "Compiler",
+      "Games",
     ];
 
     const [isHovered, setIsHovered] = useState([]);
@@ -120,49 +121,58 @@ const {user} = useAuthContext();
           base: "gap-4",
         }}>
         <DropdownItem
+          onClick={() => navigate('/articole/informatica')}
           key="Informatica"
         >
           Informatica
         </DropdownItem>
         <DropdownItem
+          onClick={() => navigate('/articole/matematica')}
           key="Matematica"
         >
           Matematica
         </DropdownItem>
         <DropdownItem
+          onClick={() => navigate('/articole/fizica')}
           key="Fizica"
         >
           Fizica
         </DropdownItem>
         <DropdownItem
+          onClick={() => navigate('/articole/chimie')}
           key="Chimie"
         >
           Chimie
         </DropdownItem>
         <DropdownItem
-          key="Psihologie"
-        >
-        <DropdownItem
-          key="Istorie"
+          onClick={() => navigate('/articole/romana')}
+          key="Romana"
         >
           Romana
+        </DropdownItem>
         <DropdownItem
-          key="Chimie"
+          onClick={() => navigate('/articole/biologie')}
+          key="Biologie"
         >
           Biologie
         </DropdownItem>
-        </DropdownItem>
-          Psihologie
-        </DropdownItem>
         <DropdownItem
+          onClick={() => navigate('/articole/Istorie')}
           key="Istorie"
         >
           Istorie
         </DropdownItem>
         <DropdownItem
-          key="Istorie"
+          onClick={() => navigate('/articole/geografie')}
+          key="Geografie"
         >
           Geografie
+        </DropdownItem>
+        <DropdownItem
+          onClick={() => navigate('/articole/Psihologie')}
+          key="Psihologie"
+        >
+          Psihologie
         </DropdownItem>
       </DropdownMenu>
         </Dropdown>
@@ -187,6 +197,11 @@ const {user} = useAuthContext();
           key="MinaAi"
         >
           Compiler
+        </DropdownItem>
+        <DropdownItem onClick={() => navigate('/games')}
+          key="Games"
+        >
+          Games
         </DropdownItem>
       </DropdownMenu>
       </Dropdown>
@@ -257,6 +272,7 @@ const {user} = useAuthContext();
           <NavbarMenuItem key={`${item}-${index}`}>
             {index !== 1 &&
             <Link
+              onClick={() => navigate(`/${item}`)}
               color={
                 "foreground"
               }
@@ -285,51 +301,60 @@ const {user} = useAuthContext();
               itemClasses={{
                 base: "gap-4",
               }}>
-              <DropdownItem
-                key="Informatica"
-              >
-                Informatica
-              </DropdownItem>
-              <DropdownItem
-                key="Matematica"
-              >
-                Matematica
-              </DropdownItem>
-              <DropdownItem
-                key="Fizica"
-              >
-                Fizica
-              </DropdownItem>
-              <DropdownItem
-                key="Chimie"
-              >
-                Chimie
-              </DropdownItem>
-              <DropdownItem
-                key="Psihologie"
-              >
-              <DropdownItem
-                key="Istorie"
-              >
-                Romana
-              <DropdownItem
-                key="Chimie"
-              >
-                Biologie
-              </DropdownItem>
-              </DropdownItem>
-                Psihologie
-              </DropdownItem>
-              <DropdownItem
-                key="Istorie"
-              >
-                Istorie
-              </DropdownItem>
-              <DropdownItem
-                key="Istorie"
-              >
-                Geografie
-              </DropdownItem>
+                <DropdownItem
+                  onClick={() => navigate('/articole/informatica')}
+                  key="Informatica"
+                >
+                  Informatica
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => navigate('/articole/matematica')}
+                  key="Matematica"
+                >
+                  Matematica
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => navigate('/articole/fizica')}
+                  key="Fizica"
+                >
+                  Fizica
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => navigate('/articole/chimie')}
+                  key="Chimie"
+                >
+                  Chimie
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => navigate('/articole/romana')}
+                  key="Romana"
+                >
+                  Romana
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => navigate('/articole/biologie')}
+                  key="Biologie"
+                >
+                  Biologie
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => navigate('/articole/Istorie')}
+                  key="Istorie"
+                >
+                  Istorie
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => navigate('/articole/geografie')}
+                  key="Geografie"
+                >
+                  Geografie
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => navigate('/articole/Psihologie')}
+                  key="Psihologie"
+                >
+                  Psihologie
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
             }

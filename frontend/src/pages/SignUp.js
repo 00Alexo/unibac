@@ -3,6 +3,8 @@ import {Input, Button, Select, SelectItem, Autocomplete, AutocompleteItem} from 
 import {useState} from 'react';
 import {Link} from 'react-router-dom'
 import { useSignup } from "../hooks/useSignup";
+import { useAuthContext } from '../hooks/useAuthContext'
+import PageNotFound from '../pages/404.js'
 
 export const EyeSlashFilledIcon = (props) => (
     <svg
@@ -61,6 +63,8 @@ export const EyeSlashFilledIcon = (props) => (
   );
 
 const SignUp = () => {
+    const { user } = useAuthContext()
+
     const [isVisible, setIsVisible] = useState(false);;
 
     const toggleVisibility = () => setIsVisible(!isVisible);
@@ -128,6 +132,12 @@ const SignUp = () => {
         
         await signup(username, email, password, confirmPassword, statut, judet);
     }
+
+    if(user)
+        return (
+        <PageNotFound/>
+    )
+
     return (
         <div className="flex flex-row">
             <div className="contains-cmpSignInUp minhgh-signUp">

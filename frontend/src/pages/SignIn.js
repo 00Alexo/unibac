@@ -3,6 +3,8 @@ import {Input, Button} from "@nextui-org/react";
 import {useState} from 'react';
 import {Link} from 'react-router-dom'
 import { useSignin } from "../hooks/useSignin";
+import { useAuthContext } from '../hooks/useAuthContext'
+import PageNotFound from '../pages/404.js'
 
 export const EyeSlashFilledIcon = (props) => (
     <svg
@@ -61,6 +63,8 @@ export const EyeSlashFilledIcon = (props) => (
   );
 
 const SignIn = () => {
+    const { user } = useAuthContext()
+
     const [isVisible, setIsVisible] = useState(false);;
 
     const toggleVisibility = () => setIsVisible(!isVisible);
@@ -78,6 +82,12 @@ const SignIn = () => {
 
       signin(username, password);
     }
+
+    if(user)
+      return (
+      <PageNotFound/>
+    )
+    
     return (
         <div className="flex flex-row">
             <div className="contains-cmpSignInUp">
@@ -88,7 +98,7 @@ const SignIn = () => {
                 <p className="signUp-create-account-text" style={{}}>SIGN-IN</p>
                 <div className='contains-inputs'>
                     <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
-                        <Input maxLength="20" required isClearable type="email" variant="bordered"
+                        <Input required isClearable type="email" variant="bordered"
                         label="Username or email" size='lg'
                         onChange={(e) => {setUsername(e.target.value)}}
                         value={username}/>

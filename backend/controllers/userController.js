@@ -2,6 +2,13 @@ const userModel = require('../models/userModel')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid');
+var passwordValidator = require('password-validator');
+var schema = new passwordValidator();
+schema
+.is().min(7)                                    // Minimum length 8
+.has().uppercase()                              // Must have uppercase letters
+.has().lowercase()                              // Must have lowercase letters
+.has().digits(2)                                // Must have at least 2 digits
 
 const createToken = (_id) =>{
     return jwt.sign({_id}, process.env.SECRET, {expiresIn: '3d'})
@@ -16,10 +23,10 @@ const signin = async(req, res) =>{
         let signinValidator = req.body.username.split("");
         let isEmail = false;
         for (let i =0; i < signinValidator.length; i++) {
-        if(signinValidator[i] == '@'){
-            isEmail = true;
-            break;
-        }
+            if(signinValidator[i] == '@'){
+                isEmail = true;
+                break;
+            }
         }
         if(!isEmail) {
         check=await userModel.findOne({username: req.body.username});
@@ -59,6 +66,8 @@ const signup = async(req, res) =>{
         if(password !== confirmPassword){
             return res.status(400).json({error:"Parolele nu sunt identice"});
         }
+        if(!schema.validate(password))
+            return res.status(400).json({error: 'Parola trebuie sa aiba minim 7 caractere, cel putin o litera mare, o litera mica si 2 cifre!'})
         const existingUser = await userModel.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
         if(existingUser){
             return res.status(400).json({ error: 'Usernameul este deja folosit!' });
@@ -66,6 +75,8 @@ const signup = async(req, res) =>{
         const verfnvlg = username.toLowerCase();
         const cuvinteVulgare = ['pula', 'coae', 'coaie', 'cuaie', 'cacat', 'fut', 'prost', 'natia', 'matii', 'gay', 'futui', 'dracu'
         ,'pizd','cur','muie','sug','gaoz','tarf','curv','bagam','zdreant'];
+        if(!email.includes('@') && !email.includes('+') && !email.includes('%'))
+            return res.status(400).json({error:"Email invalid!"});
         for(let i = 0; i < cuvinteVulgare.length; i++){
           if(verfnvlg.includes(cuvinteVulgare[i])){
             return res.status(400).json({error: 'Numele nu poate sa contina cuvinte vulgare!'});
