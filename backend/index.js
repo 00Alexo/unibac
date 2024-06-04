@@ -9,7 +9,6 @@ const app = express();
 
 app.use((req, res, next) => {
   const allowedOrigin = process.env.ALLOWED_ORIGIN;
-  console.log(allowedOrigin);
   res.setHeader("Access-Control-Allow-Origin", `${allowedOrigin}`);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, username");

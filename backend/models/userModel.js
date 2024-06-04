@@ -5,6 +5,10 @@ const LogInSchema = new mongoose.Schema({
       type: String,
       required: true,
       unique: true,
+    },
+    displayName:{
+      type: String,
+      required: true,
     }, 
     password: {
       type: String,
@@ -30,6 +34,14 @@ const LogInSchema = new mongoose.Schema({
     judet: {
       type: String,
       required: true
+    },
+    background:{
+      type: String,
+      required: false
+    },
+    avatar:{
+      type: String,
+      required: false
     }
     /*tags:{
       type: Array,
@@ -42,10 +54,6 @@ const LogInSchema = new mongoose.Schema({
     friends:{
       type: Array,
       required: true
-    },
-    profilePhoto:{
-      type: String, 
-      reuired: false
     },
     emails:{
       type: Array,

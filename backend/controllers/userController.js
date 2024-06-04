@@ -102,6 +102,8 @@ const signup = async(req, res) =>{
         const timestamp = date.toLocaleString('ro-RO', { hour12: false });
 
         const data = {
+            background: 'https://i.imgur.com/wJtaWP8.jpeg',
+            avatar: '',
             username: username,
             password: hashedPassword,
             userIp: userIp,
@@ -109,6 +111,7 @@ const signup = async(req, res) =>{
             statut: statut,
             judet: judet,
             admin: 0,
+            displayName: username,
         }
         const user = await userModel.create(data);
         const token = createToken(user._id)
@@ -116,7 +119,7 @@ const signup = async(req, res) =>{
         res.status(200).json({username:data.username, token});
     }catch(error){
         console.error(error.message);
-        res.status(500).json(error.message);
+        res.status(400).json(error.message);
     }
 }
 
@@ -150,8 +153,24 @@ const verifyUserAuthData = async (req, res) => {
     }
   };
 
+const getUserProfile = async (req, res) =>{
+    try{
+        const {username} = req.params;
+        const user = await userModel.findOne({username: username}).select(`-password -userIp `)
+        console.log(user);
+        if(!user){
+            return res.status(404).json({ error: 'Acest utilizator nu exista!' });
+        }
+        console.log(user);
+        res.status(200).json(user);
+    }catch(error){
+        res.status(400).json(error.message);
+    }
+}
+ 
 module.exports={
     signin,
     signup,
-    verifyUserAuthData
+    verifyUserAuthData,
+    getUserProfile
 }

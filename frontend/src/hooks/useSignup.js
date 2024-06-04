@@ -11,6 +11,10 @@ export const useSignup = () =>{
     const signup = async (username, email, password, confirmPassword, statut, judet) =>{
         setIsLoading(true);
         setError(null);
+        if(statut === '$.0')
+            statut = 'Elev';
+        else if (statut === '$.1')
+            statut = 'Profesor';
 
         const response = await fetch(`${process.env.REACT_APP_API}/api/user/signup`, {
             method: 'POST',

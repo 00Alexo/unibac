@@ -129,7 +129,6 @@ const SignUp = () => {
 
     const handleSignUpSubmit = async (e) =>{
         e.preventDefault()
-        
         await signup(username, email, password, confirmPassword, statut, judet);
     }
 
@@ -198,10 +197,10 @@ const SignUp = () => {
                                 onChange={(e) => { setStatut(e.target.value); console.log(e.target.value)}}
                                 value={statut}
                             >
-                                <SelectItem value = "elev">
+                                <SelectItem value = "Elev">
                                     Elev
                                 </SelectItem>
-                                <SelectItem value = "profesor">
+                                <SelectItem value = "Profesor">
                                     Profesor
                                 </SelectItem>
                             </Select>

@@ -1,10 +1,41 @@
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import {Navbar, Input, NavbarBrand, NavbarContent, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
-NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button, Avatar} from "@nextui-org/react";
+import {Navbar, Input, NavbarBrand, NavbarContent, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Switch,
+NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button, Avatar, cn, DropdownSection} from "@nextui-org/react";
 //import logo_unibac from '../assets/logo_unibac.png';
 import { useLogout } from '../hooks/useLogout';
 import { useAuthContext } from '../hooks/useAuthContext';
+
+import React from "react";
+export const DeleteDocumentIcon = (props) => (
+  <svg
+    aria-hidden="true"
+    fill="none"
+    focusable="false"
+    height="1em"
+    role="presentation"
+    viewBox="0 0 24 24"
+    width="1em"
+    {...props}
+  >
+    <path
+      d="M21.07 5.23c-1.61-.16-3.22-.28-4.84-.37v-.01l-.22-1.3c-.15-.92-.37-2.3-2.71-2.3h-2.62c-2.33 0-2.55 1.32-2.71 2.29l-.21 1.28c-.93.06-1.86.12-2.79.21l-2.04.2c-.42.04-.72.41-.68.82.04.41.4.71.82.67l2.04-.2c5.24-.52 10.52-.32 15.82.21h.08c.38 0 .71-.29.75-.68a.766.766 0 0 0-.69-.82Z"
+      fill="currentColor"
+    />
+    <path
+      d="M19.23 8.14c-.24-.25-.57-.39-.91-.39H5.68c-.34 0-.68.14-.91.39-.23.25-.36.59-.34.94l.62 10.26c.11 1.52.25 3.42 3.74 3.42h6.42c3.49 0 3.63-1.89 3.74-3.42l.62-10.25c.02-.36-.11-.7-.34-.95Z"
+      fill="currentColor"
+      opacity={0.399}
+    />
+    <path
+      clipRule="evenodd"
+      d="M9.58 17a.75.75 0 0 1 .75-.75h3.33a.75.75 0 0 1 0 1.5h-3.33a.75.75 0 0 1-.75-.75ZM8.75 13a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75Z"
+      fill="currentColor"
+      fillRule="evenodd"
+    />
+  </svg>
+);
+
 
 export const SearchIcon = (props) => (
   <svg
@@ -34,7 +65,44 @@ export const SearchIcon = (props) => (
   </svg>
 );
 
+
+export const MoonIcon = (props) => (
+  <svg
+    aria-hidden="true"
+    focusable="false"
+    height="1em"
+    role="presentation"
+    viewBox="0 0 24 24"
+    width="1em"
+    {...props}
+  >
+    <path
+      d="M21.53 15.93c-.16-.27-.61-.69-1.73-.49a8.46 8.46 0 01-1.88.13 8.409 8.409 0 01-5.91-2.82 8.068 8.068 0 01-1.44-8.66c.44-1.01.13-1.54-.09-1.76s-.77-.55-1.83-.11a10.318 10.318 0 00-6.32 10.21 10.475 10.475 0 007.04 8.99 10 10 0 002.89.55c.16.01.32.02.48.02a10.5 10.5 0 008.47-4.27c.67-.93.49-1.519.32-1.79z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
+export const SunIcon = (props) => (
+  <svg
+    aria-hidden="true"
+    focusable="false"
+    height="1em"
+    role="presentation"
+    viewBox="0 0 24 24"
+    width="1em"
+    {...props}
+  >
+    <g fill="currentColor">
+      <path d="M19 12a7 7 0 11-7-7 7 7 0 017 7z" />
+      <path d="M12 22.96a.969.969 0 01-1-.96v-.08a1 1 0 012 0 1.038 1.038 0 01-1 1.04zm7.14-2.82a1.024 1.024 0 01-.71-.29l-.13-.13a1 1 0 011.41-1.41l.13.13a1 1 0 010 1.41.984.984 0 01-.7.29zm-14.28 0a1.024 1.024 0 01-.71-.29 1 1 0 010-1.41l.13-.13a1 1 0 011.41 1.41l-.13.13a1 1 0 01-.7.29zM22 13h-.08a1 1 0 010-2 1.038 1.038 0 011.04 1 .969.969 0 01-.96 1zM2.08 13H2a1 1 0 010-2 1.038 1.038 0 011.04 1 .969.969 0 01-.96 1zm16.93-7.01a1.024 1.024 0 01-.71-.29 1 1 0 010-1.41l.13-.13a1 1 0 011.41 1.41l-.13.13a.984.984 0 01-.7.29zm-14.02 0a1.024 1.024 0 01-.71-.29l-.13-.14a1 1 0 011.41-1.41l.13.13a1 1 0 010 1.41.97.97 0 01-.7.3zM12 3.04a.969.969 0 01-1-.96V2a1 1 0 012 0 1.038 1.038 0 01-1 1.04z" />
+    </g>
+  </svg>
+);
+
 const NavBar = () => {
+    const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
+    
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -120,6 +188,7 @@ const {user} = useAuthContext();
         itemClasses={{
           base: "gap-4",
         }}>
+        <DropdownSection showDivider title="Elevi"> 
         <DropdownItem
           onClick={() => navigate('/articole/informatica')}
           key="Informatica"
@@ -174,6 +243,15 @@ const {user} = useAuthContext();
         >
           Psihologie
         </DropdownItem>
+        </DropdownSection>
+        <DropdownSection  title="Profesori">
+          <DropdownItem
+            onClick={() => navigate('/articole/Posteaza un articol')}
+            key="Posteaza"
+          >
+            Posteaza un articol
+          </DropdownItem>
+        </DropdownSection>
       </DropdownMenu>
         </Dropdown>
         <Dropdown>
@@ -230,17 +308,19 @@ const {user} = useAuthContext();
                 name = {user.username}
                 as="button"
                 className="transition-transform"
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                src={user.avatar}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="settings">
-                Profil
-              </DropdownItem>
-              <DropdownItem key="settings">
-                Setari
-              </DropdownItem>
-              <DropdownItem key="logout" color="danger" onClick={handleLogoutClick}>
+              <DropdownSection showDivider>
+                <DropdownItem key="settings" onClick={() => navigate(`/profile/${user.username}`)}>
+                  Profil
+                </DropdownItem>
+                <DropdownItem key="settings" onClick={() => navigate(`/profile/${user.username}/setari`)}>
+                  Setari
+                </DropdownItem>
+              </DropdownSection>
+              <DropdownItem key="logout" color="danger" className="text-danger" onClick={handleLogoutClick}>
                 Log Out
               </DropdownItem>
             </DropdownMenu>
