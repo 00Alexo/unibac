@@ -115,6 +115,11 @@ const signup = async(req, res) =>{
             followers: [],
             following: [],
             friends: [],
+            notifications:{
+                unread: 0,
+                read: 0,
+                notifications: []
+            }
         }
         const user = await userModel.create(data);
         const token = createToken(user._id)

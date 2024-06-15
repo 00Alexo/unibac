@@ -26,6 +26,9 @@ export const useSignup = () =>{
         if(!response.ok){
             setIsLoading(false);
             setError(json.error);
+            setTimeout(()=>{
+                setError(null);
+            }, 7000)
         }
 
         if(response.ok){

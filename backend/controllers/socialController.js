@@ -1,5 +1,8 @@
 const userModel = require('../models/userModel')
 const { v4: uuidv4 } = require('uuid');
+const {
+    createNotification
+} = require('../controllers/notificationController')
 
 const followUser = async (req, res)=>{
     try{
@@ -26,6 +29,7 @@ const followUser = async (req, res)=>{
         const userToBeFollowed = await userModel.findOneAndUpdate({username: toBeFollowed.toLowerCase()}, updatedFollowers, {new:true}).select('followers');
         const userFollower = await userModel.findOneAndUpdate({username: follower.toLowerCase()}, updatedFollowing, {new:true}).select('following');
 
+        createNotification(follower, toBeFollowed, 'newFollower');
         res.status(200).json({userToBeFollowed, userFollower});
     }catch(error){
         console.error(error.message);
@@ -58,6 +62,7 @@ const unfollowUser = async (req, res)=>{
         const userToBeUnfollowed = await userModel.findOneAndUpdate({username: toBeUnfollowed.toLowerCase()}, updatedFollowers, {new:true}).select('followers');
         const userUnfollower = await userModel.findOneAndUpdate({username: unfollower.toLowerCase()}, updatedFollowing, {new:true}).select('following');
 
+        createNotification(unfollower, toBeUnfollowed, 'newUnfollower');
         res.status(200).json({userToBeUnfollowed, userUnfollower});
     }catch(error){
         console.error(error.message);

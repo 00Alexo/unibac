@@ -1,9 +1,11 @@
 import {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Navbar, Input, NavbarBrand, NavbarContent, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Switch, Badge,
+Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure,
 NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button, Avatar, cn, DropdownSection} from "@nextui-org/react";
 //import logo_unibac from '../assets/logo_unibac.png';
 import { useLogout } from '../hooks/useLogout';
+import { useGetProfile } from '../hooks/useGetProfile';
 import { useAuthContext } from '../hooks/useAuthContext';
 
 import React from "react";
@@ -161,25 +163,29 @@ const handleLogoutClick = () =>{
 }
 
 const {user} = useAuthContext();
-const [avatar, setAvatar] = useState(null);
 
-useEffect(() => {
-  const getAvatar = async () =>{
-    const response = await fetch(`${process.env.REACT_APP_API}/api/user/getUserAvatar?username=${user.username}`)
-    const json = await response.json();
-  
-    if(!response.ok){
-      console.log(json.error);
-    }
-  
-    if(response.ok){
-      setAvatar(json.avatar);   
-    }
-  }
+const { viewUser: userData, error, isLoading, refetchProfile} = useGetProfile(user?.username)
+// const [avatar, setAvatar] = useState(null);
 
-  user &&
-  getAvatar();
-}, [user]);
+// useEffect(() => {
+//   const getAvatar = async () =>{
+//     const response = await fetch(`${process.env.REACT_APP_API}/api/user/getUserAvatar?username=${user.username}`)
+//     const json = await response.json();
+  
+//     if(!response.ok){
+//       console.log(json.error);
+//     }
+  
+//     if(response.ok){
+//       setAvatar(json.avatar);   
+//     }
+//   }
+
+//   user &&
+//   getAvatar();
+// }, [user]);
+
+const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   return (
     <Navbar maxWidth="full" onMenuOpenChange={setIsMenuOpen} className="dark text-foreground bg-background" isBordered
@@ -199,6 +205,106 @@ useEffect(() => {
         "data-[active=true]:after:bg-primary",
       ],
     }}>
+      <Modal style={{marginTop:'-1px'}}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        scrollBehavior='inside'
+        backdrop='opaque'
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Modal Title
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Magna exercitation reprehenderit magna aute tempor cupidatat
+                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
+                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
+                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
+                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
+                  eiusmod et. Culpa deserunt nostrud ad veniam.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                  Magna exercitation reprehenderit magna aute tempor cupidatat
+                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
+                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
+                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
+                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
+                  eiusmod et. Culpa deserunt nostrud ad veniam.
+                </p>
+                <p>
+                  Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit
+                  duis sit officia eiusmod Lorem aliqua enim laboris do dolor
+                  eiusmod. Et mollit incididunt nisi consectetur esse laborum
+                  eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt
+                  nostrud ad veniam. Lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit. Nullam pulvinar risus non risus hendrerit
+                  venenatis. Pellentesque sit amet hendrerit risus, sed
+                  porttitor quam. Magna exercitation reprehenderit magna aute
+                  tempor cupidatat consequat elit dolor adipisicing. Mollit
+                  dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit
+                  officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et
+                  mollit incididunt nisi consectetur esse laborum eiusmod
+                  pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad
+                  veniam.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Magna exercitation reprehenderit magna aute tempor cupidatat
+                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
+                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
+                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
+                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
+                  eiusmod et. Culpa deserunt nostrud ad veniam.
+                </p>
+                <p>
+                  Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit
+                  duis sit officia eiusmod Lorem aliqua enim laboris do dolor
+                  eiusmod. Et mollit incididunt nisi consectetur esse laborum
+                  eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt
+                  nostrud ad veniam. Lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit. Nullam pulvinar risus non risus hendrerit
+                  venenatis. Pellentesque sit amet hendrerit risus, sed
+                  porttitor quam. Magna exercitation reprehenderit magna aute
+                  tempor cupidatat consequat elit dolor adipisicing. Mollit
+                  dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit
+                  officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et
+                  mollit incididunt nisi consectetur esse laborum eiusmod
+                  pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad
+                  veniam.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Mark all as read
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -338,15 +444,15 @@ useEffect(() => {
           type="search"
         />
         {user &&
-        <NavbarItem>
-          <Badge /*content="99+" shape="circle" color="danger"*/>
+        <NavbarItem >
+          <Badge content={`${userData?.notifications.unread}`} shape="circle" color="danger">
             <Button
+              onClick={onOpen}
               radius="full"
               isIconOnly
-              aria-label="more than 99 notifications"
               variant="light"
             >
-              <NotificationIcon size={24} />
+              <NotificationIcon size={30} />
             </Button>
           </Badge>  
         </NavbarItem>}
@@ -361,7 +467,7 @@ useEffect(() => {
                 name = {user.username}
                 as="button"
                 className="transition-transform"
-                src={avatar}
+                src={userData?.avatar}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">

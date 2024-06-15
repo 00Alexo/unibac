@@ -6,9 +6,11 @@ import { format } from 'date-fns';
 import {Avatar} from "@nextui-org/react";
 import {Button} from "@nextui-org/react";
 import { useAuthContext } from '../hooks/useAuthContext';
+import {Error, NotificationBox} from '../components/alertBox';
 
 
 const ViewProfile = () => {
+    const [notification, setNotification] = useState(null);
     const {user} = useAuthContext();
     const{username} = useParams();
     const { viewUser: userProfile, error, isLoading, refetchProfile} = useGetProfile(username);
@@ -43,8 +45,13 @@ const ViewProfile = () => {
         }
         
         if(response.ok){
+            setNotification(null);
             console.log(json);  
             refetchProfile();
+            setNotification(`I-ai dat follow cu succes lui ${userProfile.displayName}`);
+            setTimeout(() =>{
+                setNotification(null);
+            }, 7000)
         }
     }
 
@@ -63,12 +70,18 @@ const ViewProfile = () => {
         }
         
         if(response.ok){
+            setNotification(null);
             console.log(json);
             refetchProfile();
+            setNotification(`I-ai dat unfollow cu succes lui ${userProfile.displayName}`);
+            setTimeout(() =>{
+                setNotification(null);
+            }, 7000)
         }
     }
     return (
         <div>
+            {notification && <NotificationBox notification={notification}/>}
             <div className='contains-profile'>
                 <div className='contains-images'>
                     <div className='background-image'></div>
@@ -111,23 +124,15 @@ const ViewProfile = () => {
                             </p>                  
                         </div>
                         <div className='despartitor-butoane'></div>
-                        <div>
-                            <p>
-                                Friends
-                            </p>
-                            <p>
-                                {userProfile.friends.length}
-                            </p>                  
-                        </div>
-                        <div className='despartitor-butoane'></div>
                         {user && username && username === user.username ? (
                         <Button color='primary'> Edit profile</Button>
                         ) :(
                             <div style={{display:'flex', gap:'10px'}}>
                                 {user && userProfile && !userProfile.followers.includes(user.username) ? (
                                     <Button color='default' variant="ghost" onClick={handleFollow}> Follow</Button>
-                                    ) : 
+                                    ) : user && userProfile && userProfile.followers.includes(user.username) ? (
                                     <Button color='default' variant="ghost" onClick={handleUnfollow}> Unfollow</Button>
+                                    ) : <></>
                                 }
                                 <Button color='default' variant="ghost" className='min-w-unit-10'> 
                                     <svg fill="white" height="20px" width="20px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 

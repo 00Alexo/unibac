@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const requestIp = require('request-ip');
 const userRoutes = require('./routes/userRoutes');
 const socialRoutes = require('./routes/socialRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 const app = express();
 
 app.use((req, res, next) => {
@@ -29,7 +30,7 @@ app.use((req, res, next) =>{
  })
 app.use('/api/user', userRoutes)
 app.use('/api/social', socialRoutes)
-
+app.use('/api/notifications', notificationRoutes)
 
 mongoose.connect(process.env.mongoDB)
     .then(() => {

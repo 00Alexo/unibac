@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom'
 import { useSignin } from "../hooks/useSignin";
 import { useAuthContext } from '../hooks/useAuthContext'
 import PageNotFound from '../pages/404.js'
+import { Error } from "../components/alertBox.js";
 
 export const EyeSlashFilledIcon = (props) => (
     <svg
@@ -90,9 +91,9 @@ const SignIn = () => {
     
     return (
         <div className="flex flex-row">
+            {error && <Error error={error}/>}
             <div className="contains-cmpSignInUp">
                 <CmpSignInUp/>
-                {error && <div>{error}</div>}
             </div>
             <form className="contains-SignUp">
                 <p className="signUp-create-account-text" style={{}}>SIGN-IN</p>

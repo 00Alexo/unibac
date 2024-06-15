@@ -55,6 +55,10 @@ const LogInSchema = new mongoose.Schema({
       type: Array,
       required: true
     },
+    notifications:{
+      type: Object,
+      required: true
+    }
     /*tags:{
       type: Array,
       required: true
@@ -64,10 +68,6 @@ const LogInSchema = new mongoose.Schema({
       required: true
     },
     friends:{
-      type: Array,
-      required: true
-    },
-    emails:{
       type: Array,
       required: true
     },

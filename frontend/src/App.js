@@ -6,6 +6,7 @@ import SignIn from './pages/SignIn.js';
 import SignUp from './pages/SignUp.js';
 import './css/signInUp.css'
 import './css/viewProfile.css'
+import './css/alerts.css'
 import {useState, useEffect} from 'react'
 import { useLogout } from './hooks/useLogout'
 import { useAuthContext } from './hooks/useAuthContext'
