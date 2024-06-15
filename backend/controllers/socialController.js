@@ -61,8 +61,7 @@ const unfollowUser = async (req, res)=>{
 
         const userToBeUnfollowed = await userModel.findOneAndUpdate({username: toBeUnfollowed.toLowerCase()}, updatedFollowers, {new:true}).select('followers');
         const userUnfollower = await userModel.findOneAndUpdate({username: unfollower.toLowerCase()}, updatedFollowing, {new:true}).select('following');
-
-        createNotification(unfollower, toBeUnfollowed, 'newUnfollower');
+;
         res.status(200).json({userToBeUnfollowed, userUnfollower});
     }catch(error){
         console.error(error.message);

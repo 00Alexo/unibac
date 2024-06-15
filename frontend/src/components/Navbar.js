@@ -9,6 +9,7 @@ import { useGetProfile } from '../hooks/useGetProfile';
 import { useAuthContext } from '../hooks/useAuthContext';
 
 import React from "react";
+import { NotificationBox } from './alertBox';
 
 export const NotificationIcon = ({size, height, width, ...props}) => {
   return (
@@ -165,27 +166,34 @@ const handleLogoutClick = () =>{
 const {user} = useAuthContext();
 
 const { viewUser: userData, error, isLoading, refetchProfile} = useGetProfile(user?.username)
-// const [avatar, setAvatar] = useState(null);
-
-// useEffect(() => {
-//   const getAvatar = async () =>{
-//     const response = await fetch(`${process.env.REACT_APP_API}/api/user/getUserAvatar?username=${user.username}`)
-//     const json = await response.json();
-  
-//     if(!response.ok){
-//       console.log(json.error);
-//     }
-  
-//     if(response.ok){
-//       setAvatar(json.avatar);   
-//     }
-//   }
-
-//   user &&
-//   getAvatar();
-// }, [user]);
 
 const {isOpen, onOpen, onOpenChange} = useDisclosure();
+const [notification, setNotification] = useState(null);
+  
+const handleFollow = async (follower, toBeFollowed) =>{
+  const response = await fetch(`${process.env.REACT_APP_API}/api/social/followUser`,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({toBeFollowed: toBeFollowed, follower: follower})
+  })
+  const json = await response.json();
+  
+  if(!response.ok){
+      console.log(json.error);
+  }
+  
+  if(response.ok){
+      setNotification(null);
+      console.log(json);  
+      refetchProfile();
+      setNotification(`I-ai dat follow cu succes lui ${toBeFollowed}`);
+      setTimeout(() =>{
+          setNotification(null);
+      }, 7000)
+  }
+}
 
   return (
     <Navbar maxWidth="full" onMenuOpenChange={setIsMenuOpen} className="dark text-foreground bg-background" isBordered
@@ -205,8 +213,10 @@ const {isOpen, onOpen, onOpenChange} = useDisclosure();
         "data-[active=true]:after:bg-primary",
       ],
     }}>
+      {notification && <NotificationBox notification={notification}/>}
       <Modal style={{marginTop:'-1px'}}
         isOpen={isOpen}
+        size='lg'
         onOpenChange={onOpenChange}
         scrollBehavior='inside'
         backdrop='opaque'
@@ -215,83 +225,37 @@ const {isOpen, onOpen, onOpenChange} = useDisclosure();
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Modal Title
+                Notifications
               </ModalHeader>
               <ModalBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-                <p>
-                  Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit
-                  duis sit officia eiusmod Lorem aliqua enim laboris do dolor
-                  eiusmod. Et mollit incididunt nisi consectetur esse laborum
-                  eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt
-                  nostrud ad veniam. Lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit. Nullam pulvinar risus non risus hendrerit
-                  venenatis. Pellentesque sit amet hendrerit risus, sed
-                  porttitor quam. Magna exercitation reprehenderit magna aute
-                  tempor cupidatat consequat elit dolor adipisicing. Mollit
-                  dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit
-                  officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et
-                  mollit incididunt nisi consectetur esse laborum eiusmod
-                  pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad
-                  veniam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-                <p>
-                  Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit
-                  duis sit officia eiusmod Lorem aliqua enim laboris do dolor
-                  eiusmod. Et mollit incididunt nisi consectetur esse laborum
-                  eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt
-                  nostrud ad veniam. Lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit. Nullam pulvinar risus non risus hendrerit
-                  venenatis. Pellentesque sit amet hendrerit risus, sed
-                  porttitor quam. Magna exercitation reprehenderit magna aute
-                  tempor cupidatat consequat elit dolor adipisicing. Mollit
-                  dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit
-                  officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et
-                  mollit incididunt nisi consectetur esse laborum eiusmod
-                  pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad
-                  veniam.
-                </p>
+                {userData?.notifications.notifications.slice().reverse().map((notification) =>{
+                  return (
+                    <div>
+                      {notification.type == 'newFollower' &&
+                        <div className="flex items-center gap-4">
+                          <Avatar 
+                            size="md"
+                            name = {notification.sender.charAt(0).toUpperCase()}
+                            src={notification.avatar.avatar}
+                          />
+                          <p><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
+                          onClick={() => {navigate(`/profile/${notification.sender}`); onClose()}}>
+                          {notification.sender}</span> a inceput sa te urmareasca!</p>
+                          {!userData.following.includes(notification.sender) && (
+                            <Button color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender)}> 
+                              Follow
+                            </Button>
+                          )}
+                          {userData.following.includes(notification.sender) && (
+                            <Button color='default' variant="ghost" isDisabled> 
+                              Following
+                            </Button>
+                          )}
+                        </div>
+                      }
+                    </div>
+                  )
+                })}
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
@@ -445,7 +409,7 @@ const {isOpen, onOpen, onOpenChange} = useDisclosure();
         />
         {user &&
         <NavbarItem >
-          <Badge content={`${userData?.notifications.unread}`} shape="circle" color="danger">
+          <Badge content={userData?.notifications.unread > 0 && `${userData?.notifications.unread}`} shape="circle" color="danger">
             <Button
               onClick={onOpen}
               radius="full"
@@ -464,7 +428,7 @@ const {isOpen, onOpen, onOpenChange} = useDisclosure();
                 isBordered
                 color = "primary"
                 showFallback
-                name = {user.username}
+                name = {user.username.charAt(0).toUpperCase()}
                 as="button"
                 className="transition-transform"
                 src={userData?.avatar}

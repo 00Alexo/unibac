@@ -3,10 +3,14 @@ const { v4: uuidv4 } = require('uuid');
 
 const createNotification = async (sender, receiver, type) =>{
     try{
+
+        const avatar = await userModel.findOne({username: sender}).select('avatar')
         const newNotification = {
             sender: sender,
+            avatar: avatar,
             type: type,
-            receiver: receiver
+            receiver: receiver,
+            status: 'unread'
         }
 
         const user = await userModel.findOneAndUpdate(
