@@ -28,5 +28,9 @@ export const useGetProfile = (username) =>{
         }
     }, [username]);
 
-    return {viewUser, isLoading, error}
+    const refetchProfile = () => {
+        getProfile();
+    };
+
+    return {viewUser, isLoading, error, refetchProfile}
 }

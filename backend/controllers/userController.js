@@ -29,7 +29,7 @@ const signin = async(req, res) =>{
             }
         }
         if(!isEmail) {
-        check=await userModel.findOne({username: req.body.username});
+        check=await userModel.findOne({username: req.body.username.toLowerCase()});
         }else{
         check=await userModel.findOne({email: req.body.username});
         }
@@ -104,7 +104,7 @@ const signup = async(req, res) =>{
         const data = {
             background: 'https://i.imgur.com/wJtaWP8.jpeg',
             avatar: '',
-            username: username,
+            username: username.toLowerCase(),
             password: hashedPassword,
             userIp: userIp,
             email: email,
@@ -112,6 +112,9 @@ const signup = async(req, res) =>{
             judet: judet,
             admin: 0,
             displayName: username,
+            followers: [],
+            following: [],
+            friends: [],
         }
         const user = await userModel.create(data);
         const token = createToken(user._id)
@@ -130,7 +133,7 @@ const verifyUserAuthData = async (req, res) => {
       return res.status(200).json({ mssg: "Not logged in" });
     }
   
-    const user = await userModel.findOne({ username }).select('_id');
+    const user = await userModel.findOne({ username:username.toLowerCase() }).select('_id');
     console.log("userFAKE", user);
   
     const token = authorization.split(' ')[1];
@@ -156,7 +159,7 @@ const verifyUserAuthData = async (req, res) => {
 const getUserProfile = async (req, res) =>{
     try{
         const {username} = req.params;
-        const user = await userModel.findOne({username: username}).select(`-password -userIp `)
+        const user = await userModel.findOne({username: username.toLowerCase()}).select(`-password -userIp `)
         console.log(user);
         if(!user){
             return res.status(404).json({ error: 'Acest utilizator nu exista!' });
@@ -167,10 +170,25 @@ const getUserProfile = async (req, res) =>{
         res.status(400).json(error.message);
     }
 }
+
+const getUserAvatar = async(req, res)=>{
+    try{
+        const {username} = req.query;
+        const avatar = await userModel.findOne({username: username.toLowerCase()}).select('avatar');
+        if(!avatar){
+            return res.status(404).json({error: 'Acest utilizator nu exista!'});
+        }
+        res.status(200).json(avatar);
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
  
 module.exports={
     signin,
     signup,
     verifyUserAuthData,
-    getUserProfile
+    getUserProfile,
+    getUserAvatar
 }

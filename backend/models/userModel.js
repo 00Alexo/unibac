@@ -37,12 +37,24 @@ const LogInSchema = new mongoose.Schema({
     },
     background:{
       type: String,
-      required: false
+      required: true
     },
     avatar:{
       type: String,
       required: false
-    }
+    },
+    followers:{
+      type: Array,
+      required: true
+    },
+    following:{
+      type: Array,
+      required: true
+    },
+    friends:{
+      type: Array,
+      required: true
+    },
     /*tags:{
       type: Array,
       required: true

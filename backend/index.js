@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const requestIp = require('request-ip');
-const userRoutes = require('./routes/userRoutes')
+const userRoutes = require('./routes/userRoutes');
+const socialRoutes = require('./routes/socialRoutes');
 const app = express();
 
 app.use((req, res, next) => {
@@ -27,6 +28,8 @@ app.use((req, res, next) =>{
     next();
  })
 app.use('/api/user', userRoutes)
+app.use('/api/social', socialRoutes)
+
 
 mongoose.connect(process.env.mongoDB)
     .then(() => {
