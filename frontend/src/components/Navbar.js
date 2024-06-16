@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Navbar, Input, NavbarBrand, NavbarContent, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Switch, Badge,
-Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure,
+Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tabs, Tab, Card, CardBody, Tooltip,
 NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button, Avatar, cn, DropdownSection} from "@nextui-org/react";
 //import logo_unibac from '../assets/logo_unibac.png';
 import { useLogout } from '../hooks/useLogout';
@@ -169,8 +169,37 @@ const { viewUser: userData, error, isLoading, refetchProfile} = useGetProfile(us
 
 const {isOpen, onOpen, onOpenChange} = useDisclosure();
 const [notification, setNotification] = useState(null);
+const [notification2, setNotification2] = useState(null);
+
+const markOneAsRead = async (user, id, action) =>{
+  const response = await fetch(`${process.env.REACT_APP_API}/api/notifications/markOneAsRead`,{
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({username: user, id: id})
+  })
+
+  const json = await response.json();
+
+  if(!response.ok){
+    console.log(json.error);
+  }
   
-const handleFollow = async (follower, toBeFollowed) =>{
+  if(response.ok){
+    refetchProfile();
+    if(action){
+      setNotification(null);
+      setNotification(`Ai marcat mesajul ca si citit!`);
+      setTimeout(() =>{
+          setNotification(null);
+      }, 7000)
+    }
+  }
+
+}
+
+const handleFollow = async (follower, toBeFollowed, id) =>{
   const response = await fetch(`${process.env.REACT_APP_API}/api/social/followUser`,{
       method: 'POST',
       headers: {
@@ -187,11 +216,37 @@ const handleFollow = async (follower, toBeFollowed) =>{
   if(response.ok){
       setNotification(null);
       console.log(json);  
-      refetchProfile();
+      markOneAsRead(follower, id, 0);
       setNotification(`I-ai dat follow cu succes lui ${toBeFollowed}`);
       setTimeout(() =>{
           setNotification(null);
       }, 7000)
+  }
+}
+
+
+const markAllAsRead = async () =>{
+  const response = await fetch(`${process.env.REACT_APP_API}/api/notifications/markAllAsRead`,{
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({username: user.username})
+  })
+
+  const json = await response.json();
+
+  if(!response.ok){
+    console.log(json.error);
+  }
+  
+  if(response.ok){
+    setNotification(null);
+    refetchProfile();
+    setNotification2(`Ai marcat toate mesajele ca si citite!`);
+    setTimeout(() =>{
+        setNotification2(null);
+    }, 7000)
   }
 }
 
@@ -213,14 +268,16 @@ const handleFollow = async (follower, toBeFollowed) =>{
         "data-[active=true]:after:bg-primary",
       ],
     }}>
-      {notification && <NotificationBox notification={notification}/>}
+      {notification2 && <NotificationBox notification={notification2}/>}
       <Modal style={{marginTop:'-1px'}}
         isOpen={isOpen}
-        size='lg'
+        size='xl'
         onOpenChange={onOpenChange}
         scrollBehavior='inside'
         backdrop='opaque'
+        placement='center'
       >
+        {notification && <NotificationBox notification={notification}/>}
         <ModalContent>
           {(onClose) => (
             <>
@@ -228,21 +285,35 @@ const handleFollow = async (follower, toBeFollowed) =>{
                 Notifications
               </ModalHeader>
               <ModalBody>
-                {userData?.notifications.notifications.slice().reverse().map((notification) =>{
+                {userData?.notifications.notifications.length == 0 ? <p>No new notifications</p> : (
+                <Tabs aria-label="Options">
+                  <Tab key="All" title="All">
+                  {userData?.notifications.notifications.slice().reverse().map((notification) =>{
                   return (
-                    <div>
+                    <div style={{padding:'5px'}}>
                       {notification.type == 'newFollower' &&
-                        <div className="flex items-center gap-4">
-                          <Avatar 
-                            size="md"
-                            name = {notification.sender.charAt(0).toUpperCase()}
-                            src={notification.avatar.avatar}
-                          />
-                          <p><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
-                          onClick={() => {navigate(`/profile/${notification.sender}`); onClose()}}>
-                          {notification.sender}</span> a inceput sa te urmareasca!</p>
+                        <div className="flex items-center justify-between">
+                          <div className='flex flex-row gap-3 items-center'>
+                            <div>
+                              {notification.status === 'unread' &&
+                              <div style={{width:'10px', height:'10px', borderRadius:'50%', backgroundColor:'#0DA1D4', position:'absolute',
+                              zIndex:'999999', marginTop:'-3px', marginLeft:'-5px'}}></div>
+                              }
+
+                              <img src={notification?.avatar.avatar} className=" text-large avatar-image-profile" 
+                                style={{width:'40px', height:'40px', marginTop: '0px'}}
+                                onError={(e) => {
+                                e.target.src = `https://via.placeholder.com/150?text=${notification.sender.charAt(0).toUpperCase()}`;
+                                }}
+                              />
+                            </div>
+                            <p><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
+                            onClick={() => {navigate(`/profile/${notification.sender}`); onClose()}}>
+                            {notification.sender}</span> a inceput sa te urmareasca!</p>
+                          </div>
+                          <div className='flex gap-2'>
                           {!userData.following.includes(notification.sender) && (
-                            <Button color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender)}> 
+                            <Button color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender, notification.id)}> 
                               Follow
                             </Button>
                           )}
@@ -251,17 +322,77 @@ const handleFollow = async (follower, toBeFollowed) =>{
                               Following
                             </Button>
                           )}
+                          <Tooltip showArrow={true} placement = 'right' color='primary' content="Mark as unread">
+                            <Button className='min-w-unit-10 px-unit-2 gap-unit-2' style={{marginRight:'-10px'}}
+                            color='primary' variant="shadow" isDisabled={notification.status === 'read'}
+                            onClick={()=> markOneAsRead(user.username, notification.id, 1)}> 
+                              <p style={{fontSize:'1.2rem'}}>ℛ</p>
+                            </Button>
+                          </Tooltip>
+                          </div>
                         </div>
                       }
                     </div>
-                  )
-                })}
+                    )
+                  })} 
+                  </Tab>
+                  <Tab key="unread" title="Unread">
+                  {userData?.notifications.notifications.slice().reverse().map((notification) =>{
+                    return (
+                      <div style={{padding:'5px'}}>
+                        {notification.type == 'newFollower' && notification.status =='unread' &&
+                          <div className="flex items-center justify-between">
+                            <div className='flex flex-row gap-3 items-center'>
+                              <div>
+                                {notification.status === 'unread' &&
+                                <div style={{width:'10px', height:'10px', borderRadius:'50%', backgroundColor:'#0DA1D4', position:'absolute',
+                                zIndex:'999999', marginTop:'-3px', marginLeft:'-5px'}}></div>
+                                }
+
+                                <img src={notification?.avatar.avatar} className=" text-large avatar-image-profile" 
+                                  style={{width:'40px', height:'40px', marginTop: '0px'}}
+                                  onError={(e) => {
+                                  e.target.src = `https://via.placeholder.com/150?text=${notification.sender.charAt(0).toUpperCase()}`;
+                                  }}
+                                />
+                              </div>
+                              <p><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
+                              onClick={() => {navigate(`/profile/${notification.sender}`); onClose()}}>
+                              {notification.sender}</span> a inceput sa te urmareasca!</p>
+                            </div>
+                            <div className='flex gap-2'>
+                              {!userData.following.includes(notification.sender) && (
+                                <Button color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender, notification.id)}> 
+                                  Follow
+                                </Button>
+                              )}
+                              {userData.following.includes(notification.sender) && (
+                                <Button color='default' variant="ghost" isDisabled> 
+                                  Following
+                                </Button>
+                              )}
+                              <Tooltip showArrow={true} placement = 'right' color='primary' content="Mark as unread">
+                                <Button className='min-w-unit-10 px-unit-2 gap-unit-2' style={{marginRight:'-10px'}}
+                                color='primary' variant="shadow" isDisabled={notification.status === 'read'}
+                                onClick={()=> markOneAsRead(user.username, notification.id, 1)}> 
+                                  <p style={{fontSize:'1.2rem'}}>ℛ</p>
+                                </Button>
+                              </Tooltip>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                      )
+                    })} 
+                  </Tab>
+                </Tabs>
+                )}
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button color="primary" onPress={onClose} onClick={markAllAsRead} isDisabled = {!userData.notifications.unread}>
                   Mark all as read
                 </Button>
               </ModalFooter>

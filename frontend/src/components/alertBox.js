@@ -3,7 +3,7 @@ import {Snippet} from "@nextui-org/react";
 
 export const NotificationBox = ({notification}) => {
     return (
-    <Snippet variant="shadow" hideCopyButton hideSymbol style={{position:'fixed', right: 0, zIndex:'99999', margin:'15px', padding:'10px'}}>
+    <Snippet className="anim-snippet" variant="shadow" hideCopyButton hideSymbol style={{position:'fixed', right: 0, zIndex:'99999', margin:'15px', padding:'10px'}}>
         <div className='snippet-notification'>
         <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"> 
             <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/> <path class="checkmark__check" 
@@ -17,7 +17,7 @@ export const NotificationBox = ({notification}) => {
 
 export const Error = ({error}) => {
     return (
-    <Snippet variant="shadow" hideCopyButton hideSymbol style={{position:'fixed', right: 0, zIndex:'99999', margin:'15px', padding:'10px'}}>
+    <Snippet className="anim-snippet" variant="shadow" hideCopyButton hideSymbol style={{position:'fixed', right: 0, zIndex:'99999', margin:'15px', padding:'10px'}}>
         <div className='snippet-notification'>
         <svg class="crossmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
             <circle class="crossmark_circle" cx="26" cy="26" r="25" fill="none"/>

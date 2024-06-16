@@ -117,7 +117,6 @@ const signup = async(req, res) =>{
             friends: [],
             notifications:{
                 unread: 0,
-                read: 0,
                 notifications: []
             }
         }
