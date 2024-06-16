@@ -51,15 +51,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .profile-data-username-div-details{
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     flex-direction: row;
+    gap: 7px;
     p{
         font-size: 1rem;
     }
-    gap: 7px;
 }
 
 .distantator{
@@ -102,4 +106,81 @@
 
 .biuatua{
     width: 20px !important;
+}
+
+.contains-profile-phone{
+    display: none;
+}
+
+@media(max-width: 500px){
+    .contains-profile{
+        display: none;
+    }
+    .contains-profile-phone{
+        display: block;
+    }
+
+    .contains-images{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 100px;
+        justify-content: space-evenly;
+        align-items: center;
+        background-color: black;
+        padding: 20px;
+    }
+
+    .avatar-image-profile-phone{
+        z-index: 2;
+        height: 55px;
+        width: 55px;
+        border-radius: 50%;
+    }
+
+    .contains-profile-data-phone{
+        display: flex;
+        gap:10px;
+        flex-direction: column;
+    }
+
+    .contains-profile-data-followers-phone{
+        gap:25px;
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+@media (max-width:500px) {
+    .notificationsText{
+        font-size: 0.8rem;
+    }
+
+    .notificationsText span{
+        font-size: 1rem !important;
+    }
+
+    .notificationsImage{
+        width: 30px !important; 
+        height: 30px !important;
+    }
+
+    .notificationsBulinuta{
+        width: 7px !important;
+        height: 7px !important;
+    }
+
+    .buttonRead{
+        display: none !important;
+    }
+}
+
+
+.notificationsImage{
+    position: relative;
+    z-index: 2;
+    margin: 0 auto;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
 }

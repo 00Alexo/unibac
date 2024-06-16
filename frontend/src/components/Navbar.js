@@ -250,6 +250,24 @@ const markAllAsRead = async () =>{
   }
 }
 
+const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+useEffect(() => {
+  const checkScreenSize = () => {
+    setIsSmallScreen(window.innerWidth < 500);
+  };
+
+  checkScreenSize();
+
+  window.addEventListener('resize', checkScreenSize);
+
+  return () => {
+    window.removeEventListener('resize', checkScreenSize);
+  };
+
+}, []);
+console.log(isSmallScreen);
+
   return (
     <Navbar maxWidth="full" onMenuOpenChange={setIsMenuOpen} className="dark text-foreground bg-background" isBordered
     classNames={{
@@ -269,6 +287,7 @@ const markAllAsRead = async () =>{
       ],
     }}>
       {notification2 && <NotificationBox notification={notification2}/>}
+      
       <Modal style={{marginTop:'-1px'}}
         isOpen={isOpen}
         size='xl'
@@ -281,54 +300,57 @@ const markAllAsRead = async () =>{
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Notifications
+              <ModalHeader className={isSmallScreen ? 'px-3 flex flex-col gap-1' : 'px-6 flex flex-col gap-1'}>
+                Notificari
               </ModalHeader>
-              <ModalBody>
+              <ModalBody className={isSmallScreen ? 'px-3 !important' : 'px-6'}>
                 {userData?.notifications.notifications.length == 0 ? <p>No new notifications</p> : (
-                <Tabs aria-label="Options">
+                <Tabs aria-label="Options" size={isSmallScreen ? 'sm' : 'md'}>
                   <Tab key="All" title="All">
                   {userData?.notifications.notifications.slice().reverse().map((notification) =>{
                   return (
                     <div style={{padding:'5px'}}>
                       {notification.type == 'newFollower' &&
                         <div className="flex items-center justify-between">
-                          <div className='flex flex-row gap-3 items-center'>
+                          <div className='flex flex-row gap-3 items-center' style={{paddingRight:'10px'}}>
                             <div>
                               {notification.status === 'unread' &&
                               <div style={{width:'10px', height:'10px', borderRadius:'50%', backgroundColor:'#0DA1D4', position:'absolute',
-                              zIndex:'999999', marginTop:'-3px', marginLeft:'-5px'}}></div>
+                              zIndex:'999999', marginTop:'-3px', marginLeft:'-5px'}} className='notificationsBulinuta'></div>
                               }
 
-                              <img src={notification?.avatar.avatar} className=" text-large avatar-image-profile" 
-                                style={{width:'40px', height:'40px', marginTop: '0px'}}
+                              <img src={notification?.avatar.avatar} className=" text-large avatar-image-profile notificationsImage" 
                                 onError={(e) => {
                                 e.target.src = `https://via.placeholder.com/150?text=${notification.sender.charAt(0).toUpperCase()}`;
                                 }}
                               />
                             </div>
-                            <p><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
+                            <p className='notificationsText'><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
                             onClick={() => {navigate(`/profile/${notification.sender}`); onClose()}}>
                             {notification.sender}</span> a inceput sa te urmareasca!</p>
                           </div>
                           <div className='flex gap-2'>
                           {!userData.following.includes(notification.sender) && (
-                            <Button color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender, notification.id)}> 
+                            <Button size={isSmallScreen ? 'sm' : 'md'} style={isSmallScreen ? {marginRight:'-10px'} : {}}
+                            color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender, notification.id)}> 
                               Follow
                             </Button>
                           )}
                           {userData.following.includes(notification.sender) && (
-                            <Button color='default' variant="ghost" isDisabled> 
+                            <Button color='default' variant="ghost" isDisabled size={isSmallScreen ? 'sm' : 'md'}
+                            style={isSmallScreen ? {marginRight:'-10px'} : {}}> 
                               Following
                             </Button>
                           )}
+                          {!isSmallScreen &&
                           <Tooltip showArrow={true} placement = 'right' color='primary' content="Mark as unread">
                             <Button className='min-w-unit-10 px-unit-2 gap-unit-2' style={{marginRight:'-10px'}}
                             color='primary' variant="shadow" isDisabled={notification.status === 'read'}
-                            onClick={()=> markOneAsRead(user.username, notification.id, 1)}> 
+                            onClick={()=> markOneAsRead(user.username, notification.id, 1)} size={isSmallScreen ? 'sm' : 'md'}> 
                               <p style={{fontSize:'1.2rem'}}>ℛ</p>
                             </Button>
                           </Tooltip>
+                          }
                           </div>
                         </div>
                       }
@@ -346,31 +368,33 @@ const markAllAsRead = async () =>{
                               <div>
                                 {notification.status === 'unread' &&
                                 <div style={{width:'10px', height:'10px', borderRadius:'50%', backgroundColor:'#0DA1D4', position:'absolute',
-                                zIndex:'999999', marginTop:'-3px', marginLeft:'-5px'}}></div>
+                                zIndex:'999999', marginTop:'-3px', marginLeft:'-5px'}} className='notificationsBulinuta'></div>
                                 }
 
-                                <img src={notification?.avatar.avatar} className=" text-large avatar-image-profile" 
-                                  style={{width:'40px', height:'40px', marginTop: '0px'}}
+                                <img src={notification?.avatar.avatar} className=" text-large avatar-image-profile notificationsImage" 
                                   onError={(e) => {
                                   e.target.src = `https://via.placeholder.com/150?text=${notification.sender.charAt(0).toUpperCase()}`;
                                   }}
                                 />
                               </div>
-                              <p><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
+                              <p className='notificationsText'><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
                               onClick={() => {navigate(`/profile/${notification.sender}`); onClose()}}>
                               {notification.sender}</span> a inceput sa te urmareasca!</p>
                             </div>
                             <div className='flex gap-2'>
                               {!userData.following.includes(notification.sender) && (
-                                <Button color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender, notification.id)}> 
+                                <Button size={isSmallScreen ? 'sm' : 'md'} style={isSmallScreen ? {marginRight:'-10px'} : {}}
+                                color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender, notification.id)}> 
                                   Follow
                                 </Button>
                               )}
                               {userData.following.includes(notification.sender) && (
-                                <Button color='default' variant="ghost" isDisabled> 
+                                <Button color='default' variant="ghost" isDisabled size={isSmallScreen ? 'sm' : 'md'}
+                                style={isSmallScreen ? {marginRight:'-10px'} : {}}> 
                                   Following
                                 </Button>
                               )}
+                              {!isSmallScreen &&
                               <Tooltip showArrow={true} placement = 'right' color='primary' content="Mark as unread">
                                 <Button className='min-w-unit-10 px-unit-2 gap-unit-2' style={{marginRight:'-10px'}}
                                 color='primary' variant="shadow" isDisabled={notification.status === 'read'}
@@ -378,6 +402,7 @@ const markAllAsRead = async () =>{
                                   <p style={{fontSize:'1.2rem'}}>ℛ</p>
                                 </Button>
                               </Tooltip>
+                              }
                             </div>
                           </div>
                         }
@@ -388,11 +413,11 @@ const markAllAsRead = async () =>{
                 </Tabs>
                 )}
               </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+              <ModalFooter className={isSmallScreen ? 'px-3 !important' : 'px-6'}>
+                <Button color="danger" variant="light" onPress={onClose} size={isSmallScreen ? 'sm' : 'md'}>
                   Close
                 </Button>
-                <Button color="primary" onPress={onClose} onClick={markAllAsRead} isDisabled = {!userData.notifications.unread}>
+                <Button color="primary" onPress={onClose} onClick={markAllAsRead} isDisabled = {!userData.notifications.unread} size={isSmallScreen ? 'sm' : 'md'}>
                   Mark all as read
                 </Button>
               </ModalFooter>
