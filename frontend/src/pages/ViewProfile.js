@@ -156,7 +156,7 @@ const ViewProfile = () => {
             <div className='contains-profile-phone'>
                 <div className='contains-images'>
                     {/* <div className='onlinedot-phone' style={{backgroundColor:'green'}}></div> */}
-                    <div style={{position:'absolute', left: 0, top:'0px', zIndex:99, marginLeft:'60px', width:'40%', padding:'10px', marginTop:'5px',
+                    <div style={{position:'fixed', left: 0, top:'0px', zIndex:40, marginLeft:'60px', width:'40%', padding:'10px', marginTop:'5px',
                     backgroundColor:'black', cursor:'pointer'}} onClick={() => navigate('/home')}>
                         <p style={{fontSize:'1.3rem'}}>
                             @{userProfile.username.charAt(0).toUpperCase() + userProfile.username.slice(1)}

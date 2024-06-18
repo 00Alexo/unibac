@@ -126,7 +126,7 @@ const SignUp = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [statut, setStatut] = useState('');
     const [judet, setJudet] = useState('');
-    const {signup, error, isLoading} = useSignup();
+    const {signup, error, isLoading, errorFields} = useSignup();
 
     const handleSignUpSubmit = async (e) =>{
         e.preventDefault()
@@ -147,18 +147,21 @@ const SignUp = () => {
             <form className="contains-SignUp minhgh-signUp">
                 <p className="signUp-create-account-text" style={{}}>CREATE ACCOUNT</p>
                 <div className='contains-inputs contains-inputs-sgup'>
-                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
+                    <div className={errorFields?.includes('username') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                        'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
                         <Input maxLength="20" required isClearable type="username" variant="bordered"
-                        label="Username" size='md' 
+                        label="Username" size='md'
                         onChange={(e) => {setUsername(e.target.value)}}
                         value={username}/>
                     </div>
-                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
+                    <div className={errorFields?.includes('email') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                        'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
                         <Input minLength="7" required isClearable type="email" variant="bordered"label="Email" size='md'
                         onChange={(e) => { setEmail(e.target.value); console.log(email)}}
                         value={email}/>
                     </div>
-                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
+                    <div className={errorFields?.includes('pass') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                        'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
                         <Input required variant="bordered"label="Password" size='md'
                         endContent={
                         <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
@@ -173,7 +176,8 @@ const SignUp = () => {
                         onChange={(e) => { setPassword(e.target.value); console.log(password)}}
                         value={password}/>
                     </div>
-                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
+                    <div className={errorFields?.includes('cpass') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                        'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
                         <Input required variant="bordered"label="Confirm Password" size='md'
                         endContent={
                         <button className="focus:outline-none" type="button" onClick={toggleVisibilityConf}>
@@ -189,7 +193,7 @@ const SignUp = () => {
                         value={confirmPassword}/>
                     </div>
                     <div style={{width:'100%', display:'flex', justifyContent:'space-between'}}>
-                        <div style={{width:'48%'}}>
+                        <div style={{width:'48%'}} className={errorFields?.includes('statut') ? 'oSaAibaEroare' : ''}>
                             <Select required
                                 size='md'
                                 label="Statut" 
@@ -206,7 +210,7 @@ const SignUp = () => {
                                 </SelectItem>
                             </Select>
                         </div>
-                        <div style={{width:'48%'}}>
+                        <div style={{width:'48%'}} className={errorFields?.includes('statut') ? 'oSaAibaEroare' : ''}>
                             <Autocomplete required
                                 size='md'
                                 defaultItems={judete}

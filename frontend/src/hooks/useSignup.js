@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 export const useSignup = () =>{
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const [errorFields, setErrorFields] = useState(null);
     const [isLoading, setIsLoading] = useState(null);
     const {dispatch} = useAuthContext();
 
     const signup = async (username, email, password, confirmPassword, statut, judet) =>{
+        setErrorFields(null);
         setIsLoading(true);
         setError(null);
         if(statut === '$.0')
@@ -26,6 +28,7 @@ export const useSignup = () =>{
         if(!response.ok){
             setIsLoading(false);
             setError(json.error);
+            setErrorFields(json.errorFields);
             setTimeout(()=>{
                 setError(null);
             }, 7000)
@@ -36,8 +39,9 @@ export const useSignup = () =>{
             dispatch({type: 'LOGIN', payload: json});
             setIsLoading(false);
             navigate('/home', { state: { fromSignup: true } });
+            setErrorFields(null);
         }
     }
 
-    return {signup, isLoading, error}
+    return {signup, isLoading, error, errorFields}
 }

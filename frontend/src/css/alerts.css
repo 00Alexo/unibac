@@ -79,3 +79,13 @@
         transform: translateX(0%);
     }
 }
+
+@media (max-width: 768px) {
+    .anim-snippet{
+        font-size: 0.7rem;
+        p{
+            word-break: break-word; /* Rupe cuvintele lungi */
+            white-space: normal
+        }
+    }
+}

@@ -58,44 +58,68 @@ const signin = async(req, res) =>{
 const signup = async(req, res) =>{
     try{
         const saltRounds = 12, userIp = req.clientIp;
+        let errorFields = [];
         const email = req.body.email, username = req.body.username, password = req.body.password,
         confirmPassword = req.body.confirmPassword, statut = req.body.statut, judet = req.body.judet;
-        if(!email || !username || !password || !confirmPassword || !statut || !judet) 
-            return res.status(400).json({error: 'Toate campurile sunt obligatorii!'});
+        if(!email || !username || !password || !confirmPassword || !statut || !judet){ 
+            errorFields.push("username");
+            errorFields.push("email");
+            errorFields.push("pass");
+            errorFields.push("cpass");
+            errorFields.push("statut");
+            errorFields.push("judet");
+            return res.status(400).json({error: 'Toate campurile sunt obligatorii!', errorFields: errorFields});
+        }
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         if(password !== confirmPassword){
-            return res.status(400).json({error:"Parolele nu sunt identice"});
+            errorFields.push("pass");
+            errorFields.push("cpass");
+            return res.status(400).json({error:"Parolele nu sunt identice", errorFields: errorFields});
         }
-        if(!schema.validate(password))
-            return res.status(400).json({error: 'Parola trebuie sa aiba minim 7 caractere, cel putin o litera mare, o litera mica si 2 cifre!'})
+        if(!schema.validate(password)){
+            errorFields.push("pass");
+            return res.status(400).json({error: 'Parola trebuie sa aiba minim 7 caractere, o litera mare, mica si 2 cifre!', errorFields: errorFields})
+        }
         const existingUser = await userModel.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
         if(existingUser){
-            return res.status(400).json({ error: 'Usernameul este deja folosit!' });
+            errorFields.push("username");
+            return res.status(400).json({ error: 'Usernameul este deja folosit!', errorFields: errorFields});
         }
         const verfnvlg = username.toLowerCase();
-        const cuvinteVulgare = ['pula', 'coae', 'coaie', 'cuaie', 'cacat', 'fut', 'prost', 'natia', 'matii', 'gay', 'futui', 'dracu'
+        const cuvinteVulgare = ['pula', 'coae', 'coaie', 'cuaie', 'cacat', 'fut', 'prost', 'natia', 'matii', 'gay', 'futui', 'dracu', 'puta'
         ,'pizd','cur','muie','sug','gaoz','tarf','curv','bagam','zdreant'];
-        if(!email.includes('@') && !email.includes('+') && !email.includes('%'))
-            return res.status(400).json({error:"Email invalid!"});
+        if(!email.includes('@') && !email.includes('+') && !email.includes('%')){
+            errorFields.push("email");
+            return res.status(400).json({error:"Email invalid!", errorFields: errorFields});
+        }
         for(let i = 0; i < cuvinteVulgare.length; i++){
           if(verfnvlg.includes(cuvinteVulgare[i])){
-            return res.status(400).json({error: 'Numele nu poate sa contina cuvinte vulgare!'});
+            errorFields.push("username");
+            return res.status(400).json({error: 'Numele nu poate sa contina cuvinte vulgare!', errorFields: errorFields});
           }
         }
         if(verfnvlg.includes('admin') || verfnvlg.includes('moderator') || verfnvlg.includes('administrator')){
-            return res.status(400).json({error: 'Nume interzis!'});
+            errorFields.push("username");
+            return res.status(400).json({error: 'Nume interzis!', errorFields: errorFields});
         }
         if(verfnvlg.length>20){
-            return res.status(400).json({error: 'Numele poate sa aiba maxim 20 de caractere!'})
+            errorFields.push("username");
+            return res.status(400).json({error: 'Numele poate sa aiba maxim 20 de caractere!', errorFields: errorFields})
           }
-        if(verfnvlg.includes(' '))
-            return res.status(400).json({error: 'Numele nu poate sa contina spatii!'});
-        if(!/^[a-zA-Z0-9.]*$/.test(verfnvlg))
-            return res.status(400).json({error: 'Numele poate sa contina doar litere din alfabetul englez!'});
+        if(verfnvlg.includes(' ')){
+            errorFields.push("username");
+            return res.status(400).json({error: 'Numele nu poate sa contina spatii!', errorFields: errorFields});
+        }
+        if(!/^[a-zA-Z0-9.]*$/.test(verfnvlg)){
+            errorFields.push("username");
+            return res.status(400).json({error: 'Numele poate sa contina doar litere din alfabetul englez!', errorFields: errorFields});
+        }
         
         const existingEmail = await userModel.findOne({email})
-        if(existingEmail)
-            return res.status(400).json({error:'Emailul este deja folosit!'})
+        if(existingEmail){
+            errorFields.push("email");
+            return res.status(400).json({error:'Emailul este deja folosit!', errorFields: errorFields})
+        }
 
         const date = new Date();
 
