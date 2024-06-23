@@ -199,6 +199,7 @@ const ViewProfile = () => {
                     <ModalHeader className="flex flex-col gap-1 mx-auto">
                         Followers
                     </ModalHeader>
+                    {followers.length > 0 &&
                     <Input className='mx-auto mb-3'
                         classNames={{
                             base: "max-w-[90%] h-10",
@@ -211,7 +212,9 @@ const ViewProfile = () => {
                         startContent={<SearchIcon size={18} />}
                         type="search"
                     />
+                    }
                     <ModalBody>
+                    {followers.length > 0 ?
                     <div>
                         {followers?.map(follower =>{
                             return(
@@ -246,6 +249,7 @@ const ViewProfile = () => {
                             )
                         })}
                     </div>
+                    : <p style={{margin:'0 auto'}}> Acest utilizator nu urmareste pe nimeni.</p>}
                     </ModalBody>
                     <ModalFooter>
                         <Button color="danger" variant="light" onPress={onClose}>
@@ -268,6 +272,7 @@ const ViewProfile = () => {
                     <ModalHeader className="flex flex-col gap-1 mx-auto">
                         Following
                     </ModalHeader>
+                    {following.length > 0 &&
                     <Input className='mx-auto mb-3'
                         classNames={{
                             base: "max-w-[90%] h-10",
@@ -280,7 +285,9 @@ const ViewProfile = () => {
                         startContent={<SearchIcon size={18} />}
                         type="search"
                     />
+                    }
                     <ModalBody>
+                    {following.length > 0 ?
                     <div>
                         {following?.map(follower =>{
                             return(
@@ -315,6 +322,7 @@ const ViewProfile = () => {
                             )
                         })}
                     </div>
+                    : <p style={{margin:'0 auto'}}> Acest utilizator nu este urmarit de nimeni.</p>}
                     </ModalBody>
                     <ModalFooter>
                         <Button color="danger" variant="light" onPress={onClose2}>
