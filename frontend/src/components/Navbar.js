@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import {Navbar, Input, NavbarBrand, NavbarContent, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Switch, Badge,
 Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tabs, Tab, Card, CardBody, Tooltip,
 NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button, Avatar, cn, DropdownSection} from "@nextui-org/react";
-//import logo_unibac from '../assets/logo_unibac.png';
 import { useLogout } from '../hooks/useLogout';
 import { useGetProfile } from '../hooks/useGetProfile';
 import { useAuthContext } from '../hooks/useAuthContext';
-
 import React from "react";
 import { NotificationBox } from './alertBox';
 
@@ -309,7 +307,7 @@ console.log(isSmallScreen);
                   <Tab key="All" title="All">
                   {userData?.notifications.notifications.slice().reverse().map((notification) =>{
                   return (
-                    <div style={{padding:'5px'}}>
+                    <div style={{padding:'5px'}}> 
                       {notification.type == 'newFollower' &&
                         <div className="flex items-center justify-between">
                           <div className='flex flex-row gap-3 items-center' style={{paddingRight:'10px'}}>
@@ -330,15 +328,25 @@ console.log(isSmallScreen);
                             {notification.sender}</span> a inceput sa te urmareasca!</p>
                           </div>
                           <div className='flex gap-2'>
-                          {!userData.following.includes(notification.sender) && (
-                            <Button size={isSmallScreen ? 'sm' : 'md'} style={isSmallScreen ? {marginRight:'-10px'} : {}}
-                            color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender, notification.id)}> 
+                          {!userData.following.some(f => f.username === notification.sender) && (
+                            <Button 
+                              size={isSmallScreen ? 'sm' : 'md'} 
+                              style={isSmallScreen ? { marginRight: '-10px' } : {}}
+                              color='default' 
+                              variant="ghost" 
+                              onClick={() => handleFollow(user.username, notification.sender, notification.id)}
+                            > 
                               Follow
                             </Button>
                           )}
-                          {userData.following.includes(notification.sender) && (
-                            <Button color='default' variant="ghost" isDisabled size={isSmallScreen ? 'sm' : 'md'}
-                            style={isSmallScreen ? {marginRight:'-10px'} : {}}> 
+                          {userData.following.some(f => f.username === notification.sender) && (
+                            <Button 
+                              size={isSmallScreen ? 'sm' : 'md'} 
+                              style={isSmallScreen ? { marginRight: '-10px' } : {}}
+                              color='default' 
+                              variant="ghost" 
+                              isDisabled
+                            > 
                               Following
                             </Button>
                           )}

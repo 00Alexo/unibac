@@ -3,18 +3,50 @@ import {useParams, useNavigate} from 'react-router-dom';
 import { useGetProfile } from '../hooks/useGetProfile';
 import PageNotFound from './404';
 import { format } from 'date-fns';
-import {Avatar} from "@nextui-org/react";
-import {Button} from "@nextui-org/react";
+import {Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input} from "@nextui-org/react";
 import { useAuthContext } from '../hooks/useAuthContext';
 import {Error, NotificationBox} from '../components/alertBox';
 
+export const SearchIcon = (props) => (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height="1em"
+      role="presentation"
+      viewBox="0 0 24 24"
+      width="1em"
+      {...props}
+    >
+      <path
+        d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+      <path
+        d="M22 22L20 20"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+    </svg>
+  );
 
 const ViewProfile = () => {
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const {isOpen: isOpen2, onOpen: onOpen2, onOpenChange: onOpenChange2} = useDisclosure();
     const [notification, setNotification] = useState(null);
+    const [eroare, setErroare] = useState('')
+    const [followers, setFollowers] = useState(null);
+    const [following, setFollowing] = useState(null);
     const {user} = useAuthContext();
     const navigate = useNavigate();
     const{username} = useParams();
     const { viewUser: userProfile, error, isLoading, refetchProfile} = useGetProfile(username);
+    const { viewUser: userData, refetchProfile: refetchProfile2} = useGetProfile(user?.username);
 
     const joinedAt = userProfile && userProfile.createdAt
     ? format(new Date(userProfile.createdAt), 'dd.MM.yyyy')
@@ -42,7 +74,10 @@ const ViewProfile = () => {
         const json = await response.json();
         
         if(!response.ok){
-            console.log(json.error);
+            setErroare(json.error);
+            setTimeout(() =>{
+                setErroare(null);
+            }, 7000)
         }
         
         if(response.ok){
@@ -68,6 +103,10 @@ const ViewProfile = () => {
         
         if(!response.ok){
             console.log(json.error);
+            setErroare(json.error);
+            setTimeout(() =>{
+                setErroare(null);
+            }, 7000)
         }
         
         if(response.ok){
@@ -80,9 +119,212 @@ const ViewProfile = () => {
             }, 7000)
         }
     }
+
+
+    const handleFollow2 = async (follower, toBeFollowed) =>{
+        const response = await fetch(`${process.env.REACT_APP_API}/api/social/followUser`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({toBeFollowed: toBeFollowed, follower: follower})
+        })
+        const json = await response.json();
+        
+        if(!response.ok){
+            console.log(json.error);
+        }
+        
+        if(response.ok){
+            setNotification(null);
+            refetchProfile2();
+            setNotification(`I-ai dat follow cu succes lui ${toBeFollowed}`);
+            setTimeout(() =>{
+                setNotification(null);
+            }, 7000)
+        }
+      }
+
+    const getFollowers = async (username) =>{
+        const response = await fetch(`${process.env.REACT_APP_API}/api/social/getFollowers?username=${username}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        const json = await response.json();
+        
+        if(!response.ok){
+            console.log(json.error);
+        }
+        
+        if(response.ok){
+            console.log(json);
+            setFollowers(json.followers.followers);
+        }
+    }
+
+    const getFollowing = async (username) =>{
+        const response = await fetch(`${process.env.REACT_APP_API}/api/social/getFollowing?username=${username}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        const json = await response.json();
+        
+        if(!response.ok){
+            console.log(json.error);
+        }
+        
+        if(response.ok){
+            console.log(json);
+            setFollowing(json.following.following);
+        }
+    }
     return (
         <div>
             {notification && <NotificationBox notification={notification}/>}
+            {error && <Error error={error}/>}
+            {eroare && <Error error={eroare}/>}
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                scrollBehavior='inside'
+                placement='center'
+            >
+                <ModalContent>
+                {(onClose) => (
+                    <>
+                    <ModalHeader className="flex flex-col gap-1 mx-auto">
+                        Followers
+                    </ModalHeader>
+                    <Input className='mx-auto mb-3'
+                        classNames={{
+                            base: "max-w-[90%] h-10",
+                            mainWrapper: "h-full",
+                            input: "text-small",
+                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                        }}
+                        placeholder="Search"
+                        size="sm"
+                        startContent={<SearchIcon size={18} />}
+                        type="search"
+                    />
+                    <ModalBody>
+                    <div>
+                        {followers?.map(follower =>{
+                            return(
+                                <div className='flex gap-3 items-center justify-between'>
+                                    <div className='flex flex-row gap-2 items-center'>
+                                        <Avatar src={follower.avatar} size="md" onError={handleImageError}/>
+                                        <p>{follower.username}</p>
+                                    </div>
+                                    <div>
+                                    {!userData.following.some(f => f.username === follower.username) && (
+                                        <Button 
+                                        size="md"
+                                        color='default' 
+                                        variant="ghost" 
+                                        onClick={() => handleFollow2(user.username, follower.username)}
+                                        > 
+                                        Follow
+                                        </Button>
+                                    )}
+                                    {userData.following.some(f => f.username === follower.username) && (
+                                        <Button 
+                                        color='default' 
+                                        size="md"
+                                        variant="ghost" 
+                                        isDisabled
+                                        > 
+                                        Following
+                                        </Button>
+                                    )}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="danger" variant="light" onPress={onClose}>
+                        Close
+                        </Button>
+                    </ModalFooter>
+                    </>
+                )}
+                </ModalContent>
+            </Modal>
+            <Modal
+                isOpen={isOpen2}
+                onOpenChange={onOpenChange2}
+                scrollBehavior='inside'
+                placement='center'
+            >
+                <ModalContent>
+                {(onClose2) => (
+                    <>
+                    <ModalHeader className="flex flex-col gap-1 mx-auto">
+                        Following
+                    </ModalHeader>
+                    <Input className='mx-auto mb-3'
+                        classNames={{
+                            base: "max-w-[90%] h-10",
+                            mainWrapper: "h-full",
+                            input: "text-small",
+                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                        }}
+                        placeholder="Search"
+                        size="sm"
+                        startContent={<SearchIcon size={18} />}
+                        type="search"
+                    />
+                    <ModalBody>
+                    <div>
+                        {following?.map(follower =>{
+                            return(
+                                <div className='flex gap-3 items-center justify-between'>
+                                    <div className='flex flex-row gap-2 items-center'>
+                                        <Avatar src={follower.avatar} size="md" onError={handleImageError}/>
+                                        <p>{follower.username}</p>
+                                    </div>
+                                    <div>
+                                    {!userData.following.some(f => f.username === follower.username) && (
+                                        <Button 
+                                        size="md"
+                                        color='default' 
+                                        variant="ghost" 
+                                        onClick={() => handleFollow2(user.username, follower.username)}
+                                        > 
+                                        Follow
+                                        </Button>
+                                    )}
+                                    {userData.following.some(f => f.username === follower.username) && (
+                                        <Button 
+                                        color='default' 
+                                        size="md"
+                                        variant="ghost" 
+                                        isDisabled
+                                        > 
+                                        Following
+                                        </Button>
+                                    )}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="danger" variant="light" onPress={onClose2}>
+                        Close
+                        </Button>
+                    </ModalFooter>
+                    </>
+                )}
+                </ModalContent>
+            </Modal>
             <div className='contains-profile'>
                 <div className='contains-images'>
                     <div className='background-image'></div>
@@ -107,7 +349,7 @@ const ViewProfile = () => {
                         </div>
                     </div>
                     <div className='profile-data-buttons'>
-                        <div>
+                        <div onClick={() => {onOpen(); getFollowers(userProfile.username)}} style={{cursor:'pointer'}}>
                             <p>
                                 Followers
                             </p>
@@ -116,7 +358,7 @@ const ViewProfile = () => {
                             </p>
                         </div>
                         <div className='despartitor-butoane'></div>
-                        <div>
+                        <div onClick={() => {onOpen2(); getFollowing(userProfile.username)}} style={{cursor:'pointer'}}>
                             <p>
                                 Following
                             </p>
@@ -129,12 +371,13 @@ const ViewProfile = () => {
                         <Button color='primary'> Edit profile</Button>
                         ) :(
                             <div style={{display:'flex', gap:'10px'}}>
-                                {user && userProfile && !userProfile.followers.includes(user.username) ? (
-                                    <Button color='default' variant="ghost" onClick={handleFollow}> Follow</Button>
-                                    ) : user && userProfile && userProfile.followers.includes(user.username) ? (
-                                    <Button color='default' variant="ghost" onClick={handleUnfollow}> Unfollow</Button>
-                                    ) : <></>
-                                }
+                                {user && userProfile ? (
+                                userProfile.followers.some(follower => follower.username === user.username) ? (
+                                    <Button color='default' variant="ghost" onClick={handleUnfollow}>Unfollow</Button>
+                                ) : (
+                                    <Button color='default' variant="ghost" onClick={handleFollow}>Follow</Button>
+                                )
+                                ) : <></>}
                                 <Button color='default' variant="ghost" className='min-w-unit-10'> 
                                     <svg fill="white" height="20px" width="20px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
                                         viewBox="0 0 32.055 32.055" xmlSpace="preserve">
@@ -169,7 +412,7 @@ const ViewProfile = () => {
                     />
                     <div className='contains-profile-data-phone'>
                         <div className='contains-profile-data-followers-phone'>
-                            <div>
+                            <div onClick={() => {onOpen(); getFollowers(userProfile.username)}}>
                                 <p>
                                     Followers
                                 </p>
@@ -177,7 +420,7 @@ const ViewProfile = () => {
                                     {userProfile.followers.length}
                                 </p>
                             </div>
-                            <div>
+                            <div onClick={() => {onOpen2(); getFollowing(userProfile.username)}}>
                                 <p>
                                     Following
                                 </p>
@@ -215,12 +458,13 @@ const ViewProfile = () => {
                     </div>
                 ) :(
                 <div style={{width:'95%', margin:'0 auto', marginTop: '10px'}} className='flex gap-3 justify-center'>
-                    {user && userProfile && !userProfile.followers.includes(user.username) ? (
-                        <Button className='w-full' color='default' variant="ghost" onClick={handleFollow}> Follow</Button>
-                        ) : user && userProfile && userProfile.followers.includes(user.username) ? (
-                        <Button  className='w-full' color='default' variant="ghost" onClick={handleUnfollow}> Unfollow</Button>
-                        ) : <></>
-                    }
+                    {user && userProfile ? (
+                    userProfile.followers.some(follower => follower.username === user.username) ? (
+                        <Button color='default' variant="ghost" onClick={handleUnfollow}>Unfollow</Button>
+                    ) : (
+                        <Button color='default' variant="ghost" onClick={handleFollow}>Follow</Button>
+                    )
+                    ) : <></>}
                     <Button color='default' variant="ghost" className='min-w-unit-10'> 
                         <svg fill="white" height="20px" width="20px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
                             viewBox="0 0 32.055 32.055" xmlSpace="preserve">

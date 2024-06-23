@@ -10,19 +10,28 @@ const followUser = async (req, res)=>{
 
         const targetUser = await userModel.findOne({ username: follower.toLowerCase() }).select('following');
         console.log(targetUser);
-        if (targetUser.following.includes(toBeFollowed.toLowerCase())) {
+        if (targetUser.following.some(user => user.username === toBeFollowed.toLowerCase())) {
             return res.status(400).json({ error: 'Deja urmaresti acest utilizator!' });
         }
+
+        const avatarFollower = await userModel.findOne({ username: follower.toLowerCase() }).select('avatar');
+        const avatarToBeFollowed = await userModel.findOne({ username: toBeFollowed.toLowerCase() }).select('avatar');
         
         const updatedFollowers ={
             $addToSet:{
-                followers: `${follower.toLowerCase()}`
+                followers: {
+                    avatar: avatarFollower.avatar,
+                    username: follower.toLowerCase()
+                }
             }
         }
 
         const updatedFollowing = {
             $addToSet:{
-                following: `${toBeFollowed.toLowerCase()}`
+                following: {
+                    avatar: avatarToBeFollowed.avatar,
+                    username: toBeFollowed.toLowerCase()
+                }
             }
         }
 
@@ -43,25 +52,30 @@ const unfollowUser = async (req, res)=>{
 
         const targetUser = await userModel.findOne({ username: unfollower.toLowerCase() }).select('following');
         console.log(targetUser);
-        if (!targetUser.following.includes(toBeUnfollowed.toLowerCase())) {
+        if (!targetUser.following.some(user => user.username === toBeUnfollowed.toLowerCase())) {
             return res.status(400).json({ error: 'Nu urmaresti acest utilizator' });
         }
 
         const updatedFollowers ={
             $pull:{
-                followers: `${unfollower.toLowerCase()}`
+                followers: {
+                    username: unfollower.toLowerCase()
+                }
             }
         }
 
         const updatedFollowing = {
             $pull:{
-                following: `${toBeUnfollowed.toLowerCase()}`
+                following: {
+                    username: toBeUnfollowed.toLowerCase()
+                }
             }
         }
 
+        console.log(updatedFollowing, updatedFollowers);
+
         const userToBeUnfollowed = await userModel.findOneAndUpdate({username: toBeUnfollowed.toLowerCase()}, updatedFollowers, {new:true}).select('followers');
         const userUnfollower = await userModel.findOneAndUpdate({username: unfollower.toLowerCase()}, updatedFollowing, {new:true}).select('following');
-;
         res.status(200).json({userToBeUnfollowed, userUnfollower});
     }catch(error){
         console.error(error.message);
@@ -69,7 +83,39 @@ const unfollowUser = async (req, res)=>{
     }
 }
 
+const getFollowers = async (req, res) =>{
+    try{
+        const {username} = req.query;
+
+        const user = await userModel.findOneAndUpdate({username:username.toLowerCase()}).select('followers');
+
+        console.log(user);
+
+        res.status(200).json({followers: user});
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+
+const getFollowing = async (req, res) =>{
+    try{
+        const {username} = req.query;
+
+        const user = await userModel.findOneAndUpdate({username:username.toLowerCase()}).select('following');
+
+        console.log(user);
+
+        res.status(200).json({following: user});
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+
 module.exports={
+    getFollowing,
+    getFollowers,
     followUser,
     unfollowUser
 }
