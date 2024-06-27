@@ -11,6 +11,7 @@ import {useState, useEffect} from 'react'
 import { useLogout } from './hooks/useLogout'
 import { useAuthContext } from './hooks/useAuthContext'
 import ViewProfile from './pages/ViewProfile.js';
+import Search from './pages/Search.js';
 
 function App() {
   const { user } = useAuthContext()
@@ -62,6 +63,10 @@ function App() {
             <Route
               path="/profile/:username"
               element={<ViewProfile/>}
+            />
+            <Route
+              path="/search/:search"
+              element={<Search/>}
             />
             <Route 
               path="*"

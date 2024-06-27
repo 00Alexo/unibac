@@ -113,9 +113,29 @@ const getFollowing = async (req, res) =>{
     }
 }
 
+const search = async(req, res) =>{
+    try{
+        const {search, page = 1, limit = 9} = req.query;
+        const limitNum = parseInt(limit);
+        const skip = (parseInt(page) - 1) * limitNum;
+        console.log(page, skip);
+        const users = await userModel.find({username: {$regex: search, $options: 'i'}}).select
+        ('username displayName avatar followers following statut').skip(skip).limit(limitNum);
+
+        const totalUsers = await userModel.countDocuments({username: {$regex: search, $options: 'i'}});
+        
+        res.status(200).json({users, totalUsers});
+
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+
 module.exports={
     getFollowing,
     getFollowers,
     followUser,
-    unfollowUser
+    unfollowUser,
+    search
 }

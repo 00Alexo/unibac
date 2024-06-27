@@ -249,6 +249,7 @@ const markAllAsRead = async () =>{
 }
 
 const [isSmallScreen, setIsSmallScreen] = useState(false);
+const [search, setSearch] = useState(null);
 
 useEffect(() => {
   const checkScreenSize = () => {
@@ -264,7 +265,7 @@ useEffect(() => {
   };
 
 }, []);
-console.log(isSmallScreen);
+
 
   return (
     <Navbar maxWidth="full" onMenuOpenChange={setIsMenuOpen} className="dark text-foreground bg-background" isBordered
@@ -560,6 +561,14 @@ console.log(isSmallScreen);
       </NavbarContent>
       <NavbarContent as="div" className="items-center" justify="end">
         <Input className='search-input'
+          onKeyDown={(e) => {
+            if(e.key === 'Enter'){
+                navigate(`/search/${search}`);
+                window.location.reload()
+            }
+          }}
+          onChange={(e) => setSearch(e.target.value)}
+          value={search}
           classNames={{
             base: "max-w-full sm:max-w-[10rem] h-10",
             mainWrapper: "h-full",
@@ -623,7 +632,15 @@ console.log(isSmallScreen);
         }
       </NavbarContent>
       <NavbarMenu>
-        <Input
+      <Input
+          onKeyDown={(e) => {
+            if(e.key === 'Enter'){
+                navigate(`/search/${search}`);
+                window.location.reload()
+            }
+          }}
+          onChange={(e) => setSearch(e.target.value)}
+          value={search}
           classNames={{
             base: "max-w-full sm:max-w-[10rem] h-10",
             mainWrapper: "h-full",
@@ -634,6 +651,7 @@ console.log(isSmallScreen);
           size="sm"
           startContent={<SearchIcon size={18} />}
           type="search"
+          
         />
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>

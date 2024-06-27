@@ -199,7 +199,7 @@ const ViewProfile = () => {
                     <ModalHeader className="flex flex-col gap-1 mx-auto">
                         Followers
                     </ModalHeader>
-                    {followers.length > 0 &&
+                    {followers?.length > 0 &&
                     <Input className='mx-auto mb-3'
                         classNames={{
                             base: "max-w-[90%] h-10",
@@ -214,7 +214,7 @@ const ViewProfile = () => {
                     />
                     }
                     <ModalBody>
-                    {followers.length > 0 ?
+                    {followers?.length > 0 ?
                     <div>
                         {followers?.map(follower =>{
                             return(
@@ -272,7 +272,7 @@ const ViewProfile = () => {
                     <ModalHeader className="flex flex-col gap-1 mx-auto">
                         Following
                     </ModalHeader>
-                    {following.length > 0 &&
+                    {following?.length > 0 &&
                     <Input className='mx-auto mb-3'
                         classNames={{
                             base: "max-w-[90%] h-10",
@@ -287,7 +287,7 @@ const ViewProfile = () => {
                     />
                     }
                     <ModalBody>
-                    {following.length > 0 ?
+                    {following?.length > 0 ?
                     <div>
                         {following?.map(follower =>{
                             return(
