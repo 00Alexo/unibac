@@ -7,11 +7,13 @@ import SignUp from './pages/SignUp.js';
 import './css/signInUp.css'
 import './css/viewProfile.css'
 import './css/alerts.css'
+import './css/minaAi.css'
 import {useState, useEffect} from 'react'
 import { useLogout } from './hooks/useLogout'
 import { useAuthContext } from './hooks/useAuthContext'
 import ViewProfile from './pages/ViewProfile.js';
 import Search from './pages/Search.js';
+import MinaAi from './pages/MinaAI.js';
 
 function App() {
   const { user } = useAuthContext()
@@ -63,6 +65,10 @@ function App() {
             <Route
               path="/profile/:username"
               element={<ViewProfile/>}
+            />
+            <Route
+              path="/minaAI"
+              element={<MinaAi/>}
             />
             <Route
               path="/search/:search"

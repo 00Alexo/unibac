@@ -312,11 +312,11 @@ useEffect(() => {
                       {notification.type == 'newFollower' &&
                         <div className="flex items-center justify-between">
                           <div className='flex flex-row gap-3 items-center' style={{paddingRight:'10px'}}>
-                            <div>
-                              {notification.status === 'unread' &&
+                            <div className={notification.status==='unread' ? 'notificationsBulinuta' : ' '}>
+                              {/* {notification.status === 'unread' &&
                               <div style={{width:'10px', height:'10px', borderRadius:'50%', backgroundColor:'#0DA1D4', position:'absolute',
                               zIndex:'999999', marginTop:'-3px', marginLeft:'-5px'}} className='notificationsBulinuta'></div>
-                              }
+                              } */}
 
                               <img src={notification?.avatar.avatar} className=" text-large avatar-image-profile notificationsImage" 
                                 onError={(e) => {
@@ -368,18 +368,13 @@ useEffect(() => {
                   })} 
                   </Tab>
                   <Tab key="unread" title="Unread">
-                  {userData?.notifications.notifications.slice().reverse().map((notification) =>{
+                  {userData?.notifications.notifications.slice().reverse().filter(notification => notification.status === 'unread').map((notification) =>{
                     return (
                       <div style={{padding:'5px'}}>
                         {notification.type == 'newFollower' && notification.status =='unread' &&
                           <div className="flex items-center justify-between">
                             <div className='flex flex-row gap-3 items-center'>
-                              <div>
-                                {notification.status === 'unread' &&
-                                <div style={{width:'10px', height:'10px', borderRadius:'50%', backgroundColor:'#0DA1D4', position:'absolute',
-                                zIndex:'999999', marginTop:'-3px', marginLeft:'-5px'}} className='notificationsBulinuta'></div>
-                                }
-
+                              <div className='notificationsBulinuta'>
                                 <img src={notification?.avatar.avatar} className=" text-large avatar-image-profile notificationsImage" 
                                   onError={(e) => {
                                   e.target.src = `https://via.placeholder.com/150?text=${notification.sender.charAt(0).toUpperCase()}`;
@@ -616,6 +611,14 @@ useEffect(() => {
                   Setari
                 </DropdownItem>
               </DropdownSection>
+              <DropdownSection showDivider>
+                <DropdownItem key="settings" onClick={() => navigate(`/profile/${user.username}/clase`)}>
+                  Clasele mele
+                </DropdownItem>
+                <DropdownItem key="settings" onClick={() => navigate(`/profile/${user.username}/teme`)}>
+                  Teme
+                </DropdownItem>
+              </DropdownSection>
               <DropdownItem key="logout" color="danger" className="text-danger" onClick={handleLogoutClick}>
                 Log Out
               </DropdownItem>
@@ -625,8 +628,8 @@ useEffect(() => {
         }
         {!user &&
         <NavbarItem>
-          <Button as={Link} color="primary" variant="flat" onClick={() => navigate('/sign-up')}>
-            Sign Up
+          <Button as={Link} color="primary" variant="flat" onClick={() => navigate('/sign-in')}>
+            LOGIN
           </Button>
         </NavbarItem>
         }

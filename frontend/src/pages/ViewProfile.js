@@ -215,11 +215,15 @@ const ViewProfile = () => {
                     }
                     <ModalBody>
                     {followers?.length > 0 ?
-                    <div>
+                    <div className='flex gap-3 flex-col'>
                         {followers?.map(follower =>{
                             return(
                                 <div className='flex gap-3 items-center justify-between'>
-                                    <div className='flex flex-row gap-2 items-center'>
+                                    <div className='flex flex-row gap-2 items-center' style={{cursor:'pointer'}}
+                                    onClick={() => {
+                                        navigate(`/profile/${follower.username}`);
+                                        onClose();
+                                    }}>
                                         <Avatar src={follower.avatar} size="md" onError={handleImageError}/>
                                         <p>{follower.username}</p>
                                     </div>
@@ -288,11 +292,15 @@ const ViewProfile = () => {
                     }
                     <ModalBody>
                     {following?.length > 0 ?
-                    <div>
+                    <div className='flex gap-3 flex-col'>
                         {following?.map(follower =>{
                             return(
                                 <div className='flex gap-3 items-center justify-between'>
-                                    <div className='flex flex-row gap-2 items-center'>
+                                    <div className='flex flex-row gap-2 items-center' style={{cursor:'pointer'}}
+                                    onClick={() => {
+                                        navigate(`/profile/${follower.username}`);
+                                        onClose2();
+                                    }}>
                                         <Avatar src={follower.avatar} size="md" onError={handleImageError}/>
                                         <p>{follower.username}</p>
                                     </div>

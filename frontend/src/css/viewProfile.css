@@ -184,3 +184,22 @@
     width: 40px;
     border-radius: 50%;
 }
+
+.notificationsBulinuta {
+    position: relative; 
+}
+
+.notificationsBulinuta::after{
+    content: " ";
+    display: inline-block; 
+    width: 10px;
+    height: 10px;
+    background-color: #0DA1D4;
+    border-radius: 50%;
+    z-index: 999;
+    position: absolute; 
+    top: 0; 
+    left: 0;
+    margin-top:-3px;
+    margin-left:-5px;
+}

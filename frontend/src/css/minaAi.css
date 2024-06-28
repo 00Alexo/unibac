@@ -1,0 +1,98 @@
+.minaAi-principal{
+    display:flex;
+    flex-direction: row;
+}
+
+.sidebar-minaAi{
+    display: flex;
+    flex-direction: column;
+    background-color: #1E1F20;
+    height:calc(100vh - 65px);
+    width: 250px;
+    justify-content: space-between;
+}
+
+.sidebar-minaAi h1{
+    font-size: 2rem;
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 2px;
+}
+
+.sidebar-minaAi-bottompart{
+    padding-top: 5px;
+    font-size: 1.3rem;
+    padding-left: 15px;
+    padding-bottom:10px;
+}
+
+.minaAi-byothpeople{
+    padding-left: 15px;
+    color: #d4d4c2;
+    height: calc(50% - 90px);
+}
+
+.minaAi-byyou{
+    padding-left: 15px;
+    color: #d4d4c2;
+    height: calc(50% - 90px);
+}
+
+.chat-minaAi{
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 65px);
+    width: calc(100% - 250px);
+    justify-content: space-between;
+    padding-bottom: 50px;
+    padding-top: 50px;
+}
+
+.prompt-ideas-mina{
+    width: 200px;
+    height: 200px;
+    background-color: #1E1F20;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+@media (max-width: 1325px) {
+    .prompt-hidden-mina{
+        display: none !important;
+    }
+}
+
+@media (max-width: 840px){
+    .mina-contains-prompt-ideas{
+        flex-direction: column !important;
+        gap:20px;
+    }
+
+    .mina-contains-prompt-ideas div{
+        height: 60px;
+        width: 100%;
+    }
+
+    .mina-contains-prompt-ideas p{
+        padding-right: 35px;
+    }
+
+    .iconitaSend{
+        margin-top: 10px;
+        position: absolute;
+    }
+}
+
+@media (max-width: 725px){
+    .sidebar-minaAi{
+        display: none;
+    }
+    .chat-minaAi{
+        width: 100%;
+    }
+    .prompt-ideas-mina{
+        font-size: 0.8rem;
+    }
+}
