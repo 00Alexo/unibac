@@ -10,6 +10,7 @@ import { Error } from "../components/alertBox";
 import { useGetProfile } from '../hooks/useGetProfile';
 import {useParams, useNavigate} from 'react-router-dom';
 import minaAi from '../assets/minaAi.jpg'
+import Loading from "./Loading";
 const MinaAi = () => {
     const {convId} = useParams();
     const navigate = useNavigate();
@@ -40,13 +41,15 @@ const MinaAi = () => {
             setIsMenuOpen(true);
     }, [isSmallScreen])
     const {user} = useAuthContext();
-    const { viewUser: userData, isLoading, refetchProfile} = useGetProfile(user?.username)
+    const { viewUser: userData, refetchProfile} = useGetProfile(user?.username)
     const [prompt, setPrompt] = useState('')
     const [prompts, setPrompts] = useState([])
     const [conversatii, setConversatii] = useState();
+    const [loading, setLoading] = useState(false);
     //loading, save prompts, display prompts (user prompt, mina prompt, user prompt, mina prompt, ...)
 
     const getPromptsConv = async() =>{
+        setLoading(true);
         const response = await fetch(`${process.env.REACT_APP_API}/api/minaAi/getPromptsConv/${convId}`, {
             method: 'POST',
             headers: {
@@ -59,6 +62,7 @@ const MinaAi = () => {
         const json = await response.json()
         if(!response.ok){
             console.log(json)
+            setLoading(false);
             setError(json.error)
             setTimeout(() => {
                 setError(null);
@@ -66,6 +70,7 @@ const MinaAi = () => {
         }else{
             console.log(json.prompts)
             setPrompts(json.prompts);
+            setLoading(false);
         }
     }
 
@@ -78,6 +83,7 @@ const MinaAi = () => {
 
 
     const getPrompt = async() => {
+        setLoading(true);
         if(convId){
             prompts.push({role: 'user', content: prompt})
                 const response = await fetch(`${process.env.REACT_APP_API}/api/minaAi/chatMinaAi/${convId}`, {
@@ -98,9 +104,11 @@ const MinaAi = () => {
                         setPrompts([]);
                         navigate('/minaAi')
                     }, 7000)
+                    setLoading(false);
                 }else{
                     console.log(json)
                     setPrompts([...prompts, {role: 'assistant', content: json.message}])
+                    setLoading(false);
                 }
         }else{
             const response = await fetch(`${process.env.REACT_APP_API}/api/minaAi/newChatMinaAi`, {
@@ -119,14 +127,17 @@ const MinaAi = () => {
                 setTimeout(() =>{
                     setError(null);
                 }, 7000)
+                setLoading(false);
             }else{
                 console.log(json)
                 navigate(`/minaAI/${json.chatId}`)
+                setLoading(false);
             }
         }
     }
     
     const getPromptsHistory = async () =>{
+        setLoading(true);
         const response = await fetch(`${process.env.REACT_APP_API}/api/minaAi/getPromptsHistory`, {
             method: 'POST',
             headers: {
@@ -143,9 +154,11 @@ const MinaAi = () => {
             setTimeout(() => {
                 setError(null);
             }, 7000)
+            setLoading(false);
         }else{
             console.log(json.prompts)
             setConversatii(json.prompts);
+            setLoading(false);
         }
     }
 
@@ -205,6 +218,7 @@ const MinaAi = () => {
 
     return (
         <div className="minaAi-principal">
+            {loading && <Loading/>}
             {error && <Error error={error}/>}
             {isSmallScreen &&
             <button style={{zIndex: '3'}}
