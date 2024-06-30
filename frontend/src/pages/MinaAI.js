@@ -14,6 +14,7 @@ import Loading from "./Loading";
 const MinaAi = () => {
     const {convId} = useParams();
     const navigate = useNavigate();
+    const [isTyping, setIsTyping] = useState(false);
     const [error, setError] = useState(null);
     const [isSmallScreen, setIsSmallScreen] = useState(false);
 
@@ -83,8 +84,8 @@ const MinaAi = () => {
 
 
     const getPrompt = async() => {
-        setLoading(true);
         if(convId){
+            setIsTyping(true);
             prompts.push({role: 'user', content: prompt})
                 const response = await fetch(`${process.env.REACT_APP_API}/api/minaAi/chatMinaAi/${convId}`, {
                     method: 'POST',
@@ -104,13 +105,14 @@ const MinaAi = () => {
                         setPrompts([]);
                         navigate('/minaAi')
                     }, 7000)
-                    setLoading(false);
+                    setIsTyping(false);
                 }else{
                     console.log(json)
-                    setPrompts([...prompts, {role: 'assistant', content: json.message}])
-                    setLoading(false);
+                    setPrompts([...prompts, {role: 'assistant', content: json.message}]);
+                    setIsTyping(false);
                 }
         }else{
+            setLoading(true);
             const response = await fetch(`${process.env.REACT_APP_API}/api/minaAi/newChatMinaAi`, {
                 method: 'POST',
                 headers: {
@@ -129,9 +131,9 @@ const MinaAi = () => {
                 }, 7000)
                 setLoading(false);
             }else{
-                console.log(json)
-                navigate(`/minaAI/${json.chatId}`)
+                console.log(json);
                 setLoading(false);
+                navigate(`/minaAI/${json.chatId}`);
             }
         }
     }
@@ -209,12 +211,11 @@ const MinaAi = () => {
     const containerRef = useRef(null);
 
     useEffect(() => {
-        // Verificăm dacă există ref și dacă prompts au fost încărcate
         if (containerRef.current && prompts.length > 0) {
-            // Setăm poziția de scroll pentru a fi la sfârșitul containerului
+
             containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
-    }, [prompts]);
+    }, [prompts, isTyping]);
 
     return (
         <div className="minaAi-principal">
@@ -247,7 +248,7 @@ const MinaAi = () => {
                 <ScrollShadow  className='minaAi-byyou'>
                     <p style={{paddingBottom:'5px'}} >Azi: </p>
                     <div className='flex flex-col mb-3'>
-                    {azi?.map((conv, index) => (
+                    {azi?.slice().reverse().map((conv, index) => (
                         <div key={index} className='flex gap-2 p-1 mr-5' style={{cursor:'pointer'}} onClick={() => {
                             navigate(`/minaAi/${conv.chatId}`)
                             window.location.reload();
@@ -259,7 +260,7 @@ const MinaAi = () => {
                     </div>
                     <p style={{paddingBottom:'5px'}} >Ieri: </p>
                     <div className='flex flex-col mb-3'>
-                    {ieri?.map((conv, index) => (
+                    {ieri?.slice().reverse().map((conv, index) => (
                         <div key={index} className='flex gap-2 p-1 mr-5' style={{cursor:'pointer'}}  onClick={() => {
                             navigate(`/minaAi/${conv.chatId}`)
                             window.location.reload();
@@ -271,7 +272,7 @@ const MinaAi = () => {
                     </div>
                     <p style={{paddingBottom:'5px'}} >Ultimele 30 de zile: </p>
                     <div className='flex flex-col mb-3'>
-                    {tzz?.map((conv, index) => (
+                    {tzz.slice().reverse()?.map((conv, index) => (
                         <div key={index} className='flex gap-2 p-1 mr-5' style={{cursor:'pointer'}} onClick={() => {
                             navigate(`/minaAi/${conv.chatId}`)
                             window.location.reload();
@@ -283,7 +284,7 @@ const MinaAi = () => {
                     </div>
                     <p style={{paddingBottom:'5px'}} >Altele: </p>
                     <div className='flex flex-col mb-3'>
-                    {altele?.map((conv, index) => (
+                    {altele.slice().reverse()?.map((conv, index) => (
                         <div key={index} className='flex gap-2 p-1 mr-5' style={{cursor:'pointer'}} onClick={() => {
                             navigate(`/minaAi/${conv.chatId}`)
                             window.location.reload();
@@ -415,6 +416,31 @@ const MinaAi = () => {
                                     }
                                 </div>
                             ))}
+                            {isTyping &&
+                            <div className='flex mr-2 gap-8'>
+                                <div className='p-1'>
+                                    <Avatar
+                                        isBordered
+                                        size={isSmallScreen ? 'sm' : 'md'}
+                                        color="primary"
+                                        showFallback
+                                        name='AI'
+                                        src={minaAi}
+                                    />
+                                </div>
+                                <div className="flex justify-center items-center">
+                                    <div className="flex justify-center items-center">
+                                        <div class="col-3">
+                                            <div class="snippet" data-title="dot-flashing">
+                                                <div class="stage">
+                                                    <div class="dot-flashing"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            }
                         </div>
                     ) : <div></div>}
                 </ScrollShadow>

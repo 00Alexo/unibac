@@ -537,12 +537,12 @@ useEffect(() => {
         itemClasses={{
           base: "gap-4",
         }}>
-        <DropdownItem onClick={() => navigate('/minaAi')}
+        <DropdownItem onClick={() => {navigate('/minaAi'); window.location.reload();}}
           key="MinaAi"
         >
           MinaAi
         </DropdownItem>
-        <DropdownItem onClick={() => navigate('/minaAi')}
+        <DropdownItem onClick={() => {navigate('/minaAi'); window.location.reload();}}
           key="MinaAi"
         >
           Compiler
@@ -666,7 +666,7 @@ useEffect(() => {
           <NavbarMenuItem key={`${item}-${index}`}>
             {index !== 1 &&
             <Link
-              onClick={() => navigate(`/${item}`)}
+              onClick={() => {navigate(`/${item}`); window.location.reload();}}
               color={
                 "foreground"
               }
