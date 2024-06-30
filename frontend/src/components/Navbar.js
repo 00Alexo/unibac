@@ -135,6 +135,7 @@ const NavBar = () => {
       "MinaAi",
       "Compiler",
       "Games",
+      "Clase"
     ];
 
     const [isHovered, setIsHovered] = useState([]);
@@ -551,6 +552,11 @@ useEffect(() => {
         >
           Games
         </DropdownItem>
+        <DropdownItem onClick={() => navigate('/clase')}
+          key="clase"
+        >
+          Clase
+        </DropdownItem>
       </DropdownMenu>
       </Dropdown>
       </NavbarContent>
@@ -689,61 +695,71 @@ useEffect(() => {
               itemClasses={{
                 base: "gap-4",
               }}>
+              <DropdownSection showDivider title="Elevi"> 
+              <DropdownItem
+                onClick={() => navigate('/articole/informatica')}
+                key="Informatica"
+              >
+                Informatica
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate('/articole/matematica')}
+                key="Matematica"
+              >
+                Matematica
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate('/articole/fizica')}
+                key="Fizica"
+              >
+                Fizica
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate('/articole/chimie')}
+                key="Chimie"
+              >
+                Chimie
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate('/articole/romana')}
+                key="Romana"
+              >
+                Romana
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate('/articole/biologie')}
+                key="Biologie"
+              >
+                Biologie
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate('/articole/Istorie')}
+                key="Istorie"
+              >
+                Istorie
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate('/articole/geografie')}
+                key="Geografie"
+              >
+                Geografie
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate('/articole/Psihologie')}
+                key="Psihologie"
+              >
+                Psihologie
+              </DropdownItem>
+              </DropdownSection>
+              <DropdownSection  title="Profesori">
                 <DropdownItem
-                  onClick={() => navigate('/articole/informatica')}
-                  key="Informatica"
+                  onClick={() => navigate('/articole/Posteaza un articol')}
+                  key="Posteaza"
                 >
-                  Informatica
+                  Posteaza un articol
                 </DropdownItem>
-                <DropdownItem
-                  onClick={() => navigate('/articole/matematica')}
-                  key="Matematica"
-                >
-                  Matematica
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => navigate('/articole/fizica')}
-                  key="Fizica"
-                >
-                  Fizica
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => navigate('/articole/chimie')}
-                  key="Chimie"
-                >
-                  Chimie
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => navigate('/articole/romana')}
-                  key="Romana"
-                >
-                  Romana
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => navigate('/articole/biologie')}
-                  key="Biologie"
-                >
-                  Biologie
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => navigate('/articole/Istorie')}
-                  key="Istorie"
-                >
-                  Istorie
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => navigate('/articole/geografie')}
-                  key="Geografie"
-                >
-                  Geografie
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => navigate('/articole/Psihologie')}
-                  key="Psihologie"
-                >
-                  Psihologie
-                </DropdownItem>
-              </DropdownMenu>
+              </DropdownSection>
+            </DropdownMenu>
             </Dropdown>
             }
           </NavbarMenuItem>

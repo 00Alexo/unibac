@@ -58,12 +58,12 @@ const LogInSchema = new mongoose.Schema({
     notifications:{
       type: Object,
       required: true
-    }
-    /*tags:{
+    },
+    prompts:{
       type: Array,
       required: true
-    },
-    friendRequests:{
+    }
+    /*tags:{
       type: Array,
       required: true
     },

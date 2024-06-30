@@ -5,10 +5,10 @@ const { v4: uuidv4 } = require('uuid');
 var passwordValidator = require('password-validator');
 var schema = new passwordValidator();
 schema
-.is().min(7)                                    // Minimum length 8
-.has().uppercase()                              // Must have uppercase letters
-.has().lowercase()                              // Must have lowercase letters
-.has().digits(2)                                // Must have at least 2 digits
+.is().min(7)
+.has().uppercase()
+.has().lowercase()
+.has().digits(2)
 
 const createToken = (_id) =>{
     return jwt.sign({_id}, process.env.SECRET, {expiresIn: '3d'})
@@ -142,7 +142,8 @@ const signup = async(req, res) =>{
             notifications:{
                 unread: 0,
                 notifications: []
-            }
+            },
+            prompts: []
         }
         const user = await userModel.create(data);
         const token = createToken(user._id)

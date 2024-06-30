@@ -1,9 +1,24 @@
+@keyframes slideIn{
+    0%{
+        opacity: 0;
+        transform: translateX(-100%);
+    }100%{
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+
+
+
 .minaAi-principal{
     display:flex;
     flex-direction: row;
 }
 
 .sidebar-minaAi{
+    animation: slideIn 0.3s ease-in-out;
+    z-index: 2;
+    position: fixed;
     display: flex;
     flex-direction: column;
     background-color: #1E1F20;
@@ -26,19 +41,28 @@
     padding-bottom:10px;
 }
 
-.minaAi-byothpeople{
-    padding-left: 15px;
-    color: #d4d4c2;
-    height: calc(50% - 90px);
-}
 
 .minaAi-byyou{
+    padding-top:5px;
     padding-left: 15px;
-    color: #d4d4c2;
-    height: calc(50% - 90px);
+    height: calc(100% - 90px);
 }
 
+.minaAi-byyou p{
+    color: #c2c2ac;
+}
+
+.minaAi-byyou div div{
+    border-radius: 5px;
+}
+
+.minaAi-byyou div div:hover{
+    background-color: #151414;
+}
+
+
 .chat-minaAi{
+    z-index: 1;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 65px);
@@ -46,6 +70,7 @@
     justify-content: space-between;
     padding-bottom: 50px;
     padding-top: 50px;
+    margin-left: auto;
 }
 
 .prompt-ideas-mina{
@@ -86,9 +111,6 @@
 }
 
 @media (max-width: 725px){
-    .sidebar-minaAi{
-        display: none;
-    }
     .chat-minaAi{
         width: 100%;
     }

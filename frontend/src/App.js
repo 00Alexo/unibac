@@ -71,6 +71,10 @@ function App() {
               element={<MinaAi/>}
             />
             <Route
+              path="/minaAI/:convId"
+              element={<MinaAi/>}
+            />
+            <Route
               path="/search/:search"
               element={<Search/>}
             />
