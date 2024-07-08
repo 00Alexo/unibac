@@ -135,7 +135,8 @@ const NavBar = () => {
       "MinaAi",
       "Compiler",
       "Games",
-      "Clase"
+      "Clase",
+      "Concursuri"
     ];
 
     const [isHovered, setIsHovered] = useState([]);
@@ -556,6 +557,11 @@ useEffect(() => {
           key="clase"
         >
           Clase
+        </DropdownItem>
+        <DropdownItem onClick={() => navigate('/concursuri')}
+          key="concursuri"
+        >
+          Concursuri
         </DropdownItem>
       </DropdownMenu>
       </Dropdown>

@@ -213,11 +213,25 @@ const getUserAvatar = async(req, res)=>{
         res.status(400).json(error.message);
     }
 }
+
+const updateUserAvatar = async(req, res) =>{
+    try{
+        const {username, avatar} = req.body;
+        const user = await userModel.findOneAndUpdate({username: username.toLowerCase()}, 
+        {$set:{avatar: avatar}}, {new: true}).select('avatar');
+    
+        res.status(200).json(user);
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
  
 module.exports={
     signin,
     signup,
     verifyUserAuthData,
     getUserProfile,
-    getUserAvatar
+    getUserAvatar,
+    updateUserAvatar
 }

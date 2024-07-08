@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useRef} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import { useGetProfile } from '../hooks/useGetProfile';
 import PageNotFound from './404';
@@ -6,6 +6,8 @@ import { format } from 'date-fns';
 import {Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input} from "@nextui-org/react";
 import { useAuthContext } from '../hooks/useAuthContext';
 import {Error, NotificationBox} from '../components/alertBox';
+import Loading from "../pages/Loading";
+import uploadImage from '../assets/uploadImage.png'
 
 export const SearchIcon = (props) => (
     <svg
@@ -47,6 +49,10 @@ const ViewProfile = () => {
     const{username} = useParams();
     const { viewUser: userProfile, error, isLoading, refetchProfile} = useGetProfile(username);
     const { viewUser: userData, refetchProfile: refetchProfile2} = useGetProfile(user?.username);
+    const [avatar, setAvatar] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const fileInputRef = useRef(null);
+    const [isHovered, setIsHovered] = useState(null);
 
     const joinedAt = userProfile && userProfile.createdAt
     ? format(new Date(userProfile.createdAt), 'dd.MM.yyyy')
@@ -62,6 +68,65 @@ const ViewProfile = () => {
             e.target.src = 'https://via.placeholder.com/150?text=?';
         }
     };
+
+    const updateUserAvatar = async (pic) =>{
+        setLoading(true);
+        if (!pic) {
+            console.log("No file selected");
+            return;
+        }
+        const formdata = new FormData();
+        console.log(pic);
+        formdata.append("file", pic);
+        formdata.append("upload_preset", "unibac07");
+        formdata.append("cloud_name", "dopoxnlkb");
+
+        const cloudinary = await fetch(`https://api.cloudinary.com/v1_1/dopoxnlkb/image/upload`, {
+            method: "post",
+            body: formdata,
+          })
+        const js = await cloudinary.json();
+        if(!cloudinary.ok){
+            console.log(js.error);
+            setErroare("A apărut o eroare la încărcarea avatarului.");
+            setTimeout(() => {
+                setErroare(null);
+            }, 7000);
+            setLoading(false);
+            return;
+        }
+        console.log(js);
+        const avatarUrl = js.secure_url;
+        console.log(avatarUrl);
+        userProfile.avatar = avatarUrl;
+        console.log(userProfile.avatar);
+        setAvatar(avatarUrl);
+
+        const response = await fetch(`${process.env.REACT_APP_API}/api/user/updateUserAvatar`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({avatar: avatarUrl, username: user.username})
+        })
+        const json = await response.json();
+        if(!response.ok){
+            console.log(json.error);
+            setErroare("A apărut o eroare la încărcarea avatarului.");
+            setTimeout(() => {
+                setErroare(null);
+            }, 7000);
+            setLoading(false);
+        }
+        if(response.ok){
+            console.log(json);
+            setNotification(`Avatarul a fost schimbat cu succes!`);
+            setTimeout(() => {
+                setNotification(null);
+            }, 7000)
+            setLoading(false);
+        }
+    }
 
     const handleFollow = async () =>{
         const response = await fetch(`${process.env.REACT_APP_API}/api/social/followUser`,{
@@ -185,6 +250,7 @@ const ViewProfile = () => {
     return (
         <div>
             {notification && <NotificationBox notification={notification}/>}
+            {loading && <Loading/>}
             {error && <Error error={error}/>}
             {eroare && <Error error={eroare}/>}
             <Modal
@@ -342,9 +408,30 @@ const ViewProfile = () => {
                 </ModalContent>
             </Modal>
             <div className='contains-profile'>
+            <input
+                style={{display:'none'}}
+                ref={fileInputRef}
+                type='file' 
+                accept='image/*' 
+                onChange={(e) => {
+                    updateUserAvatar(e.target.files[0]);
+                    console.log(e.target.files[0]);
+                }}>
+            </input>
                 <div className='contains-images'>
                     <div className='background-image'></div>
-                    <img src={`${userProfile.avatar}`} className=" text-large avatar-image-profile"
+                    <img src={isHovered ? uploadImage : `${userProfile.avatar}`} className="cursor-pointer text-large avatar-image-profile"
+                        onMouseEnter={() => {
+                            if(user && user.username === userProfile.username){
+                            setIsHovered(true); 
+                            }
+                        }}
+                        onMouseLeave={() => {
+                            if(user && user.username === userProfile.username){
+                                setIsHovered(false); 
+                            }
+                        }}
+                        onClick={() => {if(user && user.username === userProfile.username) fileInputRef.current?.click()}}
                         onError={(e) => {
                         e.target.src = `https://via.placeholder.com/150?text=${userProfile.displayName.charAt(0)}`;
                         }}

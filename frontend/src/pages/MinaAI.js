@@ -82,6 +82,36 @@ const MinaAi = () => {
         setMax3(prevMax3 => prevMax3 + 1);
     }
 
+    const getPromptsHistory = async () =>{
+        const response = await fetch(`${process.env.REACT_APP_API}/api/minaAi/getPromptsHistory`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: user && user.username ? user.username : null
+            })
+        })
+        const json = await response.json()
+        if(!response.ok){
+            console.log(json)
+            setError(json.error)
+            setTimeout(() => {
+                setError(null);
+            }, 7000)
+        }else{
+            console.log(json.prompts)
+            setConversatii(json.prompts);
+        }
+    }
+
+    useEffect(() =>{
+        setConversatii([]);
+        if(user){
+            getPromptsHistory();
+        }
+    }, [user, prompts]);
+
 
     const getPrompt = async() => {
         if(convId){
@@ -137,38 +167,6 @@ const MinaAi = () => {
             }
         }
     }
-    
-    const getPromptsHistory = async () =>{
-        setLoading(true);
-        const response = await fetch(`${process.env.REACT_APP_API}/api/minaAi/getPromptsHistory`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: user && user.username ? user.username : null
-            })
-        })
-        const json = await response.json()
-        if(!response.ok){
-            console.log(json)
-            setError(json.error)
-            setTimeout(() => {
-                setError(null);
-            }, 7000)
-            setLoading(false);
-        }else{
-            console.log(json.prompts)
-            setConversatii(json.prompts);
-            setLoading(false);
-        }
-    }
-
-    useEffect(() =>{
-        if(user){
-            getPromptsHistory();
-        }
-    }, [user]);
 
 
 
@@ -178,6 +176,7 @@ const MinaAi = () => {
     const [altele, setAltele] = useState([]);
 
     useEffect(() =>{
+        setAzi([]); setIeri([]); setTzz([]); setAltele([]);
         const today = new Date();
         today.setDate(today.getDate() - 1);
 

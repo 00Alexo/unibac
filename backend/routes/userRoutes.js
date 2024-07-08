@@ -4,7 +4,8 @@ const{
     signin,
     verifyUserAuthData,
     getUserProfile,
-    getUserAvatar
+    getUserAvatar,
+    updateUserAvatar
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.post('/signin', signin);
 router.get('/verifyUserAuthData', verifyUserAuthData);
 router.get('/getUserProfile/:username', getUserProfile);
 router.get('/getUserAvatar', getUserAvatar);
+router.post('/updateUserAvatar', updateUserAvatar);
 
 module.exports = router;
