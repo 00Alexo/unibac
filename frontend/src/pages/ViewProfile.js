@@ -80,8 +80,6 @@ const ViewProfile = () => {
         formdata.append("file", pic);
         formdata.append("upload_preset", "unibac07");
         formdata.append("cloud_name", "dopoxnlkb");
-        console.log(process.env.REACT_APP_CLOUDINARY_API)
-        console.log(process.env.REACT_APP_API);
         const cloudinary = await fetch(`${process.env.REACT_APP_CLOUDINARY_API}`, {
             method: "post",
             body: formdata,
