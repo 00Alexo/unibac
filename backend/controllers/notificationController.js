@@ -25,7 +25,7 @@ const createNotification = async (sender, receiver, type) =>{
         }).select('notifications');
       
         if (verify) {
-        return res.status(400).json("Notificarea există deja!");
+            return res.status(400).json("Notificarea există deja!");
         }
 
         const user = await userModel.findOneAndUpdate(

@@ -62,6 +62,10 @@ const LogInSchema = new mongoose.Schema({
     prompts:{
       type: Array,
       required: true
+    },
+    clase:{
+      type: Array,
+      required: true
     }
     /*tags:{
       type: Array,

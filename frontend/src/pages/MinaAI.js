@@ -55,6 +55,7 @@ const MinaAi = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
             },
             body: JSON.stringify({
                 username: user && user.username ? user.username : null
@@ -87,6 +88,7 @@ const MinaAi = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
             },
             body: JSON.stringify({
                 username: user && user.username ? user.username : null
@@ -121,6 +123,7 @@ const MinaAi = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
                     },
                     body: JSON.stringify({
                         prompt, username: user && user.username ? user.username : null
@@ -147,6 +150,7 @@ const MinaAi = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
                 },
                 body: JSON.stringify({
                     prompt, username: user && user.username ? user.username : null
@@ -193,7 +197,6 @@ const MinaAi = () => {
 
                 let convDate = new Date(year, month, day);
 
-                console.log(convDate, today);
                 if(conversatie.date === new Date().toLocaleDateString('ro-RO')){
                     setAzi(prevAzi => [...prevAzi, conversatie])
                 }else if(conversatie.date === yesterday){

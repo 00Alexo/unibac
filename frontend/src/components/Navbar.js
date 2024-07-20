@@ -171,13 +171,14 @@ const {isOpen, onOpen, onOpenChange} = useDisclosure();
 const [notification, setNotification] = useState(null);
 const [notification2, setNotification2] = useState(null);
 
-const markOneAsRead = async (user, id, action) =>{
+const markOneAsRead = async (username, id, action) =>{
   const response = await fetch(`${process.env.REACT_APP_API}/api/notifications/markOneAsRead`,{
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
     },
-    body: JSON.stringify({username: user, id: id})
+    body: JSON.stringify({username: username, id: id})
   })
 
   const json = await response.json();
@@ -204,6 +205,7 @@ const handleFollow = async (follower, toBeFollowed, id) =>{
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
       },
       body: JSON.stringify({toBeFollowed: toBeFollowed, follower: follower})
   })
@@ -230,6 +232,7 @@ const markAllAsRead = async () =>{
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
     },
     body: JSON.stringify({username: user.username})
   })
@@ -527,44 +530,98 @@ useEffect(() => {
       </DropdownMenu>
         </Dropdown>
         <Dropdown>
-        <NavbarItem style={{cursor:'pointer'}} isActive={isHovered[2]} onMouseEnter={() => handleMouseEnter(2)} onMouseLeave={() => handleMouseLeave(2)}>
-          <DropdownTrigger>
-            <Link color="foreground">
-              Features
-            </Link>
-          </DropdownTrigger>
-        </NavbarItem>
-        <DropdownMenu variant="faded"
-        itemClasses={{
-          base: "gap-4",
-        }}>
-        <DropdownItem onClick={() => {navigate('/minaAi'); window.location.reload();}}
-          key="MinaAi"
-        >
-          MinaAi
-        </DropdownItem>
-        <DropdownItem onClick={() => {navigate('/minaAi'); window.location.reload();}}
-          key="MinaAi"
-        >
-          Compiler
-        </DropdownItem>
-        <DropdownItem onClick={() => navigate('/games')}
-          key="Games"
-        >
-          Games
-        </DropdownItem>
-        <DropdownItem onClick={() => navigate('/clase')}
-          key="clase"
-        >
-          Clase
-        </DropdownItem>
-        <DropdownItem onClick={() => navigate('/concursuri')}
-          key="concursuri"
-        >
-          Concursuri
-        </DropdownItem>
-      </DropdownMenu>
+          <NavbarItem style={{cursor:'pointer'}} isActive={isHovered[2]} onMouseEnter={() => handleMouseEnter(2)} onMouseLeave={() => handleMouseLeave(2)}>
+            <DropdownTrigger>
+              <Link color="foreground">
+                Features
+              </Link>
+            </DropdownTrigger>
+          </NavbarItem>
+            <DropdownMenu variant="faded"
+            itemClasses={{
+              base: "gap-4",
+            }}>
+            <DropdownItem onClick={() => {navigate('/minaAi'); window.location.reload();}}
+              key="MinaAi"
+            >
+              MinaAi
+            </DropdownItem>
+            <DropdownItem onClick={() => {navigate('/compiler'); window.location.reload();}}
+              key="MinaAi"
+            >
+              Compiler
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/games')}
+              key="Games"
+            >
+              Games
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/clase')}
+              key="clase"
+            >
+              Clase
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/concursuri')}
+              key="concursuri"
+            >
+              Concursuri
+            </DropdownItem>
+          </DropdownMenu>
       </Dropdown>
+      {userData?.statut === 'profesor' &&
+      <Dropdown>
+          <NavbarItem style={{cursor:'pointer'}} isActive={isHovered[3]} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={() => handleMouseLeave(3)}>
+            <DropdownTrigger>
+              <Link color="foreground">
+                Profesori
+              </Link>
+            </DropdownTrigger>
+          </NavbarItem>
+            <DropdownMenu variant="faded"
+            itemClasses={{
+              base: "gap-4",
+            }}>
+            <DropdownSection showDivider title="Subiecte"> 
+              <DropdownItem onClick={() => {navigate('/subiecte/posteaza'); window.location.reload();}}
+                key="Subiect"
+              >
+                Posteaza un subiect
+              </DropdownItem>
+              <DropdownItem onClick={() => {navigate(`/profile/${user.username}/idkyet`); window.location.reload();}}
+                key="Subiect"
+              >
+                Subiecte postate de tine
+              </DropdownItem>
+            </DropdownSection>
+            
+            <DropdownSection showDivider title="Articole"> 
+              <DropdownItem onClick={() => {navigate('/articole/posteaza'); window.location.reload();}}
+                key="Subiect"
+              >
+                Posteaza un articol
+              </DropdownItem>
+              <DropdownItem onClick={() => {navigate(`/profile/${user.username}/idkyet`); window.location.reload();}}
+                key="Subiect"
+              >
+                Articole postate de tine
+              </DropdownItem>
+            </DropdownSection>
+
+            <DropdownSection showDivider title="Clase"> 
+              <DropdownItem onClick={() => {navigate('/subiecte/posteaza'); window.location.reload();}}
+                key="Subiect"
+              >
+                Creeaza o clasa
+              </DropdownItem>
+              <DropdownItem onClick={() => {navigate(`/profile/${user.username}`); window.location.reload();}}
+                key="Subiect"
+              >
+                Clasele tale
+              </DropdownItem>
+            </DropdownSection>
+          </DropdownMenu>
+      </Dropdown>
+      }
       </NavbarContent>
       <NavbarContent as="div" className="items-center" justify="end">
         <Input className='search-input'
@@ -759,7 +816,7 @@ useEffect(() => {
               </DropdownSection>
               <DropdownSection  title="Profesori">
                 <DropdownItem
-                  onClick={() => navigate('/articole/Posteaza un articol')}
+                  onClick={() => navigate('/articole/posteaza')}
                   key="Posteaza"
                 >
                   Posteaza un articol

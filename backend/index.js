@@ -8,16 +8,20 @@ const userRoutes = require('./routes/userRoutes');
 const socialRoutes = require('./routes/socialRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const minaAiRoutes = require('./routes/minaAiRoutes');
+const classRoutes = require('./routes/classRoutes');
 const app = express();
 
-app.use((req, res, next) => {
-  const allowedOrigin = process.env.ALLOWED_ORIGIN;
-  res.setHeader("Access-Control-Allow-Origin", `${allowedOrigin}`);
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, username");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  next();
-});
+const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
+
+const corsOptions = {
+    origin: allowedOrigin,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'username'],
+    credentials: true
+};
+
+app.use(cors(corsOptions));
+
 app.use(requestIp.mw());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
@@ -33,6 +37,7 @@ app.use('/api/user', userRoutes)
 app.use('/api/social', socialRoutes)
 app.use('/api/notifications', notificationRoutes)
 app.use('/api/minaAi', minaAiRoutes);
+app.use('/api/class', classRoutes)
 
 mongoose.connect(process.env.mongoDB)
     .then(() => {

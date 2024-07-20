@@ -8,6 +8,10 @@ const followUser = async (req, res)=>{
     try{
         const {follower, toBeFollowed} = req.body;
 
+        if(follower == toBeFollowed){
+            return res.status(400).json({error: "Nu poti sa iti dai follow singur!"});
+        }
+
         const targetUser = await userModel.findOne({ username: follower.toLowerCase() }).select('following');
         console.log(targetUser);
         if (targetUser.following.some(user => user.username === toBeFollowed.toLowerCase())) {
@@ -87,7 +91,10 @@ const getFollowers = async (req, res) =>{
     try{
         const {username} = req.query;
 
-        const user = await userModel.findOneAndUpdate({username:username.toLowerCase()}).select('followers');
+        const user = await userModel.findOne({username:username.toLowerCase()}).select('followers');
+
+        if(!user)
+            return res.status(400).json({error: "Trebuie sa fii logat"});
 
         console.log(user);
 
@@ -102,7 +109,10 @@ const getFollowing = async (req, res) =>{
     try{
         const {username} = req.query;
 
-        const user = await userModel.findOneAndUpdate({username:username.toLowerCase()}).select('following');
+        const user = await userModel.findOne({username:username.toLowerCase()}).select('following');
+
+        if(!user)
+            return res.status(400).json({error: "Trebuie sa fii logat"});
 
         console.log(user);
 

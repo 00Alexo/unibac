@@ -105,6 +105,7 @@ const ViewProfile = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
             },
             body: JSON.stringify({avatar: avatarUrl, username: user.username})
         })
@@ -132,6 +133,7 @@ const ViewProfile = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
             },
             body: JSON.stringify({toBeFollowed: userProfile.username, follower: user.username})
         })
@@ -160,6 +162,7 @@ const ViewProfile = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
             },
             body: JSON.stringify({toBeUnfollowed: userProfile.username, unfollower: user.username})
         })
@@ -190,6 +193,7 @@ const ViewProfile = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
             },
             body: JSON.stringify({toBeFollowed: toBeFollowed, follower: follower})
         })
@@ -197,6 +201,10 @@ const ViewProfile = () => {
         
         if(!response.ok){
             console.log(json.error);
+            setErroare(json.error);
+            setTimeout(() =>{
+                setErroare(null);
+            }, 7000)
         }
         
         if(response.ok){

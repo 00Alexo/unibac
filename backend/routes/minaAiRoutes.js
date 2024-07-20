@@ -6,7 +6,11 @@ const{
     getPromptsHistory
 } = require('../controllers/minaAiController');
 
+const requireAuth = require('../middleware/requireAuth')
+
 const router = express.Router();
+
+router.use(requireAuth);
 
 router.post('/chatMinaAi/:chatId', chatMinaAi)
 router.post('/newChatMinaAi', newChatMinaAi)

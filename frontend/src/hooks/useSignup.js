@@ -13,11 +13,12 @@ export const useSignup = () =>{
         setErrorFields(null);
         setIsLoading(true);
         setError(null);
+        console.log(statut);
         if(statut === '$.0')
-            statut = 'Elev';
+            statut = 'elev';
         else if (statut === '$.1')
-            statut = 'Profesor';
-
+            statut = 'profesor';
+        console.log(statut);
         const response = await fetch(`${process.env.REACT_APP_API}/api/user/signup`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
