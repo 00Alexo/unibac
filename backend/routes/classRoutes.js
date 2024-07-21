@@ -4,7 +4,9 @@ const{
     joinClass,
     changeAcces,
     leaveClass,
-    kickMember
+    kickMember,
+    deleteClass,
+    transferOwnership
 } = require('../controllers/classController');
 
 const requireAuth = require('../middleware/requireAuth')
@@ -18,6 +20,7 @@ router.post('/joinClass', joinClass);
 router.patch('/changeAcces', changeAcces);
 router.delete('/leaveClass', leaveClass);
 router.delete('/kickMember', kickMember);
-
+router.delete('/deleteClass', deleteClass);
+router.patch('/transferOwnership', transferOwnership);
 
 module.exports = router;

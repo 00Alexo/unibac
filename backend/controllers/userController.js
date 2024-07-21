@@ -148,7 +148,8 @@ const signup = async(req, res) =>{
         }
         const user = await userModel.create(data);
         const token = createToken(user._id)
-        console.log("New account created successfully: ", data);
+        console.log(user._id);
+        console.log("Token created: ", token); 
         res.status(200).json({username:data.username, token});
     }catch(error){
         console.error(error.message);
@@ -164,7 +165,6 @@ const verifyUserAuthData = async (req, res) => {
     }
   
     const user = await userModel.findOne({ username:username.toLowerCase() }).select('_id');
-    console.log("userFAKE", user);
   
     const token = authorization.split(' ')[1];
   
@@ -172,7 +172,6 @@ const verifyUserAuthData = async (req, res) => {
       const { _id } = jwt.verify(token, process.env.SECRET);
   
       req.user = await userModel.findOne({ _id }).select('_id');
-      console.log("userREAL: ", req.user);
   
       if (_id == user._id) {
         return res.status(200).json({ mssg: "Autentificare valida" });
@@ -190,11 +189,9 @@ const getUserProfile = async (req, res) =>{
     try{
         const {username} = req.params;
         const user = await userModel.findOne({username: username.toLowerCase()}).select(`-password -userIp `)
-        console.log(user);
         if(!user){
             return res.status(404).json({ error: 'Acest utilizator nu exista!' });
         }
-        console.log(user);
         res.status(200).json(user);
     }catch(error){
         res.status(400).json(error.message);

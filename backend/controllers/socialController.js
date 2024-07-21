@@ -13,7 +13,6 @@ const followUser = async (req, res)=>{
         }
 
         const targetUser = await userModel.findOne({ username: follower.toLowerCase() }).select('following');
-        console.log(targetUser);
         if (targetUser.following.some(user => user.username === toBeFollowed.toLowerCase())) {
             return res.status(400).json({ error: 'Deja urmaresti acest utilizator!' });
         }
@@ -42,7 +41,8 @@ const followUser = async (req, res)=>{
         const userToBeFollowed = await userModel.findOneAndUpdate({username: toBeFollowed.toLowerCase()}, updatedFollowers, {new:true}).select('followers');
         const userFollower = await userModel.findOneAndUpdate({username: follower.toLowerCase()}, updatedFollowing, {new:true}).select('following');
 
-        createNotification(follower, toBeFollowed, 'newFollower');
+        createNotification(follower, toBeFollowed, 'newFollower', 
+        `<span style="color:white; font-size:1.05rem; cursor:pointer;" onclick="navigateToProfile('${follower}')">${follower}</span> a inceput sa te urmareasca!`);
         res.status(200).json({userToBeFollowed, userFollower});
     }catch(error){
         console.error(error.message);
@@ -55,7 +55,6 @@ const unfollowUser = async (req, res)=>{
         const {unfollower, toBeUnfollowed} = req.body
 
         const targetUser = await userModel.findOne({ username: unfollower.toLowerCase() }).select('following');
-        console.log(targetUser);
         if (!targetUser.following.some(user => user.username === toBeUnfollowed.toLowerCase())) {
             return res.status(400).json({ error: 'Nu urmaresti acest utilizator' });
         }
@@ -76,7 +75,6 @@ const unfollowUser = async (req, res)=>{
             }
         }
 
-        console.log(updatedFollowing, updatedFollowers);
 
         const userToBeUnfollowed = await userModel.findOneAndUpdate({username: toBeUnfollowed.toLowerCase()}, updatedFollowers, {new:true}).select('followers');
         const userUnfollower = await userModel.findOneAndUpdate({username: unfollower.toLowerCase()}, updatedFollowing, {new:true}).select('following');
@@ -96,8 +94,6 @@ const getFollowers = async (req, res) =>{
         if(!user)
             return res.status(400).json({error: "Trebuie sa fii logat"});
 
-        console.log(user);
-
         res.status(200).json({followers: user});
     }catch(error){
         console.error(error.message);
@@ -114,7 +110,6 @@ const getFollowing = async (req, res) =>{
         if(!user)
             return res.status(400).json({error: "Trebuie sa fii logat"});
 
-        console.log(user);
 
         res.status(200).json({following: user});
     }catch(error){
@@ -128,7 +123,6 @@ const search = async(req, res) =>{
         const {search, page = 1, limit = 9} = req.query;
         const limitNum = parseInt(limit);
         const skip = (parseInt(page) - 1) * limitNum;
-        console.log(page, skip);
         const users = await userModel.find({username: {$regex: search, $options: 'i'}}).select
         ('username displayName avatar followers following statut').skip(skip).limit(limitNum);
 

@@ -9,6 +9,10 @@ const ClassSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    status:{
+        type: String,
+        required: true
+    },
     classId:{
         type: Number,
         required: true,
@@ -16,7 +20,6 @@ const ClassSchema = new mongoose.Schema({
     },
     password:{
         type: String,
-        required: true
     },
     subject:{
         type: String,
@@ -42,11 +45,18 @@ const ClassSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
+    tests:{
+        type: Array,
+        required: true
+    },
     lessons:{
         type: Array,
         required: true
     },
-
+    logs:{
+        type:Array,
+        required: true
+    }
 
   }, {timestamps: true});
 

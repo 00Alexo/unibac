@@ -178,7 +178,7 @@ const markOneAsRead = async (username, id, action) =>{
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${user.token}`
     },
-    body: JSON.stringify({username: username, id: id})
+    body: JSON.stringify({username: username, id: id, userAuth: user.username})
   })
 
   const json = await response.json();
@@ -207,7 +207,7 @@ const handleFollow = async (follower, toBeFollowed, id) =>{
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${user.token}`
       },
-      body: JSON.stringify({toBeFollowed: toBeFollowed, follower: follower})
+      body: JSON.stringify({toBeFollowed: toBeFollowed, follower: follower, userAuth: user.username})
   })
   const json = await response.json();
   
@@ -234,7 +234,7 @@ const markAllAsRead = async () =>{
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${user.token}`
     },
-    body: JSON.stringify({username: user.username})
+    body: JSON.stringify({username: user.username, userAuth: user.username})
   })
 
   const json = await response.json();
@@ -270,6 +270,12 @@ useEffect(() => {
   };
 
 }, []);
+
+const navigateToProfile = (sender) => {
+  navigate(`/profile/${sender}`);
+};
+
+window.navigateToProfile = navigateToProfile;
 
 
   return (
@@ -314,7 +320,7 @@ useEffect(() => {
                   {userData?.notifications.notifications.slice().reverse().map((notification) =>{
                   return (
                     <div style={{padding:'5px'}}> 
-                      {notification.type == 'newFollower' &&
+                        {notification &&
                         <div className="flex items-center justify-between">
                           <div className='flex flex-row gap-3 items-center' style={{paddingRight:'10px'}}>
                             <div className={notification.status==='unread' ? 'notificationsBulinuta' : ' '}>
@@ -329,12 +335,10 @@ useEffect(() => {
                                 }}
                               />
                             </div>
-                            <p className='notificationsText'><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
-                            onClick={() => {navigate(`/profile/${notification.sender}`); onClose()}}>
-                            {notification.sender}</span> a inceput sa te urmareasca!</p>
+                            <p className='notificationsText' onClick={() => onClose()} dangerouslySetInnerHTML={{ __html: notification.message }}></p>
                           </div>
                           <div className='flex gap-2'>
-                          {!userData.following.some(f => f.username === notification.sender) && (
+                          {notification.type == 'newFollower' && !userData.following.some(f => f.username === notification.sender) && (
                             <Button 
                               size={isSmallScreen ? 'sm' : 'md'} 
                               style={isSmallScreen ? { marginRight: '-10px' } : {}}
@@ -345,7 +349,7 @@ useEffect(() => {
                               Follow
                             </Button>
                           )}
-                          {userData.following.some(f => f.username === notification.sender) && (
+                          {notification.type == 'newFollower' && userData.following.some(f => f.username === notification.sender) && (
                             <Button 
                               size={isSmallScreen ? 'sm' : 'md'} 
                               style={isSmallScreen ? { marginRight: '-10px' } : {}}
@@ -367,7 +371,7 @@ useEffect(() => {
                           }
                           </div>
                         </div>
-                      }
+                    }
                     </div>
                     )
                   })} 
@@ -376,7 +380,7 @@ useEffect(() => {
                   {userData?.notifications.notifications.slice().reverse().filter(notification => notification.status === 'unread').map((notification) =>{
                     return (
                       <div style={{padding:'5px'}}>
-                        {notification.type == 'newFollower' && notification.status =='unread' &&
+                        {notification.status =='unread' &&
                           <div className="flex items-center justify-between">
                             <div className='flex flex-row gap-3 items-center'>
                               <div className='notificationsBulinuta'>
@@ -386,18 +390,16 @@ useEffect(() => {
                                   }}
                                 />
                               </div>
-                              <p className='notificationsText'><span style={{color:'white', fontSize:'1.05rem', cursor:'pointer'}} 
-                              onClick={() => {navigate(`/profile/${notification.sender}`); onClose()}}>
-                              {notification.sender}</span> a inceput sa te urmareasca!</p>
+                              <p className='notificationsText' onClick={() => onClose()} dangerouslySetInnerHTML={{ __html: notification.message }}></p>
                             </div>
                             <div className='flex gap-2'>
-                              {!userData.following.includes(notification.sender) && (
+                              {notification.type == 'newFollower' && !userData.following.includes(notification.sender) && (
                                 <Button size={isSmallScreen ? 'sm' : 'md'} style={isSmallScreen ? {marginRight:'-10px'} : {}}
                                 color='default' variant="ghost" onClick={() => handleFollow(user.username, notification.sender, notification.id)}> 
                                   Follow
                                 </Button>
                               )}
-                              {userData.following.includes(notification.sender) && (
+                              {notification.type == 'newFollower' && userData.following.includes(notification.sender) && (
                                 <Button color='default' variant="ghost" isDisabled size={isSmallScreen ? 'sm' : 'md'}
                                 style={isSmallScreen ? {marginRight:'-10px'} : {}}> 
                                   Following

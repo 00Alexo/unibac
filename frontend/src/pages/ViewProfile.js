@@ -107,7 +107,7 @@ const ViewProfile = () => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${user.token}`
             },
-            body: JSON.stringify({avatar: avatarUrl, username: user.username})
+            body: JSON.stringify({avatar: avatarUrl, username: user.username, userAuth: user.username})
         })
         const json = await response.json();
         if(!response.ok){
@@ -135,7 +135,7 @@ const ViewProfile = () => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${user.token}`
             },
-            body: JSON.stringify({toBeFollowed: userProfile.username, follower: user.username})
+            body: JSON.stringify({toBeFollowed: userProfile.username, follower: user.username, userAuth: user.username})
         })
         const json = await response.json();
         
@@ -164,7 +164,7 @@ const ViewProfile = () => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${user.token}`
             },
-            body: JSON.stringify({toBeUnfollowed: userProfile.username, unfollower: user.username})
+            body: JSON.stringify({toBeUnfollowed: userProfile.username, unfollower: user.username, userAuth: user.username})
         })
         const json = await response.json();
         
@@ -195,7 +195,7 @@ const ViewProfile = () => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${user.token}`
             },
-            body: JSON.stringify({toBeFollowed: toBeFollowed, follower: follower})
+            body: JSON.stringify({toBeFollowed: toBeFollowed, follower: follower, userAuth: user.username})
         })
         const json = await response.json();
         

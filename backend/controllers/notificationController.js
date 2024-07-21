@@ -1,7 +1,7 @@
 const userModel = require('../models/userModel')
 const { v4: uuidv4 } = require('uuid');
 
-const createNotification = async (sender, receiver, type) =>{
+const createNotification = async (sender, receiver, type, message) =>{
     try{
 
         const avatar = await userModel.findOne({username: sender.toLowerCase()}).select('avatar')
@@ -10,6 +10,7 @@ const createNotification = async (sender, receiver, type) =>{
             avatar: avatar,
             type: type,
             receiver: receiver,
+            message: message,
             status: 'unread',
             id: uuidv4()
         }

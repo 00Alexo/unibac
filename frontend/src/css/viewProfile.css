@@ -149,6 +149,13 @@
         display: flex;
         flex-direction: row;
     }
+
+    .notificationsBulinuta::after{
+        width: 7px !important;
+        height: 7px !important;
+        margin-top:-2px !important;
+        margin-left:-3px !important;
+    }
 }
 
 @media (max-width:500px) {
@@ -163,11 +170,6 @@
     .notificationsImage{
         width: 30px !important; 
         height: 30px !important;
-    }
-
-    .notificationsBulinuta{
-        width: 7px !important;
-        height: 7px !important;
     }
 
     .buttonRead{
