@@ -5,7 +5,8 @@ const{
     verifyUserAuthData,
     getUserProfile,
     getUserAvatar,
-    updateUserAvatar
+    updateUserAvatar,
+    statusVerifier
 } = require('../controllers/userController');
 
 const requireAuth = require('../middleware/requireAuth')
@@ -18,5 +19,6 @@ router.get('/verifyUserAuthData', verifyUserAuthData);
 router.get('/getUserProfile/:username', getUserProfile);
 router.get('/getUserAvatar', getUserAvatar);
 router.post('/updateUserAvatar', requireAuth, updateUserAvatar);
+router.get('/statusVerifier', requireAuth,  statusVerifier);
 
 module.exports = router;

@@ -31,12 +31,12 @@ const newChatMinaAi = async (req, res) =>{
         });
 
         const intermediateChat = [...newChat];
-        intermediateChat.push({role: "user", content: 'Da nume conversatie, max 20 litere, doar litere, nimic altceva'});
+        intermediateChat.push({role: "user", content: 'Da nume conversatiei, max 20 litere, doar litere, nu spune nimic altceva inafara de titlu'});
 
         const compl = await client.chat.completions.create({
             messages: intermediateChat,
             model: "gpt-3.5-turbo",
-            max_tokens: 20
+            max_tokens: 50
         })
         
         const finalChat = {

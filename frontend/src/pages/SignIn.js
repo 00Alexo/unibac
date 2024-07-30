@@ -76,7 +76,7 @@ const SignIn = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const {signin, error, isLoading} = useSignin();
+    const {signin, error, isLoading, errorFields} = useSignin();
 
     const handleSignInSubmit = async (e) =>{
       e.preventDefault();
@@ -96,15 +96,17 @@ const SignIn = () => {
                 <CmpSignInUp/>
             </div>
             <form className="contains-SignUp">
-                <p className="signUp-create-account-text" style={{}}>SIGN-IN</p>
+                <p className="signUp-create-account-text">SIGN-IN</p>
                 <div className='contains-inputs'>
-                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
+                    <div className={errorFields?.includes('username') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                        'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
                         <Input required isClearable type="email" variant="bordered"
                         label="Username or email" size='lg'
                         onChange={(e) => {setUsername(e.target.value)}}
                         value={username}/>
                     </div>
-                    <div className="flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4">
+                    <div className={errorFields?.includes('pass') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                        'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
                         <Input required variant="bordered"label="Password" size='lg'
                         endContent={
                         <button className="focus:outline-none" type="button" onClick={toggleVisibility}>

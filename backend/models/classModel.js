@@ -53,6 +53,10 @@ const ClassSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
+    chat:{
+        type: Array,
+        required: true
+    },
     logs:{
         type:Array,
         required: true

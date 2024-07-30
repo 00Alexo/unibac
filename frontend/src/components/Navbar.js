@@ -548,7 +548,7 @@ window.navigateToProfile = navigateToProfile;
             >
               MinaAi
             </DropdownItem>
-            <DropdownItem onClick={() => {navigate('/compiler'); window.location.reload();}}
+            <DropdownItem onClick={() => {navigate('/compiler')}}
               key="MinaAi"
             >
               Compiler
@@ -584,12 +584,12 @@ window.navigateToProfile = navigateToProfile;
               base: "gap-4",
             }}>
             <DropdownSection showDivider title="Subiecte"> 
-              <DropdownItem onClick={() => {navigate('/subiecte/posteaza'); window.location.reload();}}
+              <DropdownItem onClick={() => {navigate('/subiecte/posteaza')}}
                 key="Subiect"
               >
                 Posteaza un subiect
               </DropdownItem>
-              <DropdownItem onClick={() => {navigate(`/profile/${user.username}/idkyet`); window.location.reload();}}
+              <DropdownItem onClick={() => {navigate(`/profile/${user.username}/idkyet`)}}
                 key="Subiect"
               >
                 Subiecte postate de tine
@@ -597,12 +597,12 @@ window.navigateToProfile = navigateToProfile;
             </DropdownSection>
             
             <DropdownSection showDivider title="Articole"> 
-              <DropdownItem onClick={() => {navigate('/articole/posteaza'); window.location.reload();}}
+              <DropdownItem onClick={() => {navigate('/articole/posteaza')}}
                 key="Subiect"
               >
                 Posteaza un articol
               </DropdownItem>
-              <DropdownItem onClick={() => {navigate(`/profile/${user.username}/idkyet`); window.location.reload();}}
+              <DropdownItem onClick={() => {navigate(`/profile/${user.username}/idkyet`)}}
                 key="Subiect"
               >
                 Articole postate de tine
@@ -610,12 +610,12 @@ window.navigateToProfile = navigateToProfile;
             </DropdownSection>
 
             <DropdownSection showDivider title="Clase"> 
-              <DropdownItem onClick={() => {navigate('/subiecte/posteaza'); window.location.reload();}}
+              <DropdownItem onClick={() => {navigate('/createClass')}}
                 key="Subiect"
               >
                 Creeaza o clasa
               </DropdownItem>
-              <DropdownItem onClick={() => {navigate(`/profile/${user.username}`); window.location.reload();}}
+              <DropdownItem onClick={() => {navigate(`/profile/${user.username}/idkyet`)}}
                 key="Subiect"
               >
                 Clasele tale

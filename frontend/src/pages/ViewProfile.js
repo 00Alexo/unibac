@@ -418,7 +418,7 @@ const ViewProfile = () => {
             <input
                 style={{display:'none'}}
                 ref={fileInputRef}
-                type='file' 
+                type='file'
                 accept='image/*' 
                 onChange={(e) => {
                     updateUserAvatar(e.target.files[0]);

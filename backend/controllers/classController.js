@@ -4,10 +4,26 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
 const { createNotification } = require('./notificationController');
 
+// FUNCTIONALITATI
+
 const createClass = async (req, res) =>{
     try{
         const saltRounds = 12
-        const {creator, className, password, subject, description, avatar, status} = req.body;
+        const {creator, className, password, confirmPassword, subject, description, avatar, status} = req.body;
+
+        let errorFields = [];
+
+        if (!creator) errorFields.push("creator");
+        if (!className) errorFields.push("className");
+        if (!password && status == 'private') errorFields.push("password");
+        if (!confirmPassword && status == 'private') errorFields.push("confirmPassword");
+        if (!subject) errorFields.push("subject");
+        if (!description) errorFields.push("description");
+        if (!status) errorFields.push("status");
+
+        if (errorFields.length > 0) {
+            return res.status(400).json({error: 'Toate campurile sunt obligatorii!', errorFields: errorFields});
+        };
 
         const checkCreator = await userModel.findOne({username: creator.toLowerCase()}).select('statut');
 
@@ -25,8 +41,14 @@ const createClass = async (req, res) =>{
 
         let hashedPassword = null;
 
-        if(status === 'private')
+        if(status === 'private'){
+            if(password != confirmPassword){
+                errorFields.push("password");
+                errorFields.push("confirmPassword");
+                return res.status(400).json({error: 'Parolele nu sunt identice!', errorFields});
+            }
             hashedPassword = await bcrypt.hash(password, saltRounds);
+        }
 
         const data = {
             creator,
@@ -42,6 +64,7 @@ const createClass = async (req, res) =>{
             assignments: [],
             lessons: [],
             tests: [],
+            chat: [],
             logs: [`${creator} a creat clasa cu succes!`]
         }
 
@@ -58,7 +81,26 @@ const createClass = async (req, res) =>{
             {new: true}
         )
 
-        res.status(200).json(clasa);
+        res.status(200).json({classId});
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+
+const viewClass = async (req, res) =>{
+    try{
+        const {classId} = req.params;
+
+        if(!classId)
+            return res.status(400).json({error:"Clasa invalida!"});
+
+        const check = await classModel.findOne({classId}).select('-password');
+
+        if(!check)
+            return res.status(400).json({error:"Clasa invalida!"});
+
+        res.status(200).json(check);
     }catch(error){
         console.error(error.message);
         res.status(400).json(error.message);
@@ -70,22 +112,22 @@ const joinClass = async (req, res) =>{
         const {classId, password, username} = req.body;
 
         if(!classId) 
-            return res.status(400).json("Toate campurile sunt obligatorii!");
+            return res.status(400).json({error: "Nu ai introdus ID-ul clasei!"});
 
         if(!username)
-            return res.status(400).json("Utilizator invalid");
+            return res.status(400).json({error:"Utilizator invalid"});
 
         const check1 = await userModel.findOne({username: username.toLowerCase()});
         if(!check1)
-            return res.status(400).json("Utilizator invalid");
+            return res.status(400).json({error:"Utilizator invalid"});
 
         const check = await classModel.findOne({classId});
 
         if(!check)
-            return res.status(400).json("Aceasta clasa nu exista");
+            return res.status(400).json({error:"Aceasta clasa nu exista"});
 
         if(!password && check.status == 'private')
-            return res.status(400).json("Toate campurile sunt obligatorii!");
+            return res.status(400).json({error:"Toate campurile sunt obligatorii!"});
 
         let passwordMatch = null;
 
@@ -99,7 +141,7 @@ const joinClass = async (req, res) =>{
         const check2 = await classModel.findOne({classId});
 
         if(check2.students?.includes(username.toLowerCase()) || check2.teachers?.includes(username.toLowerCase()))
-            return res.status(400).json("Deja faci parte din aceasta clasa.");
+            return res.status(400).json({error:"Deja faci parte din aceasta clasa."});
 
          await classModel.findOneAndUpdate(
             { classId },
@@ -131,26 +173,26 @@ const changeAcces = async (req, res) =>{
         const {teacher, username, classId, action} = req.body
 
         if(!classId){
-            return res.status(400).json("Clasa invalida!");
+            return res.status(400).json({error:"Clasa invalida!"});
         }
 
         const check = await userModel.findOne({username:username.toLowerCase()})
 
         if(!check){
-            return res.status(400).json("Utilizator invalid!");
+            return res.status(400).json({error:"Utilizator invalid!"});
         }
 
         const check2 = await classModel.findOne({classId});
 
         if(!check2.students?.includes(username.toLowerCase()) && !check2.teachers?.includes(username.toLowerCase()))
-            return res.status(400).json("Acest utilizator nu face parte din clasa respectiva!");
+            return res.status(400).json({error:"Acest utilizator nu face parte din clasa respectiva!"});
 
         if(check2.creator != teacher.toLowerCase())
             return res.status(400).json({error: 'Doar creatorul poate sa faca acest lucru!'})
 
         if(action === 'up'){
             if(check2.teachers.includes(username.toLowerCase()))
-                return res.status(400).json("Utilizatorul este deja profesor.");
+                return res.status(400).json({error:"Utilizatorul este deja profesor."});
 
             await classModel.findOneAndUpdate(
                 {classId: classId}, 
@@ -168,7 +210,7 @@ const changeAcces = async (req, res) =>{
             res.status(200).json("Acest elev a fost promovat la functia de profesor.")
         }else if(action === 'down'){
             if(check2.students.includes(username.toLowerCase()))
-                return res.status(400).json("Utilizatorul este deja elev.");
+                return res.status(400).json({error:"Utilizatorul este deja elev."});
 
             await classModel.findOneAndUpdate(
                 {classId: classId}, 
@@ -197,21 +239,21 @@ const leaveClass = async (req, res) =>{
         const {classId, username} = req.body;
 
         if(!classId){
-            return res.status(400).json("Clasa invalida!");
+            return res.status(400).json({error:"Clasa invalida!"});
         }else if(!username){
-            return res.status(400).json("Utilizator invalid!");
+            return res.status(400).json({error:"Utilizator invalid!"});
         }
 
         const check = await userModel.findOne({username:username.toLowerCase()})
 
         if(!check){
-            return res.status(400).json("Utilizator invalid!");
+            return res.status(400).json({error:"Utilizator invalid!"});
         }
 
         const check2 = await classModel.findOne({classId});
 
         if(!check2.students?.includes(username.toLowerCase()) && !check2.teachers?.includes(username.toLowerCase()))
-            return res.status(400).json("Nu faci parte din aceasta clasa sau esti creatorul ei.");
+            return res.status(400).json({error:"Nu faci parte din aceasta clasa sau esti creatorul ei."});
 
         await classModel.findOneAndUpdate(
             {classId: classId},
@@ -239,27 +281,27 @@ const kickMember = async (req, res) =>{
         const {classId, username, teacher} = req.body
 
         if(!classId)
-            return res.status(400).json("Clasa invalida!");
+            return res.status(400).json({error:"Clasa invalida!"});
 
         const check = await userModel.findOne({username:username.toLowerCase()})
 
         if(!check){
-            return res.status(400).json("Utilizator invalid!");
+            return res.status(400).json({error:"Utilizator invalid!"});
         }
 
         const check2 = await userModel.findOne({username: teacher.toLowerCase()})
 
         if(!check2){
-            return res.status(400).json("Utilizator invalid!");
+            return res.status(400).json({error:"Utilizator invalid!"});
         }
 
         const check3 = await classModel.findOne({classId});
 
         if(!check3.students?.includes(username.toLowerCase()) && !check3.teachers?.includes(username.toLowerCase()))
-            return res.status(400).json("Acest utilizator nu face parte din clasa respectiva.");
+            return res.status(400).json({error:"Acest utilizator nu face parte din clasa respectiva."});
 
         if (!check3.teachers?.includes(teacher.toLowerCase()) && check3.creator !== teacher.toLowerCase())
-            return res.status(400).json("Doar creatorul si profesorii pot da afara un utilizator din clasa.");
+            return res.status(400).json({error:"Doar creatorul si profesorii pot da afara un utilizator din clasa."});
         
         if(username === teacher) 
             return res.status(400).json({error: "Nu poti sa te dai afara singur din clasa."})
@@ -381,12 +423,142 @@ const transferOwnership = async (req, res) => {
     }
 }
 
+// TESTE
+
+const createTest = async (req, res) =>{
+    try{
+
+        const {classId, teacher, type, timeLimit, questions, offPoints, startDate, endDate, status} = req.body;
+
+        if(!classId || !teacher || !type || !timeLimit || !questions || !offPoints || !startDate || !endDate || !status)
+            return res.status(400).json({error: "Toate campurile sunt obligatorii!"});
+
+        const check = await classModel.findOne({classId});
+
+        if(!check)
+            return res.status(400).json({error:"Clasa invalida!"});
+
+        const check2 = await userModel.findOne({username: teacher.toLowerCase()});
+
+        if(!check2)
+            return res.status(400).json({error:"Utilizator invalid!"});
+
+        if(!check.teachers.includes(teacher.toLowerCase()) && check.creator !== teacher.toLowerCase())
+            return res.status(400).json({error: 'Nu esti profesor in clasa respectiva!'});
+
+        const test = {
+            teacher,
+            type,
+            timeLimit, 
+            questions,
+            offPoints, 
+            startDate,
+            endDate,
+            status,
+            submittedTests: [],
+            disqualifiedStudents: [],
+            grades: [],
+            testId: classId + uuidv4()
+        }
+        console.log(classId, test.testId)
+
+        await classModel.updateOne({classId}, {$addToSet: {tests: test}});
+
+        res.status(200).json(`Testul a fost creat cu succes `)
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+
+const getTestData = async (req, res) =>{
+    try{
+        const {classId, testId, username} = req.query;
+
+        if(!classId || !testId || !username)
+            return res.status(400).json({error: "Invalid data!"});
+
+        const check = await classModel.findOne({classId});
+
+        if(!check)
+            return res.status(400).json({error:"Clasa invalida!"});
+
+        const check2 = await userModel.findOne({username: username.toLowerCase()});
+
+        if(!check2)
+            return res.status(400).json({error:"Utilizator invalid!"});
+
+        if(!check.students.includes(username.toLowerCase()) && !check.teachers.includes(username.toLowerCase) && check.creator !== username.toLowerCase())
+            return res.status(400).json({error:'Nu faci parte din clasa respectiva.'});
+
+        const classData = await classModel.findOne(
+            { classId, 'tests.testId': testId },
+            { 'tests.$': 1 }
+        )
+        
+        if (!classData || !classData.tests || classData.tests.length === 0) {
+            return res.status(400).json({ error: "Test invalid!" });
+        }
+        
+        const test = classData.tests[0];
+        
+        for (let question of test.questions) {
+            delete question.correctOption;
+        }
+
+        res.status(200).json(test);
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+
+const submitTest = async (req, res) =>{
+    try{
+        const {username, testId, classId, submittedTest} = req.body;
+
+        if(!username || !classId || !submittedTest || !testId)
+            return res.status(400).json({error: "Invalid data!"});
+
+        const check = await classModel.findOne({classId});
+
+        if(!check)
+            return res.status(400).json({error: "Clasa invalida!"});
+
+        const check2 = await userModel.findOne({username: username.toLowerCase()});
+
+        if(!check2)
+            return res.status(400).json({error: "User invalida!"});
+
+        if(!check.students.includes(username.toLowerCase()))
+            return res.status(400).json({error: 'Nu esti elev in clasa respectiva!'})
+
+        const classData = await classModel.findOne(
+            { classId, 'tests.testId': testId },
+            { 'tests.$': 1 }
+        )
+
+        if (!classData || !classData.tests || classData.tests.length === 0) {
+            return res.status(400).json({ error: "Test invalid!" });
+        }
+
+        res.status(200).json({});
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+ 
 module.exports={
     createClass,
+    viewClass,
     changeAcces,
     joinClass,
     leaveClass,
     kickMember,
     deleteClass,
-    transferOwnership
+    transferOwnership,
+    createTest,
+    getTestData,
+    submitTest,
 }

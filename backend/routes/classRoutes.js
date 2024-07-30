@@ -6,12 +6,18 @@ const{
     leaveClass,
     kickMember,
     deleteClass,
-    transferOwnership
+    transferOwnership,
+    createTest,
+    getTestData,
+    submitTest,
+    viewClass,
 } = require('../controllers/classController');
 
 const requireAuth = require('../middleware/requireAuth')
 
 const router = express.Router();
+
+router.get('/viewClass/:classId', viewClass);
 
 router.use(requireAuth);
 
@@ -22,5 +28,8 @@ router.delete('/leaveClass', leaveClass);
 router.delete('/kickMember', kickMember);
 router.delete('/deleteClass', deleteClass);
 router.patch('/transferOwnership', transferOwnership);
+router.post('/createTest', createTest);
+router.get('/getTestData', getTestData);
+router.post('/submitTest', submitTest);
 
 module.exports = router;

@@ -8,12 +8,15 @@ import './css/signInUp.css'
 import './css/viewProfile.css'
 import './css/alerts.css'
 import './css/minaAi.css'
+import './css/class.css'
 import {useState, useEffect} from 'react'
 import { useLogout } from './hooks/useLogout'
 import { useAuthContext } from './hooks/useAuthContext'
 import ViewProfile from './pages/ViewProfile.js';
 import Search from './pages/Search.js';
 import MinaAi from './pages/MinaAI.js';
+import CreateClass from './pages/CreateClass.js';
+import ViewClass from './pages/ViewClass.js';
 
 function App() {
   const { user } = useAuthContext()
@@ -66,6 +69,9 @@ function App() {
               path="/profile/:username"
               element={<ViewProfile/>}
             />
+
+            {/* minaAI */}
+
             <Route
               path="/minaAI"
               element={<MinaAi/>}
@@ -74,9 +80,24 @@ function App() {
               path="/minaAI/:convId"
               element={<MinaAi/>}
             />
+
+            {/* search */}
+
             <Route
               path="/search/:search"
               element={<Search/>}
+            />
+
+            {/* clase */}
+
+            <Route
+              path="/clase/:classId"
+              element={<ViewClass/>}
+            />
+
+            <Route 
+              path="/createClass"
+              element={<CreateClass/>}  
             />
             <Route 
               path="*"

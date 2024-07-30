@@ -227,7 +227,7 @@ const SignUp = () => {
                 </div>
                 <div>
                     <div className="submit-div">
-                        <Button disabled ={isLoading} color="default" type = "submit" onClick={handleSignUpSubmit}
+                        <Button isDisabled ={isLoading} color="default" type = "submit" onClick={handleSignUpSubmit}
                         variant="bordered" size='lg' className="btnSgnUp">
                             Submit
                         </Button>  

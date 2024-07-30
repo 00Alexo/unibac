@@ -1,0 +1,29 @@
+.create-class-text{
+    padding-top: 20px;
+    font-family: 'Montserrat ExtraBold';
+    font-size: 1.5rem;
+    color: #D5D8DF;
+}
+
+.contains-cmp-createclass{
+    height: calc(100vh - 126px);
+    border-radius: 16px;
+    min-height:450px;
+    max-height: 1000px !important;
+}
+
+.contains-class-inputs{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+@media (max-width: 950px) {
+    .contains-cmp-createclass{
+        display: none;
+    }    
+    .contains-createclass{
+        margin: 0 auto;
+        width: 90%;
+    }
+}

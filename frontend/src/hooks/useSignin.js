@@ -6,6 +6,7 @@ export const useSignin = () =>{
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(null);
+    const [errorFields, setErrorFields] = useState(null);
     const {dispatch} = useAuthContext();
 
     const signin = async (username, password) =>{
@@ -22,6 +23,7 @@ export const useSignin = () =>{
         if(!response.ok){
             setIsLoading(false);
             setError(json.error);
+            setErrorFields(json.errorFields);
             setTimeout(()=>{
                 setError(null);
             }, 7000)
@@ -35,5 +37,5 @@ export const useSignin = () =>{
         }
     }
 
-    return {signin, isLoading, error}
+    return {signin, isLoading, error, errorFields}
 }

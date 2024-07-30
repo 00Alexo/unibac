@@ -17,8 +17,14 @@ const createToken = (_id) =>{
 const signin = async(req, res) =>{
     try{
         let check;
-        if(!req.body.username || !req.body.password){
-            return res.status(400).json({error:"Toate campurile sunt obligatorii!"});
+
+        let errorFields = [];
+
+        if (!req.body.username) errorFields.push("username");
+        if (!req.body.password) errorFields.push("pass");
+        
+        if (errorFields.length > 0) {
+            return res.status(400).json({error: 'Toate campurile sunt obligatorii!', errorFields});
         }
         let signinValidator = req.body.username.split("");
         let isEmail = false;
@@ -43,10 +49,12 @@ const signin = async(req, res) =>{
 
                 res.status(200).json({username:check.username, token});
             } else {
-            return res.status(400).json({error:"Parola gresita"});
+                errorFields.push("pass");
+            return res.status(400).json({error:"Parola gresita", errorFields});
             }
         } else {
-            return res.status(400).json({error:"Acest cont nu exista"});
+            errorFields.push("username");
+            return res.status(400).json({error:"Acest cont nu exista", errorFields});
         }
 
     } catch (error) {
@@ -61,13 +69,14 @@ const signup = async(req, res) =>{
         let errorFields = [];
         const email = req.body.email, username = req.body.username, password = req.body.password,
         confirmPassword = req.body.confirmPassword, statut = req.body.statut, judet = req.body.judet;
-        if(!email || !username || !password || !confirmPassword || !statut || !judet){ 
-            errorFields.push("username");
-            errorFields.push("email");
-            errorFields.push("pass");
-            errorFields.push("cpass");
-            errorFields.push("statut");
-            errorFields.push("judet");
+        if (!email) errorFields.push("email");
+        if (!username) errorFields.push("username");
+        if (!password) errorFields.push("pass");
+        if (!confirmPassword) errorFields.push("cpass");
+        if (!statut) errorFields.push("statut");
+        if (!judet) errorFields.push("judet");
+        
+        if (errorFields.length > 0) {
             return res.status(400).json({error: 'Toate campurile sunt obligatorii!', errorFields: errorFields});
         }
         const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -224,6 +233,25 @@ const updateUserAvatar = async(req, res) =>{
         res.status(400).json(error.message);
     }
 }
+
+const statusVerifier = async(req, res) =>{
+    try{
+        const {username} = req.query;
+
+        if(!username)
+            return res.status(400).json({error: 'Invalid username'});
+
+        const user = await userModel.findOne({username: username.toLowerCase()}).select('statut');
+
+        if(!user)
+            return res.status(400).json({error:'Utilizator invalid!'});
+
+        res.status(200).json({user});
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
  
 module.exports={
     signin,
@@ -231,5 +259,6 @@ module.exports={
     verifyUserAuthData,
     getUserProfile,
     getUserAvatar,
-    updateUserAvatar
+    updateUserAvatar,
+    statusVerifier
 }
