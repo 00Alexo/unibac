@@ -22,28 +22,28 @@ function App() {
   const { user } = useAuthContext()
   const { logout } = useLogout()
 
-  useEffect(() =>{
-    const fetchAuthCheck = async ()=>{
-      const response = await fetch(`${process.env.REACT_APP_API}/api/user/verifyUserAuthData`, {
-        headers: {
-          'Authorization': `Bearer ${user.token}`,
-          'username': `${user.username}`,
-        },
-      });
-      const json = await response.json()
+  // useEffect(() =>{
+  //   const fetchAuthCheck = async ()=>{
+  //     const response = await fetch(`${process.env.REACT_APP_API}/api/user/verifyUserAuthData`, {
+  //       headers: {
+  //         'Authorization': `Bearer ${user.token}`,
+  //         'username': `${user.username}`,
+  //       },
+  //     });
+  //     const json = await response.json()
 
-      if(response.ok){
-        console.log("VALID: ", json);
-      }
-      if(!response.ok){
-        console.log("INVALID: ", json);
-        logout();
-      }
-    }
+  //     if(response.ok){
+  //       console.log("VALID: ", json);
+  //     }
+  //     if(!response.ok){
+  //       console.log("INVALID: ", json);
+  //       logout();
+  //     }
+  //   }
 
-    if(user)
-    fetchAuthCheck();
-  }, [user])
+  //   if(user)
+  //   fetchAuthCheck();
+  // }, [user])
   return (
     <BrowserRouter>
       <div className="App">

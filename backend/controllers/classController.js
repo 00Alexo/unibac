@@ -91,6 +91,7 @@ const createClass = async (req, res) =>{
 const viewClass = async (req, res) =>{
     try{
         const {classId} = req.params;
+        const {username} = req.query;
 
         if(!classId)
             return res.status(400).json({error:"Clasa invalida!"});
@@ -99,6 +100,11 @@ const viewClass = async (req, res) =>{
 
         if(!check)
             return res.status(400).json({error:"Clasa invalida!"});
+
+        if(check.status === 'private')
+            if(!check.students.includes(username?.toLowerCase()) && !check.teachers.includes(username?.toLowerCase()) 
+                && check.creator !== username?.toLowerCase())
+                    return res.status(400).json({error:"Clasa privata", className: check.className, username})
 
         res.status(200).json(check);
     }catch(error){
@@ -110,12 +116,14 @@ const viewClass = async (req, res) =>{
 const joinClass = async (req, res) =>{
     try{
         const {classId, password, username} = req.body;
+        let errorFields = [];
 
-        if(!classId) 
-            return res.status(400).json({error: "Nu ai introdus ID-ul clasei!"});
-
+        if(!classId){
+            errorFields.push('classId');
+            return res.status(400).json({error: "Nu ai introdus ID-ul clasei!", errorFields});
+        }
         if(!username)
-            return res.status(400).json({error:"Utilizator invalid"});
+            return res.status(400).json({error:"Trebuie sa fii logat ca sa te poti alatura unei clase!"});
 
         const check1 = await userModel.findOne({username: username.toLowerCase()});
         if(!check1)
@@ -123,11 +131,14 @@ const joinClass = async (req, res) =>{
 
         const check = await classModel.findOne({classId});
 
-        if(!check)
-            return res.status(400).json({error:"Aceasta clasa nu exista"});
-
-        if(!password && check.status == 'private')
-            return res.status(400).json({error:"Toate campurile sunt obligatorii!"});
+        if(!check){
+            errorFields.push('classId');
+            return res.status(400).json({error:"Aceasta clasa nu exista", errorFields});
+        }
+        if(!password && check.status == 'private'){
+            errorFields.push('password');
+            return res.status(400).json({error:"Toate campurile sunt obligatorii!", errorFields});
+        }
 
         let passwordMatch = null;
 
@@ -135,7 +146,8 @@ const joinClass = async (req, res) =>{
             passwordMatch = await bcrypt.compare(password, check.password);
 
         if (!passwordMatch && check.status === 'private') {
-            return res.status(400).json({ error: "Parola gresita" });
+            errorFields.push('password');
+            return res.status(400).json({ error: "Parola gresita", errorFields });
         }
 
         const check2 = await classModel.findOne({classId});
@@ -160,7 +172,7 @@ const joinClass = async (req, res) =>{
             {new: true}
         )
 
-        res.status(200).json(`Te-ai alaturat cu succes clasei cu id-ul ${classId}`);
+        res.status(200).json({msg: `Te-ai alaturat cu succes clasei cu id-ul ${classId}`});
         
     }catch(error){
         console.error(error.message);

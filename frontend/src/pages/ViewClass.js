@@ -1,20 +1,39 @@
-import { useLocation, useNavigate, useParams} from 'react-router-dom';
+import { useLocation, useNavigate, useParams, Link} from 'react-router-dom';
 import {useState, useEffect, useRef} from 'react';
 import checkmark from '../assets/blue-checkmark.png'
 import { useGetProfile } from '../hooks/useGetProfile';
 import PageNotFound from './404';
-import {Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input} from "@nextui-org/react";
+import {Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, Checkbox
+} from "@nextui-org/react";
 import { useAuthContext } from '../hooks/useAuthContext';
 import {Error, NotificationBox} from '../components/alertBox';
 import Loading from "../pages/Loading";
 import {useViewClass} from "../hooks/useViewClass"
+import { MailIcon, EyeFilledIcon, EyeSlashFilledIcon } from './SignUp';
+import { useJoinClass } from '../hooks/useJoinClass';
 
 const ViewClass = () => {
+    const {user} = useAuthContext();
     const {classId} = useParams();
-    const {classData, error, isLoading, refetchClass} = useViewClass(classId);
+    const {classData, error, isLoading, refetchClass} = useViewClass(classId, user?.username);
     const location = useLocation();
     const navigate = useNavigate();
     const [successfullyCreatedClass, setSuccessfullyCreatedClass] = useState(false);
+    const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+    const [isVisible, setIsVisible] = useState(false);
+    const toggleVisibility = () => setIsVisible(!isVisible);
+    const [id, setId] = useState(classId);
+    const [password, setPassword] = useState(null);
+    const {joinClass, error: errorCreateClass, isLoading: isLoadingCreateClass, errorFields, notification} = useJoinClass();
+
+    const handleJoinClass = async (e) =>{
+        const close = await joinClass(classId, password, user?.username, user?.token);
+        
+        if(close){
+            onClose();
+            refetchClass();
+        }
+    }
 
     useEffect(() => {
         if (location.state?.fromCreateClass) {
@@ -28,6 +47,61 @@ const ViewClass = () => {
 
     return (
         <div>
+            {errorCreateClass && <Error error={errorCreateClass}/>}
+            {notification && <NotificationBox notification={notification}/>}
+            <Modal 
+                isOpen={isOpen} 
+                onOpenChange={onOpenChange}
+                placement="top-center"
+            >
+                <ModalContent>
+                {(onClose) => (
+                    <>
+                    <ModalHeader className="flex flex-col gap-1">Alatura-te clasei {classData.className}</ModalHeader>
+                    <ModalBody>
+                        <div className={errorFields?.includes('password') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                        'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
+                            <Input
+                                autoFocus
+                                label="ID"
+                                placeholder="Introdu ID-ul clasei"
+                                variant="bordered"
+                                value={id}
+                                />
+                        </div>
+                        <div className={errorFields?.includes('password') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                        'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
+                            <Input
+                                endContent={
+                                <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                                    {isVisible ? (
+                                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    ) : (
+                                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    )}
+                                </button>
+                                }
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                type={isVisible ? "text" : "password"}
+                                label="Password"
+                                placeholder="Introdu parola clasei"
+                                variant="bordered"
+                            />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter className='mt-5'>
+                        <Button color="danger" variant="flat" onClick={onClose}>
+                            Close
+                        </Button>
+                        <Button color="primary" onClick={() => handleJoinClass()}>
+                            Sign in
+                        </Button>
+                    </ModalFooter>
+                    </>
+                )}
+                </ModalContent>
+            </Modal>
             {successfullyCreatedClass &&
             <div class="after-loggin-animation">
                 <div class="center">
@@ -48,6 +122,20 @@ const ViewClass = () => {
             </div>
             }
             {classData && <p>{classData.creator}</p>}
+            {error === 'Clasa privata' && 
+                <main className="mt-5 flex flex-col items-center justify-center bg-light p-4">
+                    <div className="flex flex-col items-center space-y-4">
+                    <h1 className="bi bi-link-45deg text-6xl"></h1>
+                    <h2 className="text-4xl font-bold text-gray-500 mr-5 ml-5">{classData.msg}</h2>
+                    <div>
+                        <Button color="primary" variant="ghost" size='lg' className='mt-3'
+                        onClick={() => onOpen()}>
+                            Alatura-te
+                        </Button>
+                    </div>
+                    </div>
+                </main>
+            }
         </div>
         
     );

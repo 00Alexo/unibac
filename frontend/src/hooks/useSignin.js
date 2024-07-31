@@ -10,6 +10,7 @@ export const useSignin = () =>{
     const {dispatch} = useAuthContext();
 
     const signin = async (username, password) =>{
+        setErrorFields(null);
         setIsLoading(true);
         setError(null);
 
