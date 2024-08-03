@@ -59,7 +59,7 @@ const ViewClass = () => {
                     <>
                     <ModalHeader className="flex flex-col gap-1">Alatura-te clasei {classData.className}</ModalHeader>
                     <ModalBody>
-                        <div className={errorFields?.includes('password') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                        <div className={errorFields?.includes('classId') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
                         'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
                             <Input
                                 autoFocus
@@ -67,7 +67,7 @@ const ViewClass = () => {
                                 placeholder="Introdu ID-ul clasei"
                                 variant="bordered"
                                 value={id}
-                                />
+                            />
                         </div>
                         <div className={errorFields?.includes('password') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
                         'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
@@ -95,7 +95,7 @@ const ViewClass = () => {
                             Close
                         </Button>
                         <Button color="primary" onClick={() => handleJoinClass()}>
-                            Sign in
+                            Join
                         </Button>
                     </ModalFooter>
                     </>

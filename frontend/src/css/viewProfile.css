@@ -1,3 +1,24 @@
+.dropdownHead {
+    position: relative; /* Adăugat pentru a poziționa pseudo-elementul relativ la acest element */
+    cursor: pointer;
+}
+
+.dropdownHead::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0; /* Modificat pentru a începe de la stânga */
+    width: 0;
+    height: 2px;
+    background-color: #0077ff;
+    transition: width 0.3s ease;
+}
+
+.dropdownHead:hover::before {
+    width: 100%;
+}
+
+
 .contains-profile{
     width: 100%;
 }
@@ -112,8 +133,11 @@
     display: none;
 }
 
-@media(max-width: 500px){
+@media(max-width: 639px){
     .contains-profile{
+        display: none;
+    }
+    .contains-profile-pages{
         display: none;
     }
     .contains-profile-phone{
@@ -158,7 +182,7 @@
     }
 }
 
-@media (max-width:500px) {
+@media (max-width:550px) {
     .notificationsText{
         font-size: 0.8rem;
     }

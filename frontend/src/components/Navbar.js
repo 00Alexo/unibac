@@ -7,7 +7,10 @@ import { useLogout } from '../hooks/useLogout';
 import { useGetProfile } from '../hooks/useGetProfile';
 import { useAuthContext } from '../hooks/useAuthContext';
 import React from "react";
+import { useJoinClass } from '../hooks/useJoinClass';
 import { NotificationBox } from './alertBox';
+import { EyeFilledIcon, EyeSlashFilledIcon } from '../pages/SignUp';
+import { Error } from './alertBox';
 
 export const NotificationIcon = ({size, height, width, ...props}) => {
   return (
@@ -167,9 +170,24 @@ const {user} = useAuthContext();
 
 const { viewUser: userData, error, isLoading, refetchProfile} = useGetProfile(user?.username)
 
+const [isVisible, setIsVisible] = useState(false);
+const toggleVisibility = () => setIsVisible(!isVisible);
+const [id, setId] = useState(null);
+const [password, setPassword] = useState(null);
 const {isOpen, onOpen, onOpenChange} = useDisclosure();
+const {isOpen : isOpenClass, onOpen:onOpenClass, onOpenChange: onOpenChangeClass, onClose: onCloseClass} = useDisclosure();
 const [notification, setNotification] = useState(null);
 const [notification2, setNotification2] = useState(null);
+
+const {joinClass, error: errorCreateClass, isLoading: isLoadingCreateClass, errorFields, notification: notificationClass} = useJoinClass();
+
+const handleJoinClass = async (e) =>{
+    const close = await joinClass(id, password, user?.username, user?.token);
+    
+    if(close){
+        onCloseClass();
+    }
+}
 
 const markOneAsRead = async (username, id, action) =>{
   const response = await fetch(`${process.env.REACT_APP_API}/api/notifications/markOneAsRead`,{
@@ -258,7 +276,7 @@ const [search, setSearch] = useState(null);
 
 useEffect(() => {
   const checkScreenSize = () => {
-    setIsSmallScreen(window.innerWidth < 500);
+    setIsSmallScreen(window.innerWidth < 550);
   };
 
   checkScreenSize();
@@ -297,7 +315,61 @@ window.navigateToProfile = navigateToProfile;
       ],
     }}>
       {notification2 && <NotificationBox notification={notification2}/>}
-      
+      <Modal 
+        isOpen={isOpenClass} 
+        onOpenChange={onOpenChangeClass}
+        placement="top-center"
+      >
+        <ModalContent>
+        {(onClose) => (
+            <>
+            {errorCreateClass &&  <Error error={errorCreateClass}/>}  
+            <ModalHeader className="flex flex-col gap-1">Alatura-te unei clase</ModalHeader>
+            <ModalBody>
+                <div className={errorFields?.includes('classId') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
+                    <Input
+                        autoFocus
+                        label="ID"
+                        placeholder="Introdu ID-ul clasei"
+                        variant="bordered"
+                        value={id}
+                        onChange={(e) => setId(e.target.value)}
+                      />
+                </div>
+                <div className={errorFields?.includes('password') ? 'oSaAibaEroare flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4' : 
+                'flex w-full flex-wrap md:flex-nowrap md:mb-0 gap-4'}>
+                    <Input
+                        endContent={
+                        <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                            {isVisible ? (
+                            <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                            ) : (
+                            <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                            )}
+                        </button>
+                        }
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        type={isVisible ? "text" : "password"}
+                        label="Password"
+                        placeholder="Introdu parola clasei"
+                        variant="bordered"
+                    />
+                </div>
+            </ModalBody>
+            <ModalFooter className='mt-5'>
+                <Button color="danger" variant="flat" onClick={onCloseClass}>
+                    Close
+                </Button>
+                <Button color="primary" onClick={() => handleJoinClass()}>
+                    Join
+                </Button>
+            </ModalFooter>
+            </>
+        )}
+        </ModalContent>
+      </Modal>
       <Modal style={{marginTop:'-1px'}}
         isOpen={isOpen}
         size='xl'
@@ -448,13 +520,13 @@ window.navigateToProfile = navigateToProfile;
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem style={{cursor:'pointer'}} isActive={isHovered[0]} onMouseEnter={() => handleMouseEnter(0)} onMouseLeave={() => handleMouseLeave(0)}>
+        <NavbarItem className="dropdownHead"style={{cursor:'pointer'}} >
           <Link color="foreground" onClick={() => navigate('/bibliografie')} >
             Bibliografie
           </Link>
         </NavbarItem>
         <Dropdown>
-        <NavbarItem style={{cursor:'pointer'}} isActive={isHovered[1]} onMouseEnter={() => handleMouseEnter(1)} onMouseLeave={() => handleMouseLeave(1)}>
+        <NavbarItem style={{cursor:'pointer'}} className="dropdownHead">
           <DropdownTrigger>
             <Link color="foreground">
               Articole
@@ -532,7 +604,7 @@ window.navigateToProfile = navigateToProfile;
       </DropdownMenu>
         </Dropdown>
         <Dropdown>
-          <NavbarItem style={{cursor:'pointer'}} isActive={isHovered[2]} onMouseEnter={() => handleMouseEnter(2)} onMouseLeave={() => handleMouseLeave(2)}>
+          <NavbarItem style={{cursor:'pointer'}} className="dropdownHead">
             <DropdownTrigger>
               <Link color="foreground">
                 Features
@@ -572,7 +644,7 @@ window.navigateToProfile = navigateToProfile;
       </Dropdown>
       {userData?.statut === 'profesor' &&
       <Dropdown>
-          <NavbarItem style={{cursor:'pointer'}} isActive={isHovered[3]} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={() => handleMouseLeave(3)}>
+          <NavbarItem style={{cursor:'pointer'}}className="dropdownHead">
             <DropdownTrigger>
               <Link color="foreground">
                 Profesori
@@ -675,7 +747,7 @@ window.navigateToProfile = navigateToProfile;
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownSection showDivider>
-                <DropdownItem key="settings" onClick={() => navigate(`/profile/${user.username}`)}>
+                <DropdownItem key="profil" onClick={() => navigate(`/profile/${user.username}`)}>
                   Profil
                 </DropdownItem>
                 <DropdownItem key="settings" onClick={() => navigate(`/profile/${user.username}/setari`)}>
@@ -683,10 +755,13 @@ window.navigateToProfile = navigateToProfile;
                 </DropdownItem>
               </DropdownSection>
               <DropdownSection showDivider>
-                <DropdownItem key="settings" onClick={() => navigate(`/profile/${user.username}/clase`)}>
+                <DropdownItem key="claseleMele" onClick={() => navigate(`/profile/${user.username}/clase`)}>
                   Clasele mele
                 </DropdownItem>
-                <DropdownItem key="settings" onClick={() => navigate(`/profile/${user.username}/teme`)}>
+                <DropdownItem key="joinClass" onClick={() => onOpenClass()}>
+                  Clasa noua
+                </DropdownItem>
+                <DropdownItem key="teme" onClick={() => navigate(`/profile/${user.username}/teme`)}>
                   Teme
                 </DropdownItem>
               </DropdownSection>

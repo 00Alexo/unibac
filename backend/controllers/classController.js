@@ -118,6 +118,7 @@ const joinClass = async (req, res) =>{
         const {classId, password, username} = req.body;
         let errorFields = [];
 
+        console.log(classId);
         if(!classId){
             errorFields.push('classId');
             return res.status(400).json({error: "Nu ai introdus ID-ul clasei!", errorFields});
@@ -152,8 +153,10 @@ const joinClass = async (req, res) =>{
 
         const check2 = await classModel.findOne({classId});
 
-        if(check2.students?.includes(username.toLowerCase()) || check2.teachers?.includes(username.toLowerCase()))
-            return res.status(400).json({error:"Deja faci parte din aceasta clasa."});
+        if(check2.students?.includes(username.toLowerCase()) || check2.teachers?.includes(username.toLowerCase()) || check2.creator == username.toLowerCase()){
+            errorFields.push('classId');
+            return res.status(400).json({error:"Deja faci parte din aceasta clasa.", errorFields});
+        }
 
          await classModel.findOneAndUpdate(
             { classId },

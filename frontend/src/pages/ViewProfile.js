@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import { useGetProfile } from '../hooks/useGetProfile';
 import PageNotFound from './404';
@@ -38,6 +38,23 @@ export const SearchIcon = (props) => (
   );
 
 const ViewProfile = () => {
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    useEffect(() => {
+    const checkScreenSize = () => {
+        setIsSmallScreen(window.innerWidth < 950);
+    };
+
+    checkScreenSize();
+
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => {
+        window.removeEventListener('resize', checkScreenSize);
+    };
+
+    }, []);
+
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const {isOpen: isOpen2, onOpen: onOpen2, onOpenChange: onOpenChange2} = useDisclosure();
     const [notification, setNotification] = useState(null);
@@ -46,13 +63,18 @@ const ViewProfile = () => {
     const [following, setFollowing] = useState(null);
     const {user} = useAuthContext();
     const navigate = useNavigate();
-    const{username} = useParams();
+    const {username} = useParams();
+    const {view} = useParams();
     const { viewUser: userProfile, error, isLoading, refetchProfile} = useGetProfile(username);
     const { viewUser: userData, refetchProfile: refetchProfile2} = useGetProfile(user?.username);
     const [avatar, setAvatar] = useState(null);
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef(null);
     const [isHovered, setIsHovered] = useState(null);
+
+    if(view != undefined && view != null && view?.toLowerCase() != 'setari' && view?.toLowerCase() != 'articole' && view?.toLowerCase() != 'subiecte'
+    && view?.toLowerCase() != 'activitate' && view?.toLowerCase() != 'clase' && view?.toLowerCase() != 'profil')
+        return <PageNotFound/>
 
     const joinedAt = userProfile && userProfile.createdAt
     ? format(new Date(userProfile.createdAt), 'dd.MM.yyyy')
@@ -415,16 +437,16 @@ const ViewProfile = () => {
                 </ModalContent>
             </Modal>
             <div className='contains-profile'>
-            <input
-                style={{display:'none'}}
-                ref={fileInputRef}
-                type='file'
-                accept='image/*' 
-                onChange={(e) => {
-                    updateUserAvatar(e.target.files[0]);
-                    console.log(e.target.files[0]);
-                }}>
-            </input>
+                <input
+                    style={{display:'none'}}
+                    ref={fileInputRef}
+                    type='file'
+                    accept='image/*' 
+                    onChange={(e) => {
+                        updateUserAvatar(e.target.files[0]);
+                        console.log(e.target.files[0]);
+                    }}>
+                </input>
                 <div className='contains-images'>
                     <div className='background-image'></div>
                     <img src={isHovered ? uploadImage : `${userProfile.avatar}`} className="cursor-pointer text-large avatar-image-profile"
@@ -504,7 +526,7 @@ const ViewProfile = () => {
                         }
                     </div>
                 </div>
-                <div className='distantator mt-5 mb-5'></div>
+                <div className='distantator mt-5 mb-2'></div>
             </div>
             <div className='contains-profile-phone'>
                 <div className='contains-images'>
@@ -588,6 +610,84 @@ const ViewProfile = () => {
                     </Button>
                 </div>
                 )}
+            </div>
+            <div className='contains-profile-pages w-full'>
+                <div className='profile-navbar w-full flex flex-row gap-7 justify-center text-lg'>
+                    <div className="dropdownHead cursor-pointer pb-2" onClick={() => navigate(`/profile/${username}/profil`)}>
+                        <p>Profil</p>
+                    </div>
+                    <div className="dropdownHead cursor-pointer" onClick={() => navigate(`/profile/${username}/clase`)}>
+                        <p>Clase</p>
+                    </div>
+                    <div className="dropdownHead cursor-pointer pb-2" onClick={() => navigate(`/profile/${username}/activitate`)}>
+                        <p>Activitate</p>
+                    </div>
+                    <div className="dropdownHead cursor-pointer" onClick={() => navigate(`/profile/${username}/subiecte`)}>
+                        <p>Subiecte</p>
+                    </div>
+                    <div className='dropdownHead cursor-pointer' onClick={() => navigate(`/profile/${username}/articole`)}> 
+                        <p> Articole </p>
+                    </div>
+                    {user?.username === username &&
+                    <div className="dropdownHead cursor-pointer" onClick={() => navigate(`/profile/${username}/setari`)}>
+                        <p>Setari</p>
+                    </div>
+                    }
+                </div>
+                {(!view || view?.toLowerCase() === 'profil') &&
+                    <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-5 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-475px)] pl-[2%] pr-[2%]'
+                    : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-5 flex flex-row justify-between min-h-[calc(100vh-475px)] pl-[10%] pr-[10%]'
+                    }>
+                        <div className={isSmallScreen ? 'w-[55%] bg-[#707aa3]' : 'w-[50%] bg-[#707aa3]'}>
+                            test
+                        </div>
+                        <div className='w-[40%] flex justify-center'>
+                            <div className='w-full bg-[#3F3F46] flex rounded-md h-[100px] pr-4 pl-4 pt-2 pb-2 flex-col gap-2'> 
+                                <p className='text-xl'> Pagina principala</p>
+                                {userProfile?.pagina ? 
+                                <div onClick={() => window.open(userProfile?.pagina, '_blank')}
+                                className='bg-[#51525C] w-full pl-3 pr-3 pt-2 pb-2 rounded-md flex justify-between items-center cursor-pointer'>
+                                    <p>{userProfile?.pagina.length > 60 ? 
+                                    `${userProfile?.pagina.slice(0, 50)}...${userProfile?.pagina.slice(-10)}` 
+                                    : userProfile?.pagina}
+                                    </p>
+                                    <div> 
+                                        <svg style={{marginBottom:'-5px'}}height="30px" width="30px" viewBox="0 0 24 30" fill="white" x="0px" y="px"><path d="M14.9849 2C14.4327 2 13.9849 2.44771 13.9849 3C13.9849 3.55228 14.4327 4 14.9849 4L18.5858 4L10.2929 12.2929C9.90237 12.6834 9.90237 13.3166 10.2929 13.7071C10.6834 14.0976 11.3166 14.0976 11.7071 13.7071L20 5.41422L20 9.01503C20 9.56732 20.4477 10.015 21 10.015C21.5523 10.015 22 9.56732 22 9.01504L22 3C22 2.44772 21.5523 2 21 2L14.9849 2Z" fill="white"/><path d="M4 8C4 7.44772 4.44772 7 5 7H11.3333C11.8856 7 12.3333 6.55228 12.3333 6C12.3333 5.44772 11.8856 5 11.3333 5H5C3.34315 5 2 6.34315 2 8V19C2 20.6569 3.34315 22 5 22H16C17.6569 22 19 20.6569 19 19V13.2619C19 12.7096 18.5523 12.2619 18 12.2619C17.4477 12.2619 17 12.7096 17 13.2619V19C17 19.5523 16.5523 20 16 20H5C4.44772 20 4 19.5523 4 19V8Z" fill="white"/></svg>
+                                    </div>
+                                </div> : 
+                                <div className='bg-[#51525C] w-full pl-3 pr-3 pt-2 pb-2 rounded-md flex justify-between'>
+                                    <p> None </p>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                {view?.toLowerCase() === 'clase' &&
+                    <div>
+                        clase
+                    </div>
+                }
+                {view?.toLowerCase() === 'activitate' &&
+                    <div>
+                        activitate
+                    </div>
+                }
+                {view?.toLowerCase() === 'subiecte' &&
+                    <div>
+                        subiecte
+                    </div>
+                }
+                {view?.toLowerCase() === 'articole' &&
+                    <div>
+                        articole
+                    </div>
+                }
+                {view?.toLowerCase() === 'setari' &&
+                    <div>
+                        setari
+                    </div>
+                }
             </div>
         </div>
     );

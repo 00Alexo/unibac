@@ -153,7 +153,8 @@ const signup = async(req, res) =>{
                 notifications: []
             },
             prompts: [],
-            clase: []
+            clase: [],
+            pagina: ''
         }
         const user = await userModel.create(data);
         const token = createToken(user._id)

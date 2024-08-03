@@ -24,6 +24,7 @@ export const useJoinClass = () =>{
             console.log(json.error);
             setIsLoading(false);
             setError(json.error);
+            console.log(json.errorFields)
             setErrorFields(json.errorFields);
             setTimeout(()=>{
                 setError(null);

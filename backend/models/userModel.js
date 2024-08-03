@@ -66,6 +66,10 @@ const LogInSchema = new mongoose.Schema({
     clase:{
       type: Array,
       required: true
+    },
+    pagina:{
+      type: String,
+      required: true
     }
     /*tags:{
       type: Array,

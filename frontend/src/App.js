@@ -65,8 +65,14 @@ function App() {
               path="/sign-in" 
               element={<SignIn/>}
             />
+
+            {/* profile */}
             <Route
               path="/profile/:username"
+              element={<ViewProfile/>}
+            />
+            <Route
+              path="/profile/:username/:view"
               element={<ViewProfile/>}
             />
 
