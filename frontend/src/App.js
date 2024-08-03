@@ -102,7 +102,7 @@ function App() {
             />
 
             <Route 
-              path="/createClass"
+              path="/creazaClasa"
               element={<CreateClass/>}  
             />
             <Route 

@@ -40,6 +40,7 @@ const CreateClass = () => {
     const [password, setPassword] = useState(null);
     const [confirmPassword, setConfirmPassword] = useState(null);
     const [descriere, setDescriere] = useState(null);
+    const [notFound, setNotFound] = useState(null);
     const {createClass, error, isLoading, errorFields} = useCreateClass();
 
     const handleSignUpSubmit = async (e) =>{
@@ -50,6 +51,7 @@ const CreateClass = () => {
 
     useEffect(()=>{
         const userVerify = async() =>{
+            setNotFound(false);
             const response = await fetch(`${process.env.REACT_APP_API}/api/user/statusVerifier?username=${user?.username}`, {
                 method: 'GET',
                 headers: {
@@ -62,13 +64,13 @@ const CreateClass = () => {
 
             if(!response.ok){
                 console.log(json.error);
-                navigate('/404');
+                setNotFound(true);
             }
 
             if(response.ok){
                 console.log(json.user.statut);
                 if(json.user.statut !== 'profesor')
-                    navigate('/404');
+                    setNotFound(true);
             }
         }
         
@@ -76,7 +78,7 @@ const CreateClass = () => {
             userVerify();
     }, [user])
 
-    if(!user)
+    if(!user || notFound)
         return (
             <PageNotFound/>
         )
