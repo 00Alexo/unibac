@@ -3,7 +3,7 @@ import {useParams, useNavigate} from 'react-router-dom';
 import { useGetProfile } from '../hooks/useGetProfile';
 import PageNotFound from './404';
 import { format } from 'date-fns';
-import {Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input} from "@nextui-org/react";
+import {Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, Tooltip} from "@nextui-org/react";
 import { useAuthContext } from '../hooks/useAuthContext';
 import {Error, NotificationBox} from '../components/alertBox';
 import Loading from "../pages/Loading";
@@ -635,22 +635,29 @@ const ViewProfile = () => {
                     }
                 </div>
                 {(!view || view?.toLowerCase() === 'profil') &&
-                    <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-5 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-475px)] pl-[2%] pr-[2%]'
-                    : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-5 flex flex-row justify-between min-h-[calc(100vh-475px)] pl-[10%] pr-[10%]'
+                    <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
+                    : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[10%] pr-[10%]'
                     }>
-                        <div className={isSmallScreen ? 'w-[55%] bg-[#707aa3]' : 'w-[50%] bg-[#707aa3]'}>
-                            test
+                        <div className={isSmallScreen ? 'w-[55%]' : 'w-[50%]'}>
+                            
                         </div>
-                        <div className='w-[40%] flex justify-center'>
-                            <div className='w-full bg-[#3F3F46] flex rounded-md h-[100px] pr-4 pl-4 pt-2 pb-2 flex-col gap-2'> 
+                        <div className='w-[40%] flex flex-col gap-2'>
+                            <div className='w-full bg-[#3F3F46] flex rounded-md h-[100px] pr-4 pl-4 pt-2 pb-2 flex-col gap-2 border-1 border-[#494A53]'> 
                                 <p className='text-xl'> Pagina principala</p>
                                 {userProfile?.pagina ? 
                                 <div onClick={() => window.open(userProfile?.pagina, '_blank')}
                                 className='bg-[#51525C] w-full pl-3 pr-3 pt-2 pb-2 rounded-md flex justify-between items-center cursor-pointer'>
-                                    <p>{userProfile?.pagina.length > 60 ? 
-                                    `${userProfile?.pagina.slice(0, 50)}...${userProfile?.pagina.slice(-10)}` 
+                                    {!isSmallScreen ?
+                                    <p>{userProfile?.pagina.length > 25 ? 
+                                    `${userProfile?.pagina.slice(0, 20)}...${userProfile?.pagina.slice(-5)}` 
                                     : userProfile?.pagina}
                                     </p>
+                                    :
+                                    <p>{userProfile?.pagina.length > 20 ? 
+                                        `${userProfile?.pagina.slice(0, 15)}...${userProfile?.pagina.slice(-5)}` 
+                                        : userProfile?.pagina}
+                                    </p>
+                                    }
                                     <div> 
                                         <svg style={{marginBottom:'-5px'}}height="30px" width="30px" viewBox="0 0 24 30" fill="white" x="0px" y="px"><path d="M14.9849 2C14.4327 2 13.9849 2.44771 13.9849 3C13.9849 3.55228 14.4327 4 14.9849 4L18.5858 4L10.2929 12.2929C9.90237 12.6834 9.90237 13.3166 10.2929 13.7071C10.6834 14.0976 11.3166 14.0976 11.7071 13.7071L20 5.41422L20 9.01503C20 9.56732 20.4477 10.015 21 10.015C21.5523 10.015 22 9.56732 22 9.01504L22 3C22 2.44772 21.5523 2 21 2L14.9849 2Z" fill="white"/><path d="M4 8C4 7.44772 4.44772 7 5 7H11.3333C11.8856 7 12.3333 6.55228 12.3333 6C12.3333 5.44772 11.8856 5 11.3333 5H5C3.34315 5 2 6.34315 2 8V19C2 20.6569 3.34315 22 5 22H16C17.6569 22 19 20.6569 19 19V13.2619C19 12.7096 18.5523 12.2619 18 12.2619C17.4477 12.2619 17 12.7096 17 13.2619V19C17 19.5523 16.5523 20 16 20H5C4.44772 20 4 19.5523 4 19V8Z" fill="white"/></svg>
                                     </div>
@@ -659,6 +666,86 @@ const ViewProfile = () => {
                                     <p> None </p>
                                 </div>
                                 }
+                            </div>
+                            <div className='w-full bg-[#3F3F46] flex rounded-md pr-4 pl-4 pt-2 pb-3 flex-col gap-2 border-1 border-[#494A53]'> 
+                                <p className='text-xl'> Statistici</p>
+                                <div className='bg-[#51525C] w-full pl-3 pr-3 pt-2 pb-2 rounded-md flex justify-between items-center'>
+                                    <div className='flex flex-row items-center gap-2'> 
+                                        <div className='pt-1 pb-1'> 
+                                            <svg height='40px' width='40px' fill="#78c1ee" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xmlSpace="preserve">
+                                                <g>
+                                                    <path d="M88.845,93.085V6.915C88.845,5.857,87.987,5,86.93,5H13.07c-1.058,0-1.915,0.857-1.915,1.915v86.17   c0,1.058,0.857,1.915,1.915,1.915H86.93C87.987,95,88.845,94.143,88.845,93.085z M85.015,91.17h-70.03V8.83h70.03V91.17z"/>
+                                                    <path d="M39.612,22.713H77.91c0.793,0,1.436-0.644,1.436-1.437s-0.643-1.436-1.436-1.436H39.612c-0.794,0-1.437,0.643-1.437,1.436   S38.818,22.713,39.612,22.713z"/>
+                                                    <path d="M39.612,37.074H77.91c0.793,0,1.436-0.643,1.436-1.436s-0.643-1.437-1.436-1.437H39.612c-0.794,0-1.437,0.644-1.437,1.437   S38.818,37.074,39.612,37.074z"/>
+                                                    <path d="M39.612,51.437H77.91c0.793,0,1.436-0.644,1.436-1.437s-0.643-1.437-1.436-1.437H39.612c-0.794,0-1.437,0.644-1.437,1.437   S38.818,51.437,39.612,51.437z"/>
+                                                    <path d="M39.612,65.798H77.91c0.793,0,1.436-0.644,1.436-1.437s-0.643-1.436-1.436-1.436H39.612c-0.794,0-1.437,0.643-1.437,1.436   S38.818,65.798,39.612,65.798z"/>
+                                                    <path d="M39.612,80.159H77.91c0.793,0,1.436-0.643,1.436-1.436s-0.643-1.437-1.436-1.437H39.612c-0.794,0-1.437,0.644-1.437,1.437   S38.818,80.159,39.612,80.159z"/>
+                                                    <path d="M22.091,26.447h8.617c0.476,0,0.862-0.387,0.862-0.862v-8.617c0-0.476-0.387-0.861-0.862-0.861h-8.617   c-0.476,0-0.861,0.386-0.861,0.861v8.617C21.229,26.061,21.615,26.447,22.091,26.447z M22.953,17.83h6.893v6.893h-6.893V17.83z"/>
+                                                    <polygon points="25.816,22.277 24.209,20.361 23.475,20.977 25.831,23.784 29.323,19.45 28.578,18.85  "/>
+                                                    <path d="M30.708,73.553h-8.617c-0.476,0-0.861,0.387-0.861,0.862v8.617c0,0.476,0.386,0.861,0.861,0.861h8.617   c0.476,0,0.862-0.386,0.862-0.861v-8.617C31.57,73.939,31.184,73.553,30.708,73.553z M29.846,82.17h-6.893v-6.893h6.893V82.17z"/>
+                                                    <polygon points="29.323,76.897 28.578,76.296 25.816,79.724 24.209,77.808 23.475,78.423 25.831,81.231  "/>
+                                                    <path d="M30.707,44.829H22.09c-0.476,0-0.861,0.386-0.861,0.862v8.617c0,0.476,0.386,0.861,0.861,0.861h8.617   c0.476,0,0.862-0.386,0.862-0.861v-8.617C31.569,45.215,31.183,44.829,30.707,44.829z M29.845,53.446h-6.893v-6.894h6.893V53.446z"/>
+                                                    <polygon points="29.322,48.174 28.577,47.572 25.815,51 24.208,49.084 23.474,49.699 25.83,52.507  "/>
+                                                    <polygon points="28.544,32.825 26.397,34.972 24.251,32.825 23.544,33.532 25.69,35.679 23.544,37.824 24.251,38.531    26.397,36.386 28.544,38.532 29.251,37.825 27.104,35.679 29.251,33.532  "/>
+                                                    <path d="M22.089,40.85h8.617c0.476,0,0.862-0.387,0.862-0.862V31.37c0-0.476-0.387-0.862-0.862-0.862h-8.617   c-0.476,0-0.861,0.387-0.861,0.862v8.617C21.228,40.463,21.613,40.85,22.089,40.85z M22.951,32.232h6.893v6.893h-6.893V32.232z"/>
+                                                    <polygon points="28.544,61.549 26.397,63.695 24.251,61.549 23.544,62.256 25.69,64.402 23.544,66.548 24.251,67.255    26.397,65.109 28.544,67.256 29.251,66.549 27.104,64.402 29.251,62.256  "/>
+                                                    <path d="M22.089,69.573h8.617c0.476,0,0.862-0.387,0.862-0.862v-8.617c0-0.476-0.387-0.862-0.862-0.862h-8.617   c-0.476,0-0.861,0.387-0.861,0.862v8.617C21.228,69.187,21.613,69.573,22.089,69.573z M22.951,60.956h6.893v6.893h-6.893V60.956z"/>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <p className='text-center text-xl text-[#78c1ee]'> 23 </p>
+                                    </div>
+                                    <p className='text-[#94959C] text-md'> Subiecte</p>
+                                </div>
+                                <div className='bg-[#51525C] w-full pl-3 pr-3 pt-2 pb-2 rounded-md flex justify-between items-center'>
+                                    <div className='flex flex-row items-center gap-2'> 
+                                        <div className='pt-1 pb-1'> 
+                                            <svg height='40px' width='40px' fill="#70D49D" viewBox="0 0 64 64" id="book">
+                                                <path d="M52 4H15a6 6 0 0 0-6 6v45a5.2 5.2 0 0 0 5.23 5H33a1 1 0 0 0 0-2H14.23A3.18 3.18 0 0 1 11 55v-.27a2.73 2.73 0 0 1 .11-.6 3 3 0 0 1 .12-.3c0-.08.07-.16.1-.23a3.73 3.73 0 0 1 .52-.71A3 3 0 0 1 14 52h38a2.6 2.6 0 0 0 .56-.06h.18l.26-.07V53a1 1 0 0 1-1 1H14a1 1 0 0 0 0 2h38a3 3 0 0 0 1-.18V57a1 1 0 0 1-1 1H42a1 1 0 0 0 0 2h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3ZM13.1 50.09l-.28.07a4.43 4.43 0 0 0-.59.18c-.1 0-.2.08-.3.12a5.21 5.21 0 0 0-.52.28l-.27.17L11 51V10a4 4 0 0 1 4-4v44h-1a4.43 4.43 0 0 0-.9.09ZM17 50V6h35a1 1 0 0 1 1 1v42a1 1 0 0 1-1 1Z"></path>
+                                                <path d="M46 14H24a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h22a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1zm-1 7H25v-5h20zm-1 17H26a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2zm0 5H26a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2zm-6 15h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2z"></path>
+                                            </svg>
+                                        </div>
+                                        <p className='text-center text-xl text-[#70D49D]'> 32 </p>
+                                    </div>
+                                    <p className='text-[#94959C] text-md'> Articole</p>
+                                </div>
+                                <div className='bg-[#51525C] w-full pl-3 pr-3 pt-2 pb-2 rounded-md flex justify-between items-center'>
+                                    <div className='flex flex-row items-center gap-2'> 
+                                        <div className='pt-1 pb-1'> 
+                                            <svg width="40px" height="40px" viewBox="0 0 24 24" version="1.1" >
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <g  fill="#AD7D61" fill-rule="nonzero">
+                                                        <path d="M8.06561801,18.9432081 L14.565618,4.44320807 C14.7350545,4.06523433 15.1788182,3.8961815 15.5567919,4.06561801 C15.9032679,4.2209348 16.0741922,4.60676263 15.9697642,4.9611247 L15.934382,5.05679193 L9.43438199,19.5567919 C9.26494549,19.9347657 8.82118181,20.1038185 8.44320807,19.934382 C8.09673215,19.7790652 7.92580781,19.3932374 8.03023576,19.0388753 L8.06561801,18.9432081 L14.565618,4.44320807 L8.06561801,18.9432081 Z M2.21966991,11.4696699 L6.46966991,7.21966991 C6.76256313,6.9267767 7.23743687,6.9267767 7.53033009,7.21966991 C7.79659665,7.48593648 7.8208027,7.90260016 7.60294824,8.19621165 L7.53033009,8.28033009 L3.81066017,12 L7.53033009,15.7196699 C7.8232233,16.0125631 7.8232233,16.4874369 7.53033009,16.7803301 C7.26406352,17.0465966 6.84739984,17.0708027 6.55378835,16.8529482 L6.46966991,16.7803301 L2.21966991,12.5303301 C1.95340335,12.2640635 1.9291973,11.8473998 2.14705176,11.5537883 L2.21966991,11.4696699 L6.46966991,7.21966991 L2.21966991,11.4696699 Z M16.4696699,7.21966991 C16.7359365,6.95340335 17.1526002,6.9291973 17.4462117,7.14705176 L17.5303301,7.21966991 L21.7803301,11.4696699 C22.0465966,11.7359365 22.0708027,12.1526002 21.8529482,12.4462117 L21.7803301,12.5303301 L17.5303301,16.7803301 C17.2374369,17.0732233 16.7625631,17.0732233 16.4696699,16.7803301 C16.2034034,16.5140635 16.1791973,16.0973998 16.3970518,15.8037883 L16.4696699,15.7196699 L20.1893398,12 L16.4696699,8.28033009 C16.1767767,7.98743687 16.1767767,7.51256313 16.4696699,7.21966991 Z"></path>
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <p className='text-center text-xl text-[#AD7D61]'> 142 </p>
+                                    </div>
+                                    <p className='text-[#94959C] text-md'> Probleme</p>
+                                </div>
+                            </div>
+                            <div className='w-full bg-[#3F3F46] flex rounded-md min-h-[100px] pr-4 pl-4 pt-2 pb-1 flex-col gap-1 border-1 border-[#494A53]'> 
+                                <p className='text-xl'> Insigne</p>
+                                <div className='flex flex-row gap-1 flex-wrap'>
+                                    {userProfile?.badges.map((user, index) => (
+                                        <Tooltip
+                                        showArrow
+                                        color='foreground'
+                                        placement={index === 0 ? 'left' : index === (userProfile?.badges.length-1) ? 'right' : 'top'}
+                                        content={
+                                          <div className="px-1 py-2">
+                                            <div className="text-small font-bold">{user.badge}</div>
+                                            <div className="text-tiny">{user.signification}</div>
+                                          </div>
+                                        }
+                                      >
+                                        <div className='cursor-pointer w-[50px] h-[50px]'>
+                                            <div dangerouslySetInnerHTML={{ __html: user.icon }} />
+                                        </div>
+                                      </Tooltip>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -70,11 +70,12 @@ const LogInSchema = new mongoose.Schema({
     pagina:{
       type: String,
       required: true
-    }
-    /*tags:{
+    },
+    badges:{
       type: Array,
       required: true
-    },
+    }
+    /*
     friends:{
       type: Array,
       required: true
