@@ -682,7 +682,7 @@ window.navigateToProfile = navigateToProfile;
             </DropdownSection>
 
             <DropdownSection showDivider title="Clase"> 
-              <DropdownItem onClick={() => {navigate('/createClass')}}
+              <DropdownItem onClick={() => {navigate('/creazaClasa')}}
                 key="Subiect"
               >
                 Creeaza o clasa

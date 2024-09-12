@@ -154,7 +154,9 @@ const signup = async(req, res) =>{
             },
             prompts: [],
             clase: [],
+            aboutMe: 'Salut, sunt nou pe comunitate!',
             pagina: '',
+            persoaneFavorite: [],
             badges: [{badge: 'Veteran', signification: 'Pionier al platformei!', icon: `<svg version="1.1" id="Capa_1" x="0px" y="0px"
                 viewBox="0 0 1200 1200" enable-background="new 0 0 1200 1200">
             <g>
@@ -194,7 +196,8 @@ const signup = async(req, res) =>{
             </g>
             </svg>
             `
-            }]
+            }],
+            activitate: [{type: 'welcome!', msg: `${username}s-a inregistrat pe platforma!`, timestamp: timestamp, currentAvatar: ''}],
         }
         const user = await userModel.create(data);
         const token = createToken(user._id)
@@ -265,8 +268,14 @@ const getUserAvatar = async(req, res)=>{
 const updateUserAvatar = async(req, res) =>{
     try{
         const {username, avatar} = req.body;
+        const activitate = {
+            type: 'newAvatar',
+            msg: 'si-a modificat poza de profil',
+            currentAvatar: avatar,
+            timestamp: new Date().toLocaleString('ro-RO', { hour12: false })
+        }
         const user = await userModel.findOneAndUpdate({username: username.toLowerCase()}, 
-        {$set:{avatar: avatar}}, {new: true}).select('avatar');
+        {$set:{avatar: avatar}, $addToSet: {activitate: activitate}}, {new: true}).select('avatar');
     
         res.status(200).json(user);
     }catch(error){

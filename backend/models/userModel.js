@@ -74,20 +74,25 @@ const LogInSchema = new mongoose.Schema({
     badges:{
       type: Array,
       required: true
-    }
-    /*
-    friends:{
-      type: Array,
-      required: true
     },
-    verification:{
-      type: Object,
+    aboutMe:{
+      type: String, 
+      required: false,
+      maxlength: 500
+    },
+    persoaneFavorite:{
+      type: Array,
       required: true
     },
     activitate:{
       type: Array,
       required: true
-    }*/
+    },
+    /*
+    verification:{
+      type: Object,
+      required: true
+    },*/
   }, {timestamps: true});
   
   LogInSchema.index({ email: 1 }, { unique: true });

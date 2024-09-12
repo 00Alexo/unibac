@@ -74,10 +74,17 @@ const createClass = async (req, res) =>{
             classId: classId,
             statut: "owner"
         }
+        
+        const activitate ={
+            type: 'createClass',
+            msg: `a creat o clasa noua, ${className}`,
+            currentAvatar: checkCreator.avatar,
+            timestamp: new Date().toLocaleString('ro-RO', { hour12: false })
+        }
 
         await userModel.findOneAndUpdate(
             {username: creator.toLowerCase()},
-            {$addToSet: {clase: data2}},
+            {$addToSet: {clase: data2, activitate: activitate}},
             {new: true}
         )
 
@@ -169,10 +176,21 @@ const joinClass = async (req, res) =>{
             classId: classId,
             statut: "elev"
         }
+
+        const activitate = {
+            type: 'joinClass',
+            msg: `s-a alaturat unei clase noi, ${check2.className}`,
+            currentAvatar: check1.avatar,
+            timestamp: new Date().toLocaleString('ro-RO', { hour12: false })
+        }
+
+
         await userModel.findOneAndUpdate(
             {username: username.toLowerCase()},
-            {$addToSet: {clase: data}},
-            {new: true}
+            {
+                $addToSet: { clase: data },
+                $push: { activitate: activitate }
+            },
         )
 
         res.status(200).json({msg: `Te-ai alaturat cu succes clasei cu id-ul ${classId}`});
@@ -277,9 +295,16 @@ const leaveClass = async (req, res) =>{
             {new: true}
         )
 
+        const activitate = {
+            type: 'leaveClass',
+            msg: `A parasit o clasa ${check2.className}`,
+            currentAvatar: check.avatar,
+            timestamp: new Date().toLocaleString('ro-RO', { hour12: false })
+        }
+
         await userModel.findOneAndUpdate(
             {username: username.toLowerCase()},
-            {$pull: {clase: {classId: classId}}},
+            {$pull: {clase: {classId: classId}}, $addToSet: {activitate: activitate}},
         )
 
         res.status(200).json("Ai parasit cu succes clasa!");
@@ -331,9 +356,17 @@ const kickMember = async (req, res) =>{
             {new: true}
         )
 
+        
+        const activitate = {
+            type: 'kickClass',
+            msg: `A fost dat afara din clasa ${check3.className}`,
+            currentAvatar: check.avatar,
+            timestamp: new Date().toLocaleString('ro-RO', { hour12: false })
+        }
+
         await userModel.findOneAndUpdate(
             {username: username.toLowerCase()},
-            {$pull: {clase: {classId: classId}}},
+            {$pull: {clase: {classId: classId}}, $addToSet: {activitate: activitate}},
         )
 
         createNotification(teacher, username, 'classKick',
@@ -406,6 +439,7 @@ const transferOwnership = async (req, res) => {
         if(check2.creator !== username)
             return res.status(400).json({error:'Nu esti creatorul clasei'});
 
+        console.log(newOwner);
         if(!check2.teachers.includes(newOwner))
             return res.status(400).json({error:"Noul administrator trebuie sa fie profesor in clasa respectiva ca sa poti ceda clasa."});
 
@@ -420,11 +454,19 @@ const transferOwnership = async (req, res) => {
             {new: true,  arrayFilters: [{ "elem.classId": classId }]}
         )
 
+        const activitate = {
+            type: 'changeOwnershipClass',
+            msg: `este acum administratorul clasei ${check2.className}`,
+            currentAvatar: check3.avatar,
+            timestamp: new Date().toLocaleString('ro-RO', { hour12: false })
+        }
+
         await userModel.findOneAndUpdate(
             {username:newOwner.toLowerCase()},
-            {$set: { 'clase.$[elem].statut': "creator"}},
+            {$set: { 'clase.$[elem].statut': "creator"}, $push: {activitate: activitate}},
             {new: true,  arrayFilters: [{ "elem.classId": classId }]}
         )
+        console.log(activitate)
 
         createNotification(username, newOwner, 'classKick',
             `<span style="color:white; font-size:1.05rem; cursor:pointer;" 
@@ -432,6 +474,33 @@ const transferOwnership = async (req, res) => {
 
         res.status(200).json(`${newOwner} este acum administratorul clasei.`)
 
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+
+const getUserClasses = async(req, res) =>{
+    try{
+        const {username} = req.query;
+
+        if(!username)
+            return res.status(400).json({error: "Invalid data!"});
+
+        const user = await userModel.findOne({username: username.toLowerCase()});
+        
+        let clase = [];
+
+        for(let i=0; i<user.clase.length; i++)
+            clase.push(user.clase[i].classId)
+
+        if (clase.length == 0) {
+            return res.status(404).json({ error: "Acest utilizator nu este intr-o clasa." });
+        }
+
+        const classes = await classModel.find({ classId: { $in: clase } });
+
+        res.status(200).json(classes);
     }catch(error){
         console.error(error.message);
         res.status(400).json(error.message);
@@ -576,4 +645,5 @@ module.exports={
     createTest,
     getTestData,
     submitTest,
+    getUserClasses
 }

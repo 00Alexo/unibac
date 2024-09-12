@@ -3,11 +3,13 @@ import {useParams, useNavigate} from 'react-router-dom';
 import { useGetProfile } from '../hooks/useGetProfile';
 import PageNotFound from './404';
 import { format } from 'date-fns';
-import {Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, Tooltip} from "@nextui-org/react";
+import {Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, Tooltip, Chip, Card, Table,
+TableHeader, TableColumn, TableBody, TableRow, TableCell, ScrollShadow} from "@nextui-org/react";
 import { useAuthContext } from '../hooks/useAuthContext';
 import {Error, NotificationBox} from '../components/alertBox';
 import Loading from "../pages/Loading";
 import uploadImage from '../assets/uploadImage.png'
+import welcomePNG from '../assets/welcome.png'
 
 export const SearchIcon = (props) => (
     <svg
@@ -71,10 +73,41 @@ const ViewProfile = () => {
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef(null);
     const [isHovered, setIsHovered] = useState(null);
+    const [clase, setClase] = useState(null);
+
+    const getUserClasses = async(req, res) =>{
+        const response = await fetch(`${process.env.REACT_APP_API}/api/class/getUserClasses?username=${username}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+
+        const json = await response.json();
+
+        if(!response.ok){
+            console.log(json);
+            setClase(json.error);
+        }
+
+        if(response.ok){
+            console.log(json);
+            setClase(json);
+        }
+    }
+
+    useEffect(() =>{
+        if(view?.toLowerCase())
+            getUserClasses();
+    }, [view])
 
     if(view != undefined && view != null && view?.toLowerCase() != 'setari' && view?.toLowerCase() != 'articole' && view?.toLowerCase() != 'subiecte'
     && view?.toLowerCase() != 'activitate' && view?.toLowerCase() != 'clase' && view?.toLowerCase() != 'profil')
         return <PageNotFound/>
+
+    if(view.toLowerCase() === 'setari' && user?.username.toLowerCase() !== username?.toLowerCase()){
+        return <PageNotFound/>
+    }
 
     const joinedAt = userProfile && userProfile.createdAt
     ? format(new Date(userProfile.createdAt), 'dd.MM.yyyy')
@@ -272,10 +305,11 @@ const ViewProfile = () => {
         }
         
         if(response.ok){
-            console.log(json);
             setFollowing(json.following.following);
         }
     }
+
+
     return (
         <div>
             {notification && <NotificationBox notification={notification}/>}
@@ -638,12 +672,49 @@ const ViewProfile = () => {
                     <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
                     : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[10%] pr-[10%]'
                     }>
-                        <div className={isSmallScreen ? 'w-[55%]' : 'w-[50%]'}>
-                            
+                        <div className={isSmallScreen ? 'w-[55%] flex flex-col gap-5' : 'flex-col w-[50%] flex gap-5'}>
+                            <div className="about-me flex flex-col gap-3">
+                                <p className='text-xl font-bold' >About</p>
+                                <p className="whitespace-pre-wrap"> {userProfile?.aboutMe}</p>
+                            </div>
+                            {userProfile?.persoaneFavorite?.length > 0 &&
+                            <div className="about-personnel flex flex-col gap-2 max-h-[125px] flex-wrap">
+                                <p className='text-md font-bold'>Utilizatori favoriti:</p>
+                                <div className='flex flex-row gap-2'>
+                                {userProfile?.persoaneFavorite?.map(persoana => (
+                                        <Chip className="cursor-pointer"
+                                        variant="bordered"
+                                        onClick={() => navigate(`/profile/${persoana.username}`)}
+                                        avatar={
+                                        <Avatar
+                                            src={persoana.avatar} onError={handleImageError}
+                                        />
+                                        }
+                                    >
+                                        {persoana.username}
+                                    </Chip>
+                                ))}
+                                </div>
+                            </div>
+                            }
+                            {userProfile?.competente?.length > 0 && 
+                            <div className="about-expertise flex flex-col gap-2 max-h-[125px] flex-wrap">
+                                <p className='text-md font-bold'>Competente:</p>
+                                <div className='flex flex-row gap-2'>
+                                {userProfile?.competente?.map(persoana => (
+                                        <Chip
+                                        variant="dot"
+                                    >
+                                        {persoana}
+                                    </Chip>
+                                ))}
+                                </div>
+                            </div>
+                            }
                         </div>
                         <div className='w-[40%] flex flex-col gap-2'>
                             <div className='w-full bg-[#3F3F46] flex rounded-md h-[100px] pr-4 pl-4 pt-2 pb-2 flex-col gap-2 border-1 border-[#494A53]'> 
-                                <p className='text-xl'> Pagina principala</p>
+                                <p className='text-xl font-bold'> Pagina principala</p>
                                 {userProfile?.pagina ? 
                                 <div onClick={() => window.open(userProfile?.pagina, '_blank')}
                                 className='bg-[#51525C] w-full pl-3 pr-3 pt-2 pb-2 rounded-md flex justify-between items-center cursor-pointer'>
@@ -668,7 +739,7 @@ const ViewProfile = () => {
                                 }
                             </div>
                             <div className='w-full bg-[#3F3F46] flex rounded-md pr-4 pl-4 pt-2 pb-3 flex-col gap-2 border-1 border-[#494A53]'> 
-                                <p className='text-xl'> Statistici</p>
+                                <p className='text-xl font-bold'> Statistici</p>
                                 <div className='bg-[#51525C] w-full pl-3 pr-3 pt-2 pb-2 rounded-md flex justify-between items-center'>
                                     <div className='flex flex-row items-center gap-2'> 
                                         <div className='pt-1 pb-1'> 
@@ -726,9 +797,9 @@ const ViewProfile = () => {
                                 </div>
                             </div>
                             <div className='w-full bg-[#3F3F46] flex rounded-md min-h-[100px] pr-4 pl-4 pt-2 pb-1 flex-col gap-1 border-1 border-[#494A53]'> 
-                                <p className='text-xl'> Insigne</p>
+                                <p className='text-xl font-bold'> Insigne</p>
                                 <div className='flex flex-row gap-1 flex-wrap'>
-                                    {userProfile?.badges.map((user, index) => (
+                                    {userProfile?.badges?.map((user, index) => (
                                         <Tooltip
                                         showArrow
                                         color='foreground'
@@ -751,28 +822,79 @@ const ViewProfile = () => {
                     </div>
                 }
                 {view?.toLowerCase() === 'clase' &&
-                    <div>
-                        clase
-                    </div>
+                    <ScrollShadow hideScrollBar={true} className={isSmallScreen ? 'bg-[#26272B] max-h-[250px] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
+                    : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row max-h-[250px] justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
+                    }>
+                        <Table className='max-w-[1200px] mx-auto'>
+                            <TableHeader>
+                                <TableColumn className="text-md">Clasa</TableColumn>
+                                <TableColumn className="text-md">Subiect</TableColumn>
+                                <TableColumn className="text-md"> Membri</TableColumn>
+                            </TableHeader>
+                            <TableBody>
+                                {clase?.map((clasa, index) => {
+                                    return(
+                                        <TableRow key={index} className='rounded cursor-pointer hover:bg-[#212125]'
+                                        onClick={() => navigate(`/clase/${clasa.classId}`)}>
+                                        <TableCell className='max-w-[500px]'>
+                                            <div className='flex flex-row gap-3'>
+                                                <Avatar src={clasa.avatar} size="lg"/>
+                                                <div className='flex flex-col'>
+                                                    <p className='text-lg'>{clasa.className}</p>
+                                                    <p className='w-full max-w-lg break-words'>{clasa.description}</p>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>{clasa.subject}</TableCell>
+                                        <TableCell>{clasa.students.length + clasa.teachers.length + 1}</TableCell>
+                                    </TableRow>
+                                    )
+                                })}
+                            </TableBody>
+                        </Table>
+                    </ScrollShadow>
                 }
                 {view?.toLowerCase() === 'activitate' &&
-                    <div>
-                        activitate
+                    <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
+                        : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[10%] pr-[10%]'
+                    }>
+                        <ScrollShadow size={0} hideScrollBar={true} className='max-w-[1500px] w-[1250px] min-w-[500px] mx-auto bg-[#18181B] max-h-[495px] rounded-xl pt-5 pb-5 pl-5 pr-5 flex gap-3 flex-col'>
+                            {userProfile?.activitate.slice().reverse().map((activitate, index) => {
+                                return(
+                                    <div className='flex flex-row p-1 items-center justify-between'>
+                                        <div className='flex flex-row items-center gap-3'>
+                                            <Avatar src={activitate.currentAvatar} size="lg"/>
+                                            <p className={isSmallScreen ? 'text-md break-words' : 'text-lg break-words'}>
+                                            {userProfile.displayName} {activitate.msg}</p>
+                                        </div>
+                                        <div>
+                                            <p className={isSmallScreen ? 'text-sm break-words' : 'text-md break-words'}> 
+                                                {activitate.timestamp}</p>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </ScrollShadow>
                     </div>
                 }
                 {view?.toLowerCase() === 'subiecte' &&
-                    <div>
-                        subiecte
+                    <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
+                        : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[10%] pr-[10%]'
+                    }>
                     </div>
                 }
                 {view?.toLowerCase() === 'articole' &&
-                    <div>
+                    <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
+                        : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[10%] pr-[10%]'
+                    }>
                         articole
                     </div>
                 }
                 {view?.toLowerCase() === 'setari' &&
-                    <div>
-                        setari
+                    <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
+                        : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[10%] pr-[10%]'
+                    }>
+                        
                     </div>
                 }
             </div>

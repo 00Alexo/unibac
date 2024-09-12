@@ -11,6 +11,7 @@ const{
     getTestData,
     submitTest,
     viewClass,
+    getUserClasses
 } = require('../controllers/classController');
 
 const requireAuth = require('../middleware/requireAuth')
@@ -18,6 +19,7 @@ const requireAuth = require('../middleware/requireAuth')
 const router = express.Router();
 
 router.get('/viewClass/:classId', viewClass);
+router.get('/getUserClasses', getUserClasses);
 
 router.use(requireAuth);
 
