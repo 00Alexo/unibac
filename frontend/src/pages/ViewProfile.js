@@ -10,6 +10,7 @@ import {Error, NotificationBox} from '../components/alertBox';
 import Loading from "../pages/Loading";
 import uploadImage from '../assets/uploadImage.png'
 import welcomePNG from '../assets/welcome.png'
+import { EyeFilledIcon, EyeSlashFilledIcon } from '../pages/SignUp';
 
 export const SearchIcon = (props) => (
     <svg
@@ -57,6 +58,12 @@ const ViewProfile = () => {
 
     }, []);
 
+    const [isVisible1, setIsVisible1] = useState(false);
+    const toggleVisibility1 = () => setIsVisible1(!isVisible1);
+    const [isVisible2, setIsVisible2] = useState(false);
+    const toggleVisibility2 = () => setIsVisible2(!isVisible2);
+    const [isVisible3, setIsVisible3] = useState(false);
+    const toggleVisibility3 = () => setIsVisible3(!isVisible3);
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const {isOpen: isOpen2, onOpen: onOpen2, onOpenChange: onOpenChange2} = useDisclosure();
     const [notification, setNotification] = useState(null);
@@ -105,7 +112,7 @@ const ViewProfile = () => {
     && view?.toLowerCase() != 'activitate' && view?.toLowerCase() != 'clase' && view?.toLowerCase() != 'profil')
         return <PageNotFound/>
 
-    if(view.toLowerCase() === 'setari' && user?.username.toLowerCase() !== username?.toLowerCase()){
+    if(view && view.toLowerCase() === 'setari' && user?.username.toLowerCase() !== username?.toLowerCase()){
         return <PageNotFound/>
     }
 
@@ -516,21 +523,21 @@ const ViewProfile = () => {
                     </div>
                     <div className='profile-data-buttons'>
                         <div onClick={() => {onOpen(); getFollowers(userProfile.username)}} style={{cursor:'pointer'}}>
-                            <p>
-                                Followers
+                            <p className='text-center'>
+                                {userProfile.followers.length}
                             </p>
                             <p>
-                                {userProfile.followers.length}
+                                Followers
                             </p>
                         </div>
                         <div className='despartitor-butoane'></div>
                         <div onClick={() => {onOpen2(); getFollowing(userProfile.username)}} style={{cursor:'pointer'}}>
-                            <p>
-                                Following
+                        <p className='text-center'>
+                                {userProfile.following.length}
                             </p>
                             <p>
-                                {userProfile.following.length}
-                            </p>                  
+                                Following
+                            </p>               
                         </div>
                         <div className='despartitor-butoane'></div>
                         {user && username && username === user.username ? (
@@ -579,20 +586,20 @@ const ViewProfile = () => {
                     <div className='contains-profile-data-phone'>
                         <div className='contains-profile-data-followers-phone'>
                             <div onClick={() => {onOpen(); getFollowers(userProfile.username)}}>
+                                <p className='text-center'>
+                                    {userProfile.followers.length}
+                                </p>
                                 <p>
                                     Followers
                                 </p>
-                                <p>
-                                    {userProfile.followers.length}
-                                </p>
                             </div>
                             <div onClick={() => {onOpen2(); getFollowing(userProfile.username)}}>
-                                <p>
-                                    Following
+                                <p className='text-center'>
+                                    {userProfile.following.length}
                                 </p>
                                 <p>
-                                    {userProfile.following.length}
-                                </p>                  
+                                    Following
+                                </p>              
                             </div>
                         </div>
                     </div>
@@ -881,6 +888,7 @@ const ViewProfile = () => {
                     <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
                         : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[10%] pr-[10%]'
                     }>
+                        subiecte
                     </div>
                 }
                 {view?.toLowerCase() === 'articole' &&
@@ -891,10 +899,93 @@ const ViewProfile = () => {
                     </div>
                 }
                 {view?.toLowerCase() === 'setari' &&
-                    <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
-                        : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[10%] pr-[10%]'
+                    <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between items-center min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
+                        : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[12%] pr-[12%] items-center'
                     }>
-                        
+                        <form className={isSmallScreen ? 'bg-[#18181B] w-[49%] p-2 h-[60vh] max-h-[375px] rounded-2xl flex flex-col gap-7' :
+                            'bg-[#18181B] w-[45%] p-3 h-[60vh] max-h-[375px] rounded-2xl flex flex-col gap-7' 
+                        }>
+                            <div>
+                                <p className='font-bold text-2xl'> 
+                                    Change Email
+                                </p>
+                                <p className='text-sm'> Modifica emailul tau actual.</p>
+                            </div>
+                            
+                            <div className='flex flex-col gap-3'>
+                                <Input type='text'
+                                variant="bordered" label="Current Email" placeholder="Introdu emailul curent"
+                                isClearable
+                                />
+                                
+                                <Input type='text'
+                                variant="bordered" label="New Email" placeholder="Introdu emailul nou"
+                                isClearable
+                                />
+
+                                <Input type='text'
+                                variant="bordered" label="Confirm New Email" placeholder="Cofirma emailul nou"
+                                isClearable
+                                />
+                            </div>
+
+                            <Button color="default" className='mt-auto mb-1 bg-[#30303a]'>
+                                Update email
+                            </Button>
+                        </form>
+
+                        <form className={isSmallScreen ? 'bg-[#18181B] w-[49%] p-2 h-[60vh] max-h-[375px] rounded-2xl flex flex-col gap-7' :
+                            'bg-[#18181B] w-[45%] p-3 h-[60vh] max-h-[375px] rounded-2xl flex flex-col gap-7' 
+                        }>
+                            <div>
+                                <p className='font-bold text-2xl'> 
+                                    Change Password
+                                </p>
+                                <p className='text-sm'> Modifica parola ta actuala.</p>
+                            </div>
+                            
+                            <div className='flex flex-col gap-3'>
+                                <Input type={isVisible1 ? "text" : "password"}
+                                variant="bordered" label="Current Password" placeholder="Introdu parola curenta"
+                                endContent={
+                                <button className="focus:outline-none" type="button" onClick={toggleVisibility1} aria-label="toggle password visibility">
+                                    {isVisible1 ? (
+                                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    ) : (
+                                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    )}
+                                </button>
+                                }/>
+                                
+                                <Input type={isVisible2 ? "text" : "password"}
+                                variant="bordered" label="New Password" placeholder="Introdu parola noua"
+                                endContent={
+                                <button className="focus:outline-none" type="button" onClick={toggleVisibility2} aria-label="toggle password visibility">
+                                    {isVisible2 ? (
+                                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    ) : (
+                                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    )}
+                                </button>
+                                }/>
+
+                                <Input type={isVisible3 ? "text" : "password"}
+                                variant="bordered" label="Confirm New Password" placeholder="Confirma parola noua"
+                                endContent={
+                                <button className="focus:outline-none" type="button" onClick={toggleVisibility3} aria-label="toggle password visibility">
+                                    {isVisible3 ? (
+                                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    ) : (
+                                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    )}
+                                </button>
+                                }/>
+                            </div>
+
+                            <Button color="default" className='mt-auto mb-1 bg-[#30303a]'>
+                                Update password
+                            </Button>
+                        </form>    
                     </div>
                 }
             </div>

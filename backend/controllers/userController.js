@@ -197,7 +197,7 @@ const signup = async(req, res) =>{
             </svg>
             `
             }],
-            activitate: [{type: 'welcome!', msg: `${username}s-a inregistrat pe platforma!`, timestamp: timestamp, currentAvatar: ''}],
+            activitate: [{type: 'welcome!', msg: `s-a inregistrat pe platforma!`, timestamp: timestamp, currentAvatar: ''}],
         }
         const user = await userModel.create(data);
         const token = createToken(user._id)

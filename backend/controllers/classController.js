@@ -297,7 +297,7 @@ const leaveClass = async (req, res) =>{
 
         const activitate = {
             type: 'leaveClass',
-            msg: `A parasit o clasa ${check2.className}`,
+            msg: `a parasit o clasa ${check2.className}`,
             currentAvatar: check.avatar,
             timestamp: new Date().toLocaleString('ro-RO', { hour12: false })
         }
@@ -315,6 +315,8 @@ const leaveClass = async (req, res) =>{
 }
 
 //TODO + putin de lucrat la minaAi responsiveness +++++++ ERROR HANDLING ORBULE, TU PUI FARA {ERROR} LA FIECARE PROSTULE
+//TODO + de facut backend la settings (security code confirmation)
+//TODO + MODIFICAT TOKEN REVIEW (IN FUNCTIE DE REMEMBER ME)
 
 const kickMember = async (req, res) =>{
     try{
@@ -359,7 +361,7 @@ const kickMember = async (req, res) =>{
         
         const activitate = {
             type: 'kickClass',
-            msg: `A fost dat afara din clasa ${check3.className}`,
+            msg: `a fost dat afara din clasa ${check3.className}`,
             currentAvatar: check.avatar,
             timestamp: new Date().toLocaleString('ro-RO', { hour12: false })
         }
