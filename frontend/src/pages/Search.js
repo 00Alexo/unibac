@@ -126,7 +126,7 @@ const Search = () => {
                                    </TableCell>
                                    <TableCell>
                                         <div className="flex flex-col">
-                                            <p className="text-bold text-sm capitalize">{user.followers.length} urmaritori</p>
+                                            <p className="text-bold text-sm capitalize pl-7">{user.followers.length}</p>
                                         </div>
                                    </TableCell>
                                    <TableCell>

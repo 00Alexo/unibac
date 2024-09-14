@@ -11,6 +11,9 @@ import Loading from "../pages/Loading";
 import uploadImage from '../assets/uploadImage.png'
 import welcomePNG from '../assets/welcome.png'
 import { EyeFilledIcon, EyeSlashFilledIcon } from '../pages/SignUp';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faBookmark } from '@fortawesome/free-solid-svg-icons';
+
 
 export const SearchIcon = (props) => (
     <svg
@@ -541,9 +544,11 @@ const ViewProfile = () => {
                         </div>
                         <div className='despartitor-butoane'></div>
                         {user && username && username === user.username ? (
-                        <Button color='primary'> Edit profile</Button>
-                        ) :(
-                            <div style={{display:'flex', gap:'10px'}}>
+                            <Button color="default" variant="bordered" className='min-w-unit-0 px-unit-3'>
+                                <FontAwesomeIcon icon={faPenToSquare} size='lg'/>
+                            </Button>
+                        ) : (
+                            <div style={{display:'flex', gap:'12px'}}>
                                 {user && userProfile ? (
                                 userProfile.followers.some(follower => follower.username === user.username) ? (
                                     <Button color='default' variant="ghost" onClick={handleUnfollow}>Unfollow</Button>
@@ -551,8 +556,11 @@ const ViewProfile = () => {
                                     <Button color='default' variant="ghost" onClick={handleFollow}>Follow</Button>
                                 )
                                 ) : <></>}
-                                <Button color='default' variant="ghost" className='min-w-unit-10'> 
-                                    <svg fill="white" height="20px" width="20px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
+                                <div className='flex justify-center items-center'>
+                                    <FontAwesomeIcon icon={faBookmark} size='2x' className='cursor-pointer' style={{color:'#FFEA00'}}/>
+                                </div>
+                                <Button color='default' variant="ghost" className='min-w-unit-10 px-unit-2'> 
+                                    <svg fill="white" height="18px" width="18px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
                                         viewBox="0 0 32.055 32.055" xmlSpace="preserve">
                                     <g>
                                         <path d="M3.968,12.061C1.775,12.061,0,13.835,0,16.027c0,2.192,1.773,3.967,3.968,3.967c2.189,0,3.966-1.772,3.966-3.967
