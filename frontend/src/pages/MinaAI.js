@@ -63,14 +63,12 @@ const MinaAi = () => {
         })
         const json = await response.json()
         if(!response.ok){
-            console.log(json)
             setLoading(false);
             setError(json.error)
             setTimeout(() => {
                 setError(null);
             }, 7000)
         }else{
-            console.log(json.prompts)
             setPrompts(json.prompts);
             setLoading(false);
         }
@@ -102,7 +100,6 @@ const MinaAi = () => {
                 setError(null);
             }, 7000)
         }else{
-            console.log(json.prompts)
             setConversatii(json.prompts);
         }
     }
@@ -396,6 +393,7 @@ const MinaAi = () => {
                                         </div>
                                     </div>
                                     }
+                                    {prompt.role==='assistant' || prompt.role ==='user' &&
                                     <div className='p-1'>
                                         <Avatar
                                             isBordered
@@ -407,6 +405,7 @@ const MinaAi = () => {
                                             src={prompt.role === 'user' ? userData?.avatar : minaAi}
                                         />
                                     </div>
+                                    }
                                     {prompt.role==='assistant' &&
                                     <div className="bg-zinc-800 rounded-md max-w-[85%]">
                                         <div className="bg-zinc-800 rounded-md">
