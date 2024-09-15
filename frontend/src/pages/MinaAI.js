@@ -393,7 +393,7 @@ const MinaAi = () => {
                                         </div>
                                     </div>
                                     }
-                                    {prompt.role==='assistant' || prompt.role ==='user' &&
+                                    {prompt.role !='system' &&
                                     <div className='p-1'>
                                         <Avatar
                                             isBordered
