@@ -317,6 +317,9 @@ const leaveClass = async (req, res) =>{
 //TODO + putin de lucrat la minaAi responsiveness +++++++ ERROR HANDLING ORBULE, TU PUI FARA {ERROR} LA FIECARE PROSTULE
 //TODO + de facut backend la settings (security code confirmation)
 //TODO + MODIFICAT TOKEN REVIEW (IN FUNCTIE DE REMEMBER ME)
+//TODO + SEARCH RESPONSIVE CA E CAM buGGY
+//TODO + CV API CA SA SE UPDATEZE POZELE GLOBAL CA AI 5 POZE in 10 LOCATII DIFERITE PROSTU PLII
+//TODO + BUTON NEW CHAT LA MINAAI
 
 const kickMember = async (req, res) =>{
     try{

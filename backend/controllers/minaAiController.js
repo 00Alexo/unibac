@@ -15,14 +15,23 @@ const newChatMinaAi = async (req, res) =>{
         const newChat = []
 
         newChat.push({
+            role:"system",
+            content: "Tu esti MinaAI, asistentul virtual al platformei UniBac, o platforma nationala romaneasca de invatare (subiecte bac, concursuri, clase, etc), de asemenea, poti sa fii folosit pentru orice necesitate a utilizatorului, nu doar intrebari legate de site, esti creat de Suciu Alex pentru concursul 'Istorie si societate in dimensiune virtuala', ai la baza modelul gpt-4o-mini al OpenAi."
+        })
+        newChat.push({
+            role:"system",
+            content: "La intrebari comune, spre exemplu 'cine te a creat' sau 'cine esti' incearca sa dai raspunsuri diversificate, nu mereu acelasi raspuns."
+        })
+
+        newChat.push({
             role:"user",
             content:prompt
         });
 
         const completion = await client.chat.completions.create({
             messages: newChat,
-            model: "gpt-3.5-turbo",
-            max_tokens: 1
+            model: "gpt-4o-mini",
+            // max_tokens: 1
         })
 
         newChat.push({
@@ -35,7 +44,7 @@ const newChatMinaAi = async (req, res) =>{
 
         const compl = await client.chat.completions.create({
             messages: intermediateChat,
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o-mini",
             max_tokens: 50
         })
         
@@ -79,8 +88,8 @@ const chatMinaAi = async (req, res) =>{
 
         const completion = await client.chat.completions.create({
             messages: chatHistory,
-            model: "gpt-3.5-turbo",
-            max_tokens: 1
+            model: "gpt-4o-mini",
+            // max_tokens: 1
         })
 
         const newPrompt = {
