@@ -319,6 +319,56 @@ const ViewProfile = () => {
         }
     }
 
+    const removeFromFavoritePeople = async () =>{
+        const response = await fetch(`${process.env.REACT_APP_API}/api/social/removeFromFavoritePeople`,{
+            method: 'DELETE',
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            },
+            body: JSON.stringify({username: user.username, toBeRemoved: userProfile.username})
+        })
+
+        const json = await response.json();
+
+        if(!response.ok){
+            console.log(json.error);
+        }
+        
+        if(response.ok){
+            refetchProfile2();
+            setNotification(json.msg);
+            setTimeout(() =>{
+                setNotification(null);
+            }, 7000)
+        }
+    }
+
+    const addToFavoritePeople = async () =>{
+        const response = await fetch(`${process.env.REACT_APP_API}/api/social/addToFavoritePeople`,{
+            method: 'PUT',
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            },
+            body: JSON.stringify({username: user.username, toBeFavorited: userProfile.username})
+        })
+
+        const json = await response.json();
+
+        if(!response.ok){
+            console.log(json.error);
+        }
+        
+        if(response.ok){
+            refetchProfile2();
+            setNotification(json.msg);
+            setTimeout(() =>{
+                setNotification(null);
+            }, 7000)
+        }
+    }
+
 
     return (
         <div>
@@ -557,7 +607,10 @@ const ViewProfile = () => {
                                 )
                                 ) : <></>}
                                 <div className='flex justify-center items-center'>
-                                    <FontAwesomeIcon icon={faBookmark} size='2x' className='cursor-pointer' style={{color:'#FFEA00'}}/>
+                                    {userData?.persoaneFavorite?.some(fav => fav.username === userProfile.username) ?
+                                        <FontAwesomeIcon icon={faBookmark} size='2x' className='cursor-pointer' onClick={() => removeFromFavoritePeople()} style={{color:'#5b84b0'}}/>
+                                    : <FontAwesomeIcon icon={faBookmark} size='2x' className='cursor-pointer' onClick={() => addToFavoritePeople()}/>
+                                    }
                                 </div>
                                 <Button color='default' variant="ghost" className='min-w-unit-10 px-unit-2'> 
                                     <svg fill="white" height="18px" width="18px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
@@ -695,7 +748,7 @@ const ViewProfile = () => {
                             {userProfile?.persoaneFavorite?.length > 0 &&
                             <div className="about-personnel flex flex-col gap-2 max-h-[125px] flex-wrap">
                                 <p className='text-md font-bold'>Utilizatori favoriti:</p>
-                                <div className='flex flex-row gap-2'>
+                                <div className='flex flex-row gap-2 flex-wrap'>
                                 {userProfile?.persoaneFavorite?.map(persoana => (
                                         <Chip className="cursor-pointer"
                                         variant="bordered"
@@ -715,7 +768,7 @@ const ViewProfile = () => {
                             {userProfile?.competente?.length > 0 && 
                             <div className="about-expertise flex flex-col gap-2 max-h-[125px] flex-wrap">
                                 <p className='text-md font-bold'>Competente:</p>
-                                <div className='flex flex-row gap-2'>
+                                <div className='flex flex-row gap-2 flex-wrap'>
                                 {userProfile?.competente?.map(persoana => (
                                         <Chip
                                         variant="dot"

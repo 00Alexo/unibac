@@ -118,6 +118,83 @@ const getFollowing = async (req, res) =>{
     }
 }
 
+const addToFavoritePeople = async (req, res) =>{
+    try{
+        const {username, toBeFavorited} = req.body;
+
+        if(!username || !toBeFavorited)
+            return res.status(400).json({error: 'INVALID INFORMATION!'});
+
+        const ver = await userModel.findOne({username: toBeFavorited.toLowerCase()});
+
+        if(!ver)
+            return res.status(400).json({error: 'Acest utilizator nu exista.'});
+
+        const verif = await userModel.findOne({username: username.toLowerCase()});
+
+        const verif2 = verif.persoaneFavorite.some(fav => fav.username == toBeFavorited.toLowerCase());
+
+        if(verif2)
+            return res.status(400).json({error: 'Utilizatorul se afla deja in lista favoritilor.'})
+
+        const avatar = ver.avatar;
+
+        const newObj = {
+            username: toBeFavorited.toLowerCase(),
+            avatar: avatar
+        }
+
+        const user = await userModel.findOneAndUpdate(
+            {username: username.toLowerCase()}, 
+            {$push: {persoaneFavorite: newObj}},
+            { new: true }
+        ).select('persoaneFavorite');
+
+        if(!user)
+            return res.status(400).json({error: 'Trebuie sa fii logat!'})
+
+        res.status(200).json({msg:"Utilizatorul a fost adaugat la favoriti."});
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+
+const removeFromFavoritePeople = async (req, res) =>{
+    try{
+        const {username, toBeRemoved} = req.body;
+
+        if(!username || !toBeRemoved)
+            return res.status(400).json({error: 'INVALID INFORMATION!'});
+
+        const ver = await userModel.findOne({username: toBeRemoved.toLowerCase()});
+
+        if(!ver)
+            return res.status(400).json({error: 'Acest utilizator nu exista.'});
+
+        const verif = await userModel.findOne({username: username.toLowerCase()});
+
+        const verif2 = verif.persoaneFavorite.some(fav => fav.username == toBeRemoved.toLowerCase());
+
+        if(!verif2)
+            return res.status(400).json({error: 'Utilizatorul nu se afla in lista favoritilor.'})
+
+        const user = await userModel.findOneAndUpdate(
+            {username: username.toLowerCase()}, 
+            {$pull: {persoaneFavorite: {username: toBeRemoved.toLowerCase()}}},
+            { new: true }
+        ).select('persoaneFavorite');
+
+        if(!user)
+            return res.status(400).json({error: 'Trebuie sa fii logat!'})
+
+        res.status(200).json({msg:"Utilizatorul a fost scos de la favoriti."});
+    }catch(error){
+        console.error(error.message);
+        res.status(400).json(error.message);
+    }
+}
+
 const search = async(req, res) =>{
     try{
         const {search, page = 1, limit = 9} = req.query;
@@ -141,5 +218,7 @@ module.exports={
     getFollowers,
     followUser,
     unfollowUser,
-    search
+    search,
+    addToFavoritePeople,
+    removeFromFavoritePeople
 }

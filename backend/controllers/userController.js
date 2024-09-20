@@ -197,6 +197,7 @@ const signup = async(req, res) =>{
             </svg>
             `
             }],
+            competente: [],
             activitate: [{type: 'welcome!', msg: `s-a inregistrat pe platforma!`, timestamp: timestamp, currentAvatar: ''}],
         }
         const user = await userModel.create(data);

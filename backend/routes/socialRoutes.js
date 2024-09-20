@@ -4,7 +4,9 @@ const{
     unfollowUser,
     getFollowers,
     getFollowing,
-    search
+    search,
+    addToFavoritePeople,
+    removeFromFavoritePeople
 } = require('../controllers/socialController');
 
 const requireAuth = require('../middleware/requireAuth')
@@ -16,5 +18,7 @@ router.get('/getFollowers', getFollowers);
 router.post('/followUser', requireAuth, followUser);
 router.post('/unfollowUser', requireAuth, unfollowUser);
 router.get('/search', search);
+router.put('/addToFavoritePeople', requireAuth, addToFavoritePeople);
+router.delete('/removeFromFavoritePeople', requireAuth, removeFromFavoritePeople);
 
 module.exports = router;
