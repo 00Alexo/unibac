@@ -9,6 +9,7 @@ const socialRoutes = require('./routes/socialRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const minaAiRoutes = require('./routes/minaAiRoutes');
 const classRoutes = require('./routes/classRoutes');
+const subiecteBacRoutes = require('./routes/subiecteBacRoutes');
 const app = express();
 
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
@@ -38,6 +39,7 @@ app.use('/api/social', socialRoutes)
 app.use('/api/notifications', notificationRoutes)
 app.use('/api/minaAi', minaAiRoutes);
 app.use('/api/class', classRoutes)
+app.use('/api/subiecteBac', subiecteBacRoutes)
 
 mongoose.connect(process.env.mongoDB)
     .then(() => {

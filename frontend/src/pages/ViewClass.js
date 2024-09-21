@@ -121,7 +121,12 @@ const ViewClass = () => {
                 <p className='text-center scslogin'> Clasa creata cu succes!! </p>
             </div>
             }
-            {classData && <p>{classData.creator}</p>}
+            {classData && !error &&(
+                <>
+                    <p>{classData.creator}</p>
+                    
+                </>
+            )}
             {error === 'Clasa privata' && 
                 <main className="mt-5 flex flex-col items-center justify-center bg-light p-4">
                     <div className="flex flex-col items-center space-y-4">

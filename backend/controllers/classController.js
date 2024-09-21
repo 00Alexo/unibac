@@ -512,7 +512,7 @@ const getUserClasses = async(req, res) =>{
     }
 }
 
-// TESTE
+//* TESTE
 
 const createTest = async (req, res) =>{
     try{
