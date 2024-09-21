@@ -17,6 +17,7 @@ import Search from './pages/Search.js';
 import MinaAi from './pages/MinaAI.js';
 import CreateClass from './pages/CreateClass.js';
 import ViewClass from './pages/ViewClass.js';
+import PosteazaSubiect from './pages/posteazaSubiect.js';
 
 function App() {
   const { user } = useAuthContext()
@@ -94,6 +95,13 @@ function App() {
               element={<Search/>}
             />
 
+            {/* subiecte */}
+
+            <Route
+              path="/subiecte/posteaza"
+              element={<PosteazaSubiect/>}
+            />
+            
             {/* clase */}
 
             <Route

@@ -36,7 +36,8 @@ const createSubiectBac = async (req, res) =>{
             profil,
             allowsHelp,
             status: 'verification',
-            questions
+            questions,
+            solutions: [],
         }
 
         const subiect = await subiecteBacModel.create(data);

@@ -28,6 +28,10 @@ const subiecteBac = new mongoose.Schema({
     subId:{
         type: Number,
         required: true
+    },
+    solutii:{
+        type: Array,
+        required: true
     }
 
   }, {timestamps: true});
