@@ -434,7 +434,7 @@ window.navigateToProfile = navigateToProfile;
                           )}
                           {!isSmallScreen &&
                           <Tooltip showArrow={true} placement = 'right' color='primary' content="Mark as unread">
-                            <Button className='min-w-unit-10 px-unit-2 gap-unit-2' style={{marginRight:'-10px'}}
+                            <Button className='min-w-unit-10 min-w-10 px-unit-2 gap-unit-2' style={{marginRight:'-10px'}}
                             color='primary' variant="shadow" isDisabled={notification.status === 'read'}
                             onClick={()=> markOneAsRead(user.username, notification.id, 1)} size={isSmallScreen ? 'sm' : 'md'}> 
                               <p style={{fontSize:'1.2rem'}}>ℛ</p>

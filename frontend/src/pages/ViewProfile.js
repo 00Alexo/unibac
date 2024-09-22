@@ -144,7 +144,7 @@ const ViewProfile = () => {
         console.log(pic);
         formdata.append("file", pic);
         formdata.append("upload_preset", "unibac07");
-        formdata.append("cloud_name", "dopoxnlkb");
+        formdata.append("cloud_name", process.env.REACT_APP_CLOUDINARY_API2);
         const cloudinary = await fetch(`${process.env.REACT_APP_CLOUDINARY_API}`, {
             method: "post",
             body: formdata,
@@ -594,7 +594,7 @@ const ViewProfile = () => {
                         </div>
                         <div className='despartitor-butoane'></div>
                         {user && username && username === user.username ? (
-                            <Button color="default" variant="bordered" className='min-w-unit-0 px-unit-3'>
+                            <Button color="default" variant="bordered" className='min-w-10 px-unit-3'>
                                 <FontAwesomeIcon icon={faPenToSquare} size='lg'/>
                             </Button>
                         ) : (
