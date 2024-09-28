@@ -612,7 +612,7 @@ const ViewProfile = () => {
                                     : <FontAwesomeIcon icon={faBookmark} size='2x' className='cursor-pointer' onClick={() => addToFavoritePeople()}/>
                                     }
                                 </div>
-                                <Button color='default' variant="ghost" className='min-w-unit-10 px-unit-2'> 
+                                <Button color='default' variant="ghost" className='min-w-8 px-unit-2'> 
                                     <svg fill="white" height="18px" width="18px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
                                         viewBox="0 0 32.055 32.055" xmlSpace="preserve">
                                     <g>

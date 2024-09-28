@@ -7,6 +7,7 @@ const {
 const followUser = async (req, res)=>{
     try{
         const {follower, toBeFollowed} = req.body;
+        console.log(follower, toBeFollowed);
 
         if(follower == toBeFollowed){
             return res.status(400).json({error: "Nu poti sa iti dai follow singur!"});

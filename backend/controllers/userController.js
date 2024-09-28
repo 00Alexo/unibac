@@ -199,6 +199,7 @@ const signup = async(req, res) =>{
             }],
             competente: [],
             activitate: [{type: 'welcome!', msg: `s-a inregistrat pe platforma!`, timestamp: timestamp, currentAvatar: ''}],
+            pagina: 'unibac.vercel.app',
         }
         const user = await userModel.create(data);
         const token = createToken(user._id)
