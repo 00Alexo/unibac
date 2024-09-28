@@ -49,6 +49,25 @@ const PosteazaSubiect = () => {
     const [s1b5, s1setB5] = useState(null);
     const [s1b6, s1setB6] = useState(null);
 
+    const [forS2_1, setForS2_1] = useState(['1a', '1b', '1c']);
+    const [s2r1a, s2setR1a] = useState(null);
+    const [s2r1b, s2setR1b] = useState(null);
+    const [s2r1c, s2setR1c] = useState(null);
+    const [s2b1a, s2setB1a] = useState(null);
+    const [s2b1b, s2setB1b] = useState(null);
+    const [s2b1c, s2setB1c] = useState(null);
+
+    const [forS2_2, setForS2_2] = useState(['2a', '2b', '2c']);
+    const [s2r2a, s2setR2a] = useState(null);
+    const [s2r2b, s2setR2b] = useState(null);
+    const [s2r2c, s2setR2c] = useState(null);
+    const [s2b2a, s2setB2a] = useState(null);
+    const [s2b2b, s2setB2b] = useState(null);
+    const [s2b2c, s2setB2c] = useState(null);
+
+    const [s2r1, s2setR1] = useState(null);
+    const [s2r2, s2setR2] = useState(null);
+
     const handleSetareProblemaS1 = (index, file) => {
         switch (index) {
           case 1: s1setR1(file); break;
@@ -57,7 +76,7 @@ const PosteazaSubiect = () => {
           case 4: s1setR4(file); break;
           case 5: s1setR5(file); break;
           case 6: s1setR6(file); break;
-          default: console.error("Index invalid pentru problemă");
+          default: console.error("Index invalid pentru problema");
         }
       };
     
@@ -73,6 +92,41 @@ const PosteazaSubiect = () => {
         }
       };
 
+      const handleSetareProblemaS2_1 = (index, file) =>{
+        switch (index) {
+            case '1a': s2setR1a(file); break;
+            case '1b': s2setR1b(file); break;
+            case '1c': s2setR1c(file); break;
+            default: console.error("Index invalid pentru problema");
+          }
+      }
+
+      const handleSetareProblemaS2_2 = (index, file) =>{
+        switch (index) {
+            case '2a': s2setR2a(file); break;
+            case '2b': s2setR2b(file); break;
+            case '2c': s2setR2c(file); break;
+            default: console.error("Index invalid pentru problema");
+          }
+      }
+
+      const handleSetareBaremS2_1 = (index, file) =>{
+        switch (index) {
+            case '1a': s2setB1a(file); break;
+            case '1b': s2setB1b(file); break;
+            case '1c': s2setB1c(file); break;
+            default: console.error("Index invalid pentru problema");
+          }
+      }
+
+      const handleSetareBaremS2_2 = (index, file) =>{
+        switch (index) {
+            case '2a': s2setB2a(file); break;
+            case '2b': s2setB2b(file); break;
+            case '2c': s2setB2c(file); break;
+            default: console.error("Index invalid pentru problema");
+          }
+      }
     
     return (
         <div>
@@ -304,6 +358,244 @@ const PosteazaSubiect = () => {
                                 }
                             </>
                         )}
+                        {activeStep === 2 && (
+                            <>
+                                {materie === 'matematica' &&
+                                    <>
+                                        <div className="flex flex-col gap-3">
+                                            <p className="text-xl bold"> 
+                                                Subiectul II
+                                            </p>
+
+                                            <div className="flex flex-row justify-between">
+                                                <div className="flex flex-col">
+                                                    Problema 1
+                                                    <input
+                                                        onChange={(e) => {
+                                                            s2setR1(e.target.files[0]);
+                                                            console.log(e.target.files[0]);
+                                                        }}
+                                                        type="file"
+                                                        name={`file-input-s2r1`}
+                                                        id={`file-input-s2r1`}
+                                                        accept='image/*' 
+                                                        class="file-input__input"
+                                                    />
+                                                    <label class={errorFields.includes(`s2r1`) ? "file-input_error file-input__label mt-1 min-w-[120px]" : "file-input__label mt-1 min-w-[120px]"}  
+                                                    for={`file-input-s2r1`}>
+                                                        <svg
+                                                            height="20px"
+                                                            width="20px"
+                                                            aria-hidden="true"
+                                                            focusable="false"
+                                                            data-prefix="fas"
+                                                            data-icon="upload"
+                                                            class="svg-inline--fa fa-upload fa-w-16"
+                                                            role="img"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 512 512"
+                                                        >
+                                                        <path
+                                                            fill="currentColor"
+                                                            d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
+                                                        ></path>
+                                                        </svg>
+                                                        <span>Upload file</span>
+                                                    </label>
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    Problema 2
+                                                    <input
+                                                        onChange={(e) => {
+                                                            s2setR2(e.target.files[0]);
+                                                            console.log(e.target.files[0]);
+                                                        }}
+                                                        type="file"
+                                                        name={`file-input-s2r2`}
+                                                        id={`file-input-s2r2`}
+                                                        accept='image/*' 
+                                                        class="file-input__input"
+                                                    />
+                                                    <label class={errorFields.includes(`s2r2`) ? "file-input_error file-input__label mt-1 min-w-[120px]" : "file-input__label mt-1 min-w-[120px]"}  
+                                                    for={`file-input-s2r2`}>
+                                                        <svg
+                                                            height="20px"
+                                                            width="20px"
+                                                            aria-hidden="true"
+                                                            focusable="false"
+                                                            data-prefix="fas"
+                                                            data-icon="upload"
+                                                            class="svg-inline--fa fa-upload fa-w-16"
+                                                            role="img"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 512 512"
+                                                        >
+                                                        <path
+                                                            fill="currentColor"
+                                                            d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
+                                                        ></path>
+                                                        </svg>
+                                                        <span>Upload file</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-row justify-between">
+                                                <div className="flex flex-col gap-1">
+                                                {forS2_1.map(nr=> (
+                                                    <div className="flex flex-col w-full justify-between">
+                                                        <div className="flex flex-col">
+                                                        Subpunctul {nr} 
+                                                            <input
+                                                                onChange={(e) => {
+                                                                    handleSetareProblemaS2_1(nr, e.target.files[0])
+                                                                }}
+                                                                type="file"
+                                                                name={`file-input-s2r${nr}`}
+                                                                id={`file-input-s2r${nr}`}
+                                                                accept='image/*' 
+                                                                class="file-input__input"
+                                                            />
+                                                            <label class={errorFields.includes(`s2r${nr}`) ? "file-input_error file-input__label mt-1 min-w-[120px]" : "file-input__label mt-1 min-w-[120px]"}  
+                                                            for={`file-input-s2r${nr}`}>
+                                                                <svg
+                                                                    height="20px"
+                                                                    width="20px"
+                                                                    aria-hidden="true"
+                                                                    focusable="false"
+                                                                    data-prefix="fas"
+                                                                    data-icon="upload"
+                                                                    class="svg-inline--fa fa-upload fa-w-16"
+                                                                    role="img"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 512 512"
+                                                                >
+                                                                <path
+                                                                    fill="currentColor"
+                                                                    d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
+                                                                ></path>
+                                                                </svg>
+                                                                <span>Upload file</span>
+                                                            </label>
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                        Barem {nr} 
+                                                            <input
+                                                                onChange={(e) => {
+                                                                    handleSetareBaremS2_1(nr, e.target.files[0])
+                                                                }}
+                                                                type="file"
+                                                                name={`file-input-s2b${nr}`}
+                                                                id={`file-input-s2b${nr}`}
+                                                                accept='image/*' 
+                                                                class="file-input__input"
+                                                            />
+                                                            <label class={errorFields.includes(`s2b${nr}`) ? "file-input_error file-input__label mt-1 min-w-[120px]" : "file-input__label mt-1 min-w-[120px]"}  
+                                                            for={`file-input-s2b${nr}`}>
+                                                                <svg
+                                                                    height="20px"
+                                                                    width="20px"
+                                                                    aria-hidden="true"
+                                                                    focusable="false"
+                                                                    data-prefix="fas"
+                                                                    data-icon="upload"
+                                                                    class="svg-inline--fa fa-upload fa-w-16"
+                                                                    role="img"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 512 512"
+                                                                >
+                                                                <path
+                                                                    fill="currentColor"
+                                                                    d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
+                                                                ></path>
+                                                                </svg>
+                                                                <span>Upload file</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                </div>
+
+                                                <div className="flex flex-col gap-1">
+                                                {forS2_2.map(nr=> (
+                                                    <div className="flex flex-col w-full justify-between">
+                                                        <div className="flex flex-col">
+                                                        Subpunctul {nr} 
+                                                            <input
+                                                                onChange={(e) => {
+                                                                    handleSetareProblemaS2_2(nr, e.target.files[0])
+                                                                }}
+                                                                type="file"
+                                                                name={`file-input-s2r${nr}`}
+                                                                id={`file-input-s2r${nr}`}
+                                                                accept='image/*' 
+                                                                class="file-input__input"
+                                                            />
+                                                            <label class={errorFields.includes(`s2r${nr}`) ? "file-input_error file-input__label mt-1 min-w-[120px]" : "file-input__label mt-1 min-w-[120px]"}  
+                                                            for={`file-input-s2r${nr}`}>
+                                                                <svg
+                                                                    height="20px"
+                                                                    width="20px"
+                                                                    aria-hidden="true"
+                                                                    focusable="false"
+                                                                    data-prefix="fas"
+                                                                    data-icon="upload"
+                                                                    class="svg-inline--fa fa-upload fa-w-16"
+                                                                    role="img"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 512 512"
+                                                                >
+                                                                <path
+                                                                    fill="currentColor"
+                                                                    d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
+                                                                ></path>
+                                                                </svg>
+                                                                <span>Upload file</span>
+                                                            </label>
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                        Barem {nr} 
+                                                            <input
+                                                                onChange={(e) => {
+                                                                    handleSetareBaremS2_2(nr, e.target.files[0])
+                                                                }}
+                                                                type="file"
+                                                                name={`file-input-s2b${nr}`}
+                                                                id={`file-input-s2b${nr}`}
+                                                                accept='image/*' 
+                                                                class="file-input__input"
+                                                            />
+                                                            <label class={errorFields.includes(`s2b${nr}`) ? "file-input_error file-input__label mt-1 min-w-[120px]" : "file-input__label mt-1 min-w-[120px]"}  
+                                                            for={`file-input-s2b${nr}`}>
+                                                                <svg
+                                                                    height="20px"
+                                                                    width="20px"
+                                                                    aria-hidden="true"
+                                                                    focusable="false"
+                                                                    data-prefix="fas"
+                                                                    data-icon="upload"
+                                                                    class="svg-inline--fa fa-upload fa-w-16"
+                                                                    role="img"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 512 512"
+                                                                >
+                                                                <path
+                                                                    fill="currentColor"
+                                                                    d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
+                                                                ></path>
+                                                                </svg>
+                                                                <span>Upload file</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                }
+                            </>
+                        )}
                     </div>
 
                     <div className="flex flex-row justify-between">
@@ -384,7 +676,41 @@ const PosteazaSubiect = () => {
                                         return;
                                     }
                                 }
-                            }
+                            }else if(activeStep === 2){
+                                if (materie === 'matematica') {
+                                    if (!s2r1 || !s2r2 ||
+                                        !s2r1a || !s2b1a || !s2r1b || !s2b1b || !s2r1c || !s2b1c ||
+                                        !s2r2a || !s2b2a || !s2r2b || !s2b2b || !s2r2c || !s2b2c) {
+                                        
+                                        setError("Toate campurile sunt obligatorii");
+                                
+                                        const errorFieldsToCheck = [
+                                            's2r1', 's2r2', 
+                                            's2r1a', 's2b1a', 's2r1b', 's2b1b', 's2r1c', 's2b1c', 
+                                            's2r2a', 's2b2a', 's2r2b', 's2b2b', 's2r2c', 's2b2c'
+                                        ];
+                                
+                                        for (const field of errorFieldsToCheck) {
+                                            if (errorFields.includes(field)) {
+                                                const index = errorFields.indexOf(field);
+                                                errorFields.splice(index, 1);
+                                            }
+                                        }
+                                
+                                        for (const field of errorFieldsToCheck) {
+                                            if (!eval(field)) {
+                                                errorFields.push(field);
+                                            }
+                                        }
+                                
+                                        setTimeout(() => {
+                                            setError(null);
+                                        }, 3000);
+                                        
+                                        return;
+                                    }
+                                }
+                            } 
                             if(activeStep < 3){
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
                                 setErrorFields([]);
