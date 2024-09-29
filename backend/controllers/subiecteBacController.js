@@ -6,9 +6,9 @@ const { createNotification } = require('./notificationController');
 
 const createSubiectBac = async (req, res) =>{
     try{
-        const {subject, teacher, profil, allowsHelp, questions} = req.body
+        const {subject, teacher, profil, allowsHelp, questions, subiect, barem} = req.body
 
-        if(!subject || !teacher || !profil || allowsHelp == undefined || !questions){
+        if(!subject || !teacher || !profil || allowsHelp == undefined || !questions || !subiect || !barem){
             return res.status(400).json({error: 'Invalid data!'})
         }
 
@@ -34,13 +34,15 @@ const createSubiectBac = async (req, res) =>{
             subject,
             teacher,
             profil,
+            subiect,
+            barem,
             allowsHelp,
-            status: 'verification',
+            status: 'pending',
             questions,
             solutions: [],
         }
 
-        const subiect = await subiecteBacModel.create(data);
+        await subiecteBacModel.create(data);
 
         const activitate ={
             type: 'createSubiectBac',
@@ -55,7 +57,7 @@ const createSubiectBac = async (req, res) =>{
             {new: true}
         )
 
-        res.status(200).json(subiect);
+        res.status(200).json({msg: "Subiectul a fost pus pe pending!"});
     }catch(error){
         console.error(error.message);
         res.status(400).json(error.message);

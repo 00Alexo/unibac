@@ -13,6 +13,14 @@ const subiecteBac = new mongoose.Schema({
         type: String,
         required: true
     },
+    subiect:{
+        type: String,
+        required: true
+    },
+    barem:{
+        type: String,
+        required: true
+    },
     questions:{
         type: Array,
         required: true
