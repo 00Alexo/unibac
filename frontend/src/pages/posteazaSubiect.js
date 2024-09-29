@@ -1,10 +1,14 @@
-import {Input, Button, Select, SelectItem, Autocomplete, AutocompleteItem, Tooltip, Textarea, CircularProgress, Checkbox} from "@nextui-org/react";
+import {Input, Button, Select, SelectItem, Autocomplete, AutocompleteItem, Tooltip, Textarea, CircularProgress, 
+Checkbox, Spinner} from "@nextui-org/react";
 import {useEffect, useState} from 'react';
 import { useAuthContext } from '../hooks/useAuthContext';
 import {Error, NotificationBox} from '../components/alertBox';
 import Loading from "../pages/Loading";
+import { useNavigate } from 'react-router-dom';
 
 const PosteazaSubiect = () => {
+    const navigate = useNavigate();
+
     const materii = [
         { label: 'Informatica', value: 'informatica' },
         { label: 'Matematica', value: 'matematica' },
@@ -25,6 +29,7 @@ const PosteazaSubiect = () => {
     ];
 
     const {user} = useAuthContext();
+    const [postingSubject, setPostingSubject] = useState(false);
 
     const [notification, setNotification] = useState(null);
     const [error, setError] = useState(null);
@@ -216,6 +221,7 @@ const PosteazaSubiect = () => {
     }
 
     const posteazaSubiect = async ()=>{
+        setPostingSubject(true);
         const barrez = [
             s1r1, s1r2, s1r3, s1r4, s1r5, s1r6, s1b1, s1b2, s1b3, s1b4, s1b5, s1b6,
             s2r1a, s2r1b, s2r1c, s2b1a, s2b1b, s2b1c, s2r2a, s2r2b, s2r2c, s2b2a, s2b2b, s2b2c,
@@ -254,21 +260,49 @@ const PosteazaSubiect = () => {
             setTimeout(() => {
                 setError(null);
             }, 7000);
-            setLoading(false);
+            setPostingSubject(false);
         }
         if(response.ok){
+            setNotification(json.msg);
+            setTimeout(() => {
+                setNotification(null);
+            }, 7000);
             console.log(json);
-            setLoading(false);
+            setPostingSubject(false);
+            navigate(`/home`, { state: { fromPostareSubiect: true }});
         }
     }
     
     return (
         <div>
             {notification && <NotificationBox notification={notification}/>}
+            {postingSubject &&
+                <div 
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                    zIndex: 999,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+                >
+                    <div className="flex flex-col gap-5">
+                        <div className="flex flex-col gap-2">
+                            <p className="text-xl text-center"> Subiectul este in curs de procesare...</p>
+                            <p className="text-md text-center"> Dupa procesare o sa fii redirectionat spre pagina principala...</p>
+                        </div>
+                        <Spinner size="lg" color="primary" />
+                    </div>
+                </div>
+            }
             {loading && <Loading/>}
             {error && <Error error={error}/>}
             <div className="w-[100vw] flex justify-center items-center mx-auto p-7 min-h-[80vh]">
-                <Button onClick={() => console.log(questions)}> test </Button>
                 <div className="absolute left-1 z-50 top-0 mt-[70px]">
                     <CircularProgress
                         size="lg"
@@ -1021,100 +1055,100 @@ const PosteazaSubiect = () => {
                                     return;
                                 }
                             }else if(activeStep === 1){
-                                if(materie === 'matematica'){
-                                    if(!s1r1 || !s1b1 || !s1r2 || !s1b2 || !s1r3 || !s1b3 || !s1r4 || !s1b4 || !s1r5 || !s1b5 || !s1r6 || !s1b6){
-                                        setError("Toate campurile sunt obligatorii");
-                                        for (let i = 1; i <= 6; i++) {
-                                            if (errorFields.includes(`s1r${i}`)) {
-                                                const index = errorFields.indexOf(`s1r${i}`);
-                                                errorFields.splice(index, 1);
-                                            }
-                                            if (errorFields.includes(`s1b${i}`)) {
-                                                const index = errorFields.indexOf(`s1b${i}`);
-                                                errorFields.splice(index, 1);
-                                            }
-                                        }
+                                // if(materie === 'matematica'){
+                                //     if(!s1r1 || !s1b1 || !s1r2 || !s1b2 || !s1r3 || !s1b3 || !s1r4 || !s1b4 || !s1r5 || !s1b5 || !s1r6 || !s1b6){
+                                //         setError("Toate campurile sunt obligatorii");
+                                //         for (let i = 1; i <= 6; i++) {
+                                //             if (errorFields.includes(`s1r${i}`)) {
+                                //                 const index = errorFields.indexOf(`s1r${i}`);
+                                //                 errorFields.splice(index, 1);
+                                //             }
+                                //             if (errorFields.includes(`s1b${i}`)) {
+                                //                 const index = errorFields.indexOf(`s1b${i}`);
+                                //                 errorFields.splice(index, 1);
+                                //             }
+                                //         }
                                         
-                                        for (let i = 1; i <= 6; i++) {
-                                            if (!eval(`s1r${i}`)) {
-                                                errorFields.push(`s1r${i}`);
-                                            }
-                                            if (!eval(`s1b${i}`)) {
-                                                errorFields.push(`s1b${i}`);
-                                            }
-                                        }
-                                        setTimeout(() =>{
-                                            setError(null);
-                                        }, 3000)
-                                        return;
-                                    }
-                                }
+                                //         for (let i = 1; i <= 6; i++) {
+                                //             if (!eval(`s1r${i}`)) {
+                                //                 errorFields.push(`s1r${i}`);
+                                //             }
+                                //             if (!eval(`s1b${i}`)) {
+                                //                 errorFields.push(`s1b${i}`);
+                                //             }
+                                //         }
+                                //         setTimeout(() =>{
+                                //             setError(null);
+                                //         }, 3000)
+                                //         return;
+                                //     }
+                                // }
                             }else if(activeStep === 2){
-                                if (materie === 'matematica') {
-                                    if (!s2r1 || !s2r2 ||
-                                        !s2r1a || !s2b1a || !s2r1b || !s2b1b || !s2r1c || !s2b1c ||
-                                        !s2r2a || !s2b2a || !s2r2b || !s2b2b || !s2r2c || !s2b2c) {
+                                // if (materie === 'matematica') {
+                                //     if (!s2r1 || !s2r2 ||
+                                //         !s2r1a || !s2b1a || !s2r1b || !s2b1b || !s2r1c || !s2b1c ||
+                                //         !s2r2a || !s2b2a || !s2r2b || !s2b2b || !s2r2c || !s2b2c) {
                                         
-                                        setError("Toate campurile sunt obligatorii");
+                                //         setError("Toate campurile sunt obligatorii");
                                 
-                                        const errorFieldsToCheck = [
-                                            's2r1', 's2r2', 
-                                            's2r1a', 's2b1a', 's2r1b', 's2b1b', 's2r1c', 's2b1c', 
-                                            's2r2a', 's2b2a', 's2r2b', 's2b2b', 's2r2c', 's2b2c'
-                                        ];
+                                //         const errorFieldsToCheck = [
+                                //             's2r1', 's2r2', 
+                                //             's2r1a', 's2b1a', 's2r1b', 's2b1b', 's2r1c', 's2b1c', 
+                                //             's2r2a', 's2b2a', 's2r2b', 's2b2b', 's2r2c', 's2b2c'
+                                //         ];
                                 
-                                        for (const field of errorFieldsToCheck) {
-                                            if (errorFields.includes(field)) {
-                                                const index = errorFields.indexOf(field);
-                                                errorFields.splice(index, 1);
-                                            }
-                                        }
+                                //         for (const field of errorFieldsToCheck) {
+                                //             if (errorFields.includes(field)) {
+                                //                 const index = errorFields.indexOf(field);
+                                //                 errorFields.splice(index, 1);
+                                //             }
+                                //         }
                                 
-                                        for (const field of errorFieldsToCheck) {
-                                            if (!eval(field)) {
-                                                errorFields.push(field);
-                                            }
-                                        }
+                                //         for (const field of errorFieldsToCheck) {
+                                //             if (!eval(field)) {
+                                //                 errorFields.push(field);
+                                //             }
+                                //         }
                                 
-                                        setTimeout(() => {
-                                            setError(null);
-                                        }, 3000);
+                                //         setTimeout(() => {
+                                //             setError(null);
+                                //         }, 3000);
                                         
-                                        return;
-                                    }
-                                }
+                                //         return;
+                                //     }
+                                // }
                             }
                             if(activeStep === 3){
-                                if(materie === 'matematica'){
-                                    if (!s3r1 || !s3r2 ||
-                                    !s3r1a || !s3b1a || !s3r1b || !s3b1b || !s3r1c || !s3b1c ||
-                                    !s3r2a || !s3b2a || !s3r2b || !s3b2b || !s3r2c || !s3b2c) {
-                                        setError("Toate campurile sunt obligatorii");
-                                        const errorFieldsToCheck = [
-                                            's3r1', 's3r2', 
-                                            's3r1a', 's3b1a', 's3r1b', 's3b1b', 's3r1c', 's3b1c', 
-                                            's3r2a', 's3b2a', 's3r2b', 's3b2b', 's3r2c', 's3b2c'
-                                        ];
+                                // if(materie === 'matematica'){
+                                //     if (!s3r1 || !s3r2 ||
+                                //     !s3r1a || !s3b1a || !s3r1b || !s3b1b || !s3r1c || !s3b1c ||
+                                //     !s3r2a || !s3b2a || !s3r2b || !s3b2b || !s3r2c || !s3b2c) {
+                                //         setError("Toate campurile sunt obligatorii");
+                                //         const errorFieldsToCheck = [
+                                //             's3r1', 's3r2', 
+                                //             's3r1a', 's3b1a', 's3r1b', 's3b1b', 's3r1c', 's3b1c', 
+                                //             's3r2a', 's3b2a', 's3r2b', 's3b2b', 's3r2c', 's3b2c'
+                                //         ];
                                 
-                                        for (const field of errorFieldsToCheck) {
-                                            if (errorFields.includes(field)) {
-                                                const index = errorFields.indexOf(field);
-                                                errorFields.splice(index, 1);
-                                            }
-                                        }
+                                //         for (const field of errorFieldsToCheck) {
+                                //             if (errorFields.includes(field)) {
+                                //                 const index = errorFields.indexOf(field);
+                                //                 errorFields.splice(index, 1);
+                                //             }
+                                //         }
                                 
-                                        for (const field of errorFieldsToCheck) {
-                                            if (!eval(field)) {
-                                                errorFields.push(field);
-                                            }
-                                        }
+                                //         for (const field of errorFieldsToCheck) {
+                                //             if (!eval(field)) {
+                                //                 errorFields.push(field);
+                                //             }
+                                //         }
 
-                                        setTimeout(() =>{
-                                            setError(null);
-                                        }, 3000)
-                                        return;
-                                    }
-                                }
+                                //         setTimeout(() =>{
+                                //             setError(null);
+                                //         }, 3000)
+                                //         return;
+                                //     }
+                                // }
                                 setErrorFields([]);
                                 posteazaSubiect();
                             } 

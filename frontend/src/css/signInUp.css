@@ -141,6 +141,14 @@
     margin-top: 75px;
 }
 
+.scsSuccesfullyPostedSubject{
+  animation: scale 2s cubic-bezier(0.645, 0.045, 0.355, 1)  forwards 0.3s, opacityOut 1s forwards 3.5s;
+  font-family: 'Montserrat ExtraBold';
+  font-size: 0.9rem;
+  opacity: 0;
+  margin-top: 75px;
+}
+
 @keyframes opacityOut {
     0% {
       opacity: 1;
