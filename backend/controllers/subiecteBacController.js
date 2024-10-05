@@ -64,6 +64,20 @@ const createSubiectBac = async (req, res) =>{
     }
 }
 
+const getSubiectBac = async (req, res) =>{
+    try{
+        const {subId} = req.params;
+        const subiect = await subiecteBacModel.findOne({subId})
+        if(!subiect){
+            return res.status(404).json({ error: 'Acest subiect nu exista!' });
+        }
+        res.status(200).json(subiect);
+    }catch(error){
+        res.status(400).json(error.message);
+    }
+}
+
 module.exports={
-    createSubiectBac
+    createSubiectBac,
+    getSubiectBac
 }

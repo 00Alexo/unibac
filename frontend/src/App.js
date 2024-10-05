@@ -19,6 +19,7 @@ import MinaAi from './pages/MinaAI.js';
 import CreateClass from './pages/CreateClass.js';
 import ViewClass from './pages/ViewClass.js';
 import PosteazaSubiect from './pages/posteazaSubiect.js';
+import ViewSubiect from './pages/ViewSubiect.js';
 
 function App() {
   const { user } = useAuthContext()
@@ -76,6 +77,13 @@ function App() {
             <Route
               path="/profile/:username/:view"
               element={<ViewProfile/>}
+            />
+
+            {/* subiecte*/}
+
+            <Route
+              path="/subiecte/:materie/:subId"
+              element={<ViewSubiect/>}
             />
 
             {/* minaAI */}

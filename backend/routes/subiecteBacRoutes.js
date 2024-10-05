@@ -1,13 +1,14 @@
 const express = require('express');
 const{
-    createSubiectBac
+    createSubiectBac,
+    getSubiectBac
 } = require('../controllers/subiecteBacController');
 
 const requireAuth = require('../middleware/requireAuth')
 
 const router = express.Router();
 
-// router.get('/viewClass/:classId', viewClass);
+router.get('/getSubiectBac/:subId', getSubiectBac);
 
 router.use(requireAuth);
 

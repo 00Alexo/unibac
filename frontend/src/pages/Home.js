@@ -47,7 +47,7 @@ const Home = () => {
                 <p className='text-center scslogin'> Successfully logged in! </p>
             </div>
             }
-            {setSuccessfullyPostedSubject &&
+            {succesfullyPostedSubject &&
             <div class="after-loggin-animation">
                 <div class="center">
                     <img src={checkmark} class="thumb"/>
