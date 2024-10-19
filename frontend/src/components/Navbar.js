@@ -666,7 +666,7 @@ window.navigateToProfile = navigateToProfile;
               >
                 Posteaza un subiect
               </DropdownItem>
-              <DropdownItem onClick={() => {navigate(`/profile/${user.username}/idkyet`)}}
+              <DropdownItem onClick={() => {navigate(`/profile/${user.username}/subiecte`)}}
                 key="Subiect"
               >
                 Subiecte postate de tine

@@ -106,9 +106,33 @@ const ViewProfile = () => {
         }
     }
 
+    const [subiectePostate, setSubiectePostate] = useState(null);
+
+    const getSubiectePostate = async () =>{
+        const response = await fetch(`${process.env.REACT_APP_API}/api/subiecteBac/getSubiecteByUser?username=${username}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        const json = await response.json();
+        console.log('test', json);
+
+        if(!response.ok){
+            console.log(json.error);
+        }
+
+        if(response.ok){
+            console.log(json);
+            setSubiectePostate(json);
+        }
+    }
+
     useEffect(() =>{
-        if(view?.toLowerCase())
+        if(view?.toLowerCase()){
             getUserClasses();
+            getSubiectePostate();
+        }
     }, [view])
 
     if(view != undefined && view != null && view?.toLowerCase() != 'setari' && view?.toLowerCase() != 'articole' && view?.toLowerCase() != 'subiecte'
@@ -949,7 +973,9 @@ const ViewProfile = () => {
                     <div className={isSmallScreen ? 'bg-[#26272B] pt-5 pb-2 border-t-2 border-[#44444d] flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[2%] pr-[2%]'
                         : 'bg-[#26272B] border-t-2 border-[#44444d] pt-5 pb-2 flex flex-row justify-between min-h-[calc(100vh-405px)] pl-[10%] pr-[10%]'
                     }>
-                        subiecte
+                        {subiectePostate?.subiecte.map((subiect) => (
+                            <p>{subiect.subId}</p>
+                        ))}
                     </div>
                 }
                 {view?.toLowerCase() === 'articole' &&

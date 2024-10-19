@@ -90,8 +90,21 @@ const getSubiecteMaterie = async (req, res) =>{
     }
 }
 
+const getSubiecteByUser = async (req, res) =>{
+    try{
+        const {username} = req.query;
+        const subiecte = await subiecteBacModel.find({teacher: username.toLowerCase()});
+        if(!subiecte)
+            return res.status(404).json({error: 'Nu exista subiecte postate de acest utilizator!'});
+        res.status(200).json({subiecte});
+    }catch(error){
+        res.status(400).json(error.message);
+    }
+}
+
 module.exports={
     createSubiectBac,
+    getSubiecteByUser,
     getSubiecteMaterie,
     getSubiectBac
 }
