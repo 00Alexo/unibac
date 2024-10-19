@@ -1,10 +1,11 @@
-import {Input, Button, Select, SelectItem, Autocomplete, AutocompleteItem, Tooltip, Textarea, CircularProgress, 
+import {Input, Button, Select, SelectItem, Autocomplete, AutocompleteItem, Tooltip, Textarea, CircularProgress,
 Checkbox, Spinner} from "@nextui-org/react";
 import {useEffect, useState} from 'react';
 import { useAuthContext } from '../hooks/useAuthContext';
 import {Error, NotificationBox} from '../components/alertBox';
 import Loading from "../pages/Loading";
 import { useNavigate } from 'react-router-dom';
+import PageNotFound from "./404";
 
 const PosteazaSubiect = () => {
     const navigate = useNavigate();
@@ -29,6 +30,26 @@ const PosteazaSubiect = () => {
     ];
 
     const {user} = useAuthContext();
+
+    const statusVerifier = async () =>{
+        const response = await fetch(`${process.env.REACT_APP_API}/api/user/statusVerifier?username=${user.username}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            }
+        })
+        const json = await response.json();
+        console.log(json)
+        if(json.user.statut != 'profesor')
+            navigate('/404');
+    }
+
+    useEffect(() =>{
+        if(user)
+            statusVerifier();
+    }, [user])
+
     const [postingSubject, setPostingSubject] = useState(false);
 
     const [notification, setNotification] = useState(null);
@@ -42,6 +63,8 @@ const PosteazaSubiect = () => {
     const [activeStep, setActiveStep] = useState(0);
     const [subiectIntreg, setSubiectIntreg] = useState(0);
     const [baremIntreg, setBaremIntreg] = useState(0);
+    const [scurtaDescriere, setScurtaDescriere] = useState(null);
+    const [dificultate, setDificultate] = useState(null);
 
     const [forS1, setForS1] = useState([1, 2, 3, 4, 5, 6]);
     const [s1r1, s1setR1] = useState(null);
@@ -251,7 +274,7 @@ const PosteazaSubiect = () => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${user.token}`
             },
-            body: JSON.stringify({subject: materie, teacher: user.username, profil, allowsHelp: allowHelp, questions, subiect, barem})
+            body: JSON.stringify({scurtaDescriere, dificultate, subject: materie, teacher: user.username, profil, allowsHelp: allowHelp, questions, subiect, barem})
         })
         const json = await response.json();
         if(!response.ok){
@@ -345,6 +368,45 @@ const PosteazaSubiect = () => {
                                     </AutocompleteItem>
                                     ))}
                                 </Autocomplete>
+                                
+                                <div className={errorFields?.includes('scurtaDescriere') ? 'oSaAibaEroare' : ''}>
+                                    <Textarea
+                                        label="Description"
+                                        value={scurtaDescriere}
+                                        onChange={(e) => { setScurtaDescriere(e.target.value); console.log(scurtaDescriere)}}
+                                        placeholder="Enter your description"
+                                        className={errorFields.includes('scurtaDescriere') ? "max-w-full oSaAibaEroare max-h-[175px]" : "max-w-full max-h-[175px]"}
+                                    />
+                                </div>
+
+                                <div className={errorFields?.includes('dificultate') ? 'oSaAibaEroare' : ''}>
+                                    <Select
+                                        label="Dificultate"
+                                        placeholder="Selecteaza dificultatea"
+                                        className={errorFields.includes('dificultate') ? "max-w-full oSaAibaEroare" : "max-w-full"} 
+                                        value={dificultate}
+                                        onChange={(e) => { 
+                                            if(e.target.value=='$.0')
+                                                setDificultate('easy'); 
+                                            else if(e.target.value == '$.1')
+                                                setDificultate('medium');
+                                            else if(e.target.value == '$.2')
+                                                setDificultate('hard');
+                                            console.log(dificultate)
+                                            }
+                                        }
+                                    >
+                                        <SelectItem value="Easy">
+                                            Easy
+                                        </SelectItem>
+                                        <SelectItem value="Medium">
+                                            Medium
+                                        </SelectItem>
+                                        <SelectItem value="Hard">
+                                            Hard
+                                        </SelectItem>
+                                    </Select>
+                                </div>
                                 
                                 <div className="flex flex-row justify-between">
                                     <div className="flex flex-col">
@@ -1019,12 +1081,21 @@ const PosteazaSubiect = () => {
                         <Button size="md" className="w-[65px] ml-auto" variant = "flat"
                         onClick={() => {
                             if(activeStep === 0){
-                                if(materie === '' || profil === '' || !subiectIntreg || !baremIntreg){
+                                if(!user)
+                                    return setError("NU ESTI AUTENTIFICAT, LOGHEAZA-TE CA SA TRECI LA URMATORUL PAS!");
+                                if(materie === '' || profil === '' || !subiectIntreg || !baremIntreg || !scurtaDescriere || !dificultate){
                                     setError("Toate campurile sunt obligatorii");
-                                    console.log("subiect:",subiectIntreg);
-                                    console.log("barem:", baremIntreg);
+                                    console.log(dificultate, scurtaDescriere, errorFields);
                                     if(errorFields.includes('materie')) {
                                         const index = errorFields.indexOf('materie');
+                                        errorFields.splice(index, 1); 
+                                    }
+                                    if(errorFields.includes('dificultate')) {
+                                        const index = errorFields.indexOf('dificultate');
+                                        errorFields.splice(index, 1); 
+                                    }
+                                    if(errorFields.includes('scurtaDescriere')) {
+                                        const index = errorFields.indexOf('scurtaDescriere');
                                         errorFields.splice(index, 1); 
                                     }
                                     
@@ -1043,6 +1114,10 @@ const PosteazaSubiect = () => {
                                     }
                                     if(!materie)
                                         errorFields.push('materie');
+                                    if(!scurtaDescriere)
+                                        errorFields.push('scurtaDescriere');
+                                    if(!dificultate)
+                                        errorFields.push('dificultate');
                                     if(!profil)
                                         errorFields.push('profil');
                                     if(!subiectIntreg)

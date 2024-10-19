@@ -40,6 +40,14 @@ const subiecteBac = new mongoose.Schema({
     solutii:{
         type: Array,
         required: true
+    },
+    scurtaDescriere:{
+        type: Array,
+        required: true
+    },
+    dificultate:{
+        type:Array,
+        required: true
     }
 
   }, {timestamps: true});

@@ -6,7 +6,7 @@ const { createNotification } = require('./notificationController');
 
 const createSubiectBac = async (req, res) =>{
     try{
-        const {subject, teacher, profil, allowsHelp, questions, subiect, barem} = req.body
+        const {subject, teacher, profil, allowsHelp, questions, subiect, barem, scurtaDescriere, dificultate} = req.body
 
         if(!subject || !teacher || !profil || allowsHelp == undefined || !questions || !subiect || !barem){
             return res.status(400).json({error: 'Invalid data!'})
@@ -39,6 +39,8 @@ const createSubiectBac = async (req, res) =>{
             allowsHelp,
             status: 'pending',
             questions,
+            scurtaDescriere,
+            dificultate,
             solutions: [],
         }
 

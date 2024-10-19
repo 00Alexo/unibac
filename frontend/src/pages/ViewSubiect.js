@@ -41,7 +41,9 @@ const ViewSubiect = () => {
         <div>
             {subId}
             {viewSubiect.questions.map((materie) => (
-                <img src={materie}/>
+                <div>
+                    
+                </div>
             ))}
         </div>
     );

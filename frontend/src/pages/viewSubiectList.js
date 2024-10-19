@@ -17,6 +17,7 @@ const ViewSubiectList = () => {
       const [error, setError] = useState(null);
       const {materie} = useParams();
       const [subiecteV, setSubiecteV] = useState(null);
+      const navigate = useNavigate();
 
     const getSubiect = async () =>{
         const response = await fetch(`${process.env.REACT_APP_API}/api/subiecteBac/getSubiecteMaterie/${materie}`,{
@@ -44,7 +45,9 @@ const ViewSubiectList = () => {
     return (
         <div>
             {subiecteV?.subiecte.map((subiect) => (
-                <p>{subiect.subId}</p>
+                <div onClick={() => navigate(`/subiecte/${materie}/${subiect.subId}`)} className='cursor-pointer'>
+                    {subiect.subId}
+                </div>
             ))}
         </div>
     );
