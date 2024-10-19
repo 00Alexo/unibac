@@ -630,6 +630,11 @@ window.navigateToProfile = navigateToProfile;
             >
               Games
             </DropdownItem>
+            <DropdownItem onClick={() => navigate('/subiecte')}
+              key="SubiecteList"
+            >
+              Subiecte
+            </DropdownItem>
             <DropdownItem onClick={() => navigate('/clase')}
               key="clase"
             >

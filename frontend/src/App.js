@@ -20,6 +20,8 @@ import CreateClass from './pages/CreateClass.js';
 import ViewClass from './pages/ViewClass.js';
 import PosteazaSubiect from './pages/posteazaSubiect.js';
 import ViewSubiect from './pages/ViewSubiect.js';
+import SubiectList from './pages/SubiectList.js';
+import ViewSubiectList from './pages/viewSubiectList.js';
 
 function App() {
   const { user } = useAuthContext()
@@ -84,6 +86,16 @@ function App() {
             <Route
               path="/subiecte/:materie/:subId"
               element={<ViewSubiect/>}
+            />
+
+            <Route 
+              path="/subiecte"
+              element={<SubiectList/>}
+            />
+
+            <Route 
+              path="/subiecte/:materie"
+              element={<ViewSubiectList/>}
             />
 
             {/* minaAI */}
