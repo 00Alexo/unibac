@@ -321,6 +321,7 @@ const leaveClass = async (req, res) =>{
 //TODO + BUTON NEW CHAT LA MINAAI
 //TODO + BUTTON DISABLED LA POSTARE SUBIECTE IN TIMP CE E LOADING
 //TODO + CV OPTIUNE DE FILTER LA SUBIECTE + ARTICOLE (CAND O SA FIE GATA)
+//TODO + sa faci aia cu verificarea la subiecte handicapatule ca ai uitat total, se posteaza automat, nu mai trec prin filtre
 
 const kickMember = async (req, res) =>{
     try{
