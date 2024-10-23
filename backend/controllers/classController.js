@@ -314,12 +314,13 @@ const leaveClass = async (req, res) =>{
     }
 }
 
-//TODO + de facut backend la settings (security code confirmation)
+//TODO + de facut backend la settings (security code confirmation) (de lasat pe final ca nush ce api sa folosesc si n am nici chef de el)
 //TODO + MODIFICAT TOKEN REVIEW (IN FUNCTIE DE REMEMBER ME)
 //TODO + SEARCH RESPONSIVE CA E CAM buGGY
 //TODO + CV API CA SA SE UPDATEZE POZELE GLOBAL CA AI 5 POZE in 10 LOCATII DIFERITE PROSTU PLII
 //TODO + BUTON NEW CHAT LA MINAAI
 //TODO + BUTTON DISABLED LA POSTARE SUBIECTE IN TIMP CE E LOADING
+//TODO + CV OPTIUNE DE FILTER LA SUBIECTE + ARTICOLE (CAND O SA FIE GATA)
 
 const kickMember = async (req, res) =>{
     try{

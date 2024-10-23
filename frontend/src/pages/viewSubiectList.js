@@ -44,11 +44,17 @@ const ViewSubiectList = () => {
     
     return (
         <div>
+            <div className="grid grid-cols-3 gap-4 p-4">
             {subiecteV?.subiecte.map((subiect) => (
-                <div onClick={() => navigate(`/subiecte/${materie}/${subiect.subId}`)} className='cursor-pointer'>
-                    {subiect.subId}
+                <div
+                key={subiect.subId}
+                onClick={() => navigate(`/subiecte/${materie}/${subiect.subId}`)}
+                className="bg-gray-200 p-4 text-center border rounded-lg cursor-pointer hover:bg-gray-300"
+                >
+                {subiect.subId}
                 </div>
             ))}
+            </div>
         </div>
     );
 }
